@@ -36,6 +36,9 @@ rabbitmq:
   routing-key:
     update-info-account: 23130075-routing-key
 ---
+logging:
+  config: classpath:log4j2-spring.xml
+
 eureka:
   client:
     serviceUrl:
