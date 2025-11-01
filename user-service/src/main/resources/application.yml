@@ -3,3 +3,23 @@ spring:
     name: user-service
 server:
   port: 8082
+---
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/db_account_banking
+    username: postgres
+    password: 1111
+  rabbitmq:
+    port: 5672
+    host: localhost
+    username: guest
+    password: guest
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 5
+          initial-interval: 1000ms
+          multiplier: 2.0
+          max-interval: 10000ms
+        acknowledge-mode: manual
