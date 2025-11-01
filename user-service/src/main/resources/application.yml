@@ -23,3 +23,8 @@ spring:
           multiplier: 2.0
           max-interval: 10000ms
         acknowledge-mode: manual
+---
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
