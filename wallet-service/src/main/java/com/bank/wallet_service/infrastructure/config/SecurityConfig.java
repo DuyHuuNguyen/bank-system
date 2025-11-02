@@ -1,0 +1,45 @@
+package com.bank.wallet_service.infrastructure.config;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.HttpStatusServerEntryPoint;
+import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
+
+@EnableWebFluxSecurity
+@EnableReactiveMethodSecurity
+@Configuration
+@RequiredArgsConstructor
+public class SecurityConfig {
+  private static final String[] WHITE_LISTS = {
+    "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/**"
+  };
+
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
+
+  @Bean
+  public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+    http.csrf(ServerHttpSecurity.CsrfSpec::disable)
+        .cors(ServerHttpSecurity.CorsSpec::disable)
+        .httpBasic(
+            httpBasicSpec ->
+                httpBasicSpec.authenticationEntryPoint(
+                    new HttpStatusServerEntryPoint(HttpStatus.UNAUTHORIZED)))
+        .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
+        .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+        .authorizeExchange(
+            exchanges ->
+                exchanges.pathMatchers(WHITE_LISTS).permitAll().anyExchange().authenticated());
+    return http.build();
+  }
+}

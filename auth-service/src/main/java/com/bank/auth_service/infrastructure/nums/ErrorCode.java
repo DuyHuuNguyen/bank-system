@@ -1,0 +1,13 @@
+package com.bank.auth_service.infrastructure.nums;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Getter
+public enum ErrorCode {
+  JWT_INVALID("Jwt invalid"),
+  ACCOUNT_NOT_FOUND("Account not found");
+
+  private final String message;
+}
