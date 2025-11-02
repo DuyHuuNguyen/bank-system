@@ -24,7 +24,6 @@ public class RabbitMQConfig {
   public static final String FAIL_KEY = "23130076.transaction.fail";
   public static final String SUCCESS_KEY = "23130076.transaction.success";
 
-
   @Bean
   public Queue transactionHandleQueue() {
     boolean isDurable = true;
@@ -100,5 +99,12 @@ public class RabbitMQConfig {
     return BindingBuilder.bind(this.transactionFailQueue())
         .to(this.transactionFailExchange())
         .with(FAIL_KEY);
+  }
+
+  @Bean
+  public Binding transactionSuccessBinding() {
+    return BindingBuilder.bind(this.transactionSuccessExchange())
+        .to(this.transactionSuccessExchange())
+        .with(SUCCESS_KEY);
   }
 }
