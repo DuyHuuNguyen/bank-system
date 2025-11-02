@@ -14,25 +14,10 @@ spring:
       host: localhost
       port: 6379
       database: 0
----
-rabbitmq-config-transaction:
-  transaction-common:
-    queue:
-      transaction-handle-queue: 23130076-transaction-handle-queue
-      transaction-retry-queue: 23130076-transaction-retry-queue
-      transaction-fail-queue: 23130076-transaction-fail-queue
-      transaction-success-queue: 23130076-transaction-success-queue
-
-    exchange:
-      transaction-handle-exchange: 23130076-transaction-handle-exchange
-      transaction-retry-exchange: 23130076-transaction-retry-exchange
-      transaction-fail-exchange: 23130076-transaction-fail-exchange
-      transaction-success-exchange: 23130076-transaction-success-exchange
-
-    routing-key:
-      transaction-handle-key: 23130076.transaction.handle
-      transaction-retry-key: 23130076.transaction.retry
-      transaction-fail-key: 23130076.transaction.fail
-      transaction-success-key: 23130076.transaction.success
-
-
+  rabbitmq:
+    listener:
+      simple:
+        acknowledge-mode: auto
+    host: localhost
+    password: guest
+    username: guest

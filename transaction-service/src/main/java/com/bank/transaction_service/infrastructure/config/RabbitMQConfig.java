@@ -3,48 +3,27 @@ package com.bank.transaction_service.infrastructure.config;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.amqp.core.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
 
-  @Value("${rabbitmq-config-transaction.transaction-common.queue.transaction-handle-queue}")
-  public static String HANDLE_QUEUE;
+  public static final String HANDLE_QUEUE = "23130076-transaction-handle-queue";
+  public static final String RETRY_QUEUE = "23130076-transaction-retry-queue";
+  public static final String FAIL_QUEUE = "23130076-transaction-fail-queue";
+  public static final String SUCCESS_QUEUE = "23130076-transaction-success-queue";
 
-  @Value("${rabbitmq-config-transaction.transaction-common.queue.transaction-retry-queue}")
-  public static String RETRY_QUEUE;
+  public static final String HANDLE_EXCHANGE = "23130076-transaction-handle-exchange";
+  public static final String RETRY_EXCHANGE = "23130076-transaction-retry-exchange";
+  public static final String FAIL_EXCHANGE = "23130076-transaction-fail-exchange";
+  public static final String SUCCESS_EXCHANGE = "23130076-transaction-success-exchange";
 
-  @Value("${rabbitmq-config-transaction.transaction-common.queue.transaction-fail-queue}")
-  public static String FAIL_QUEUE;
+  public static final String HANDLE_KEY = "23130076.transaction.handle";
+  public static final String RETRY_KEY = "23130076.transaction.retry";
+  public static final String FAIL_KEY = "23130076.transaction.fail";
+  public static final String SUCCESS_KEY = "23130076.transaction.success";
 
-  @Value("${rabbitmq-config-transaction.transaction-common.queue.transaction-success-queue}")
-  public static String SUCCESS_QUEUE;
-
-  @Value("${rabbitmq-config-transaction.transaction-common.exchange.transaction-handle-exchange}")
-  public static String HANDLE_EXCHANGE;
-
-  @Value("${rabbitmq-config-transaction.transaction-common.exchange.transaction-retry-exchange}")
-  public static String RETRY_EXCHANGE;
-
-  @Value("${rabbitmq-config-transaction.transaction-common.exchange.transaction-fail-exchange}")
-  public static String FAIL_EXCHANGE;
-
-  @Value("${rabbitmq-config-transaction.transaction-common.exchange.transaction-success-exchange}")
-  public static String SUCCESS_EXCHANGE;
-
-  @Value("${rabbitmq-config-transaction.transaction-common.routing-key.transaction-handle-key}")
-  public static String HANDLE_KEY;
-
-  @Value("${rabbitmq-config-transaction.transaction-common.routing-key.transaction-retry-key}")
-  public static String RETRY_KEY;
-
-  @Value("${rabbitmq-config-transaction.transaction-common.routing-key.transaction-fail-key}")
-  public static String FAIL_KEY;
-
-  @Value("${rabbitmq-config-transaction.transaction-common.routing-key.transaction-success-key}")
-  public static String SUCCESS_KEY;
 
   @Bean
   public Queue transactionHandleQueue() {
@@ -54,6 +33,7 @@ public class RabbitMQConfig {
     Map<String, Object> arguments = new HashMap<String, Object>();
     arguments.put("x-messages-ttl", 60000);
     arguments.put("x-expires", 5 * 60 * 1000);
+    System.out.println(HANDLE_QUEUE);
     return new Queue(HANDLE_QUEUE, isDurable, isExclusive, isAutoDelete, arguments);
   }
 
