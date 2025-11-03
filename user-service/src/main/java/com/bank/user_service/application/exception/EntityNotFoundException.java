@@ -1,4 +1,4 @@
-package com.bank.user_service.application;
+package com.bank.user_service.application.exception;
 
 import com.bank.user_service.infrastructure.enums.ErrorCode;
 import lombok.Getter;
