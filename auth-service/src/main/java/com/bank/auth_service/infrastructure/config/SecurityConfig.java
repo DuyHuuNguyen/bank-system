@@ -32,7 +32,13 @@ public class SecurityConfig {
   private final RoleService roleService;
 
   private static final String[] WHITE_LISTS = {
-    "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/**"
+    "/swagger-ui.html",
+    "/swagger-ui/**",
+    "/v3/api-docs/**",
+    "/actuator/**",
+    "/actuator/**",
+    "/api/v1/auths/login",
+    "/api/v1/auths/refresh-token"
   };
 
   @Bean

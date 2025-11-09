@@ -5,6 +5,7 @@ import com.bank.auth_service.application.service.JwtService;
 import com.bank.auth_service.infrastructure.nums.ErrorCode;
 import io.jsonwebtoken.*;
 import java.util.Date;
+import java.util.concurrent.CompletableFuture;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -23,25 +24,33 @@ public class JwtServiceImpl implements JwtService {
   private String RESET_PASSWORD_TOKEN_EXPIRATION_TIME;
 
   @Override
-  public String generateAccessToken(String personalIdentificationNumber) {
-    return Jwts.builder()
-        .setSubject(personalIdentificationNumber)
-        .setIssuedAt(new Date())
-        .setExpiration(
-            new Date(System.currentTimeMillis() + Long.parseLong(ACCESS_TOKEN_EXPIRATION_TIME)))
-        .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
-        .compact();
+  public CompletableFuture<String> generateAccessToken(String personalIdentificationNumber) {
+
+    return CompletableFuture.supplyAsync(
+        () ->
+            Jwts.builder()
+                .setSubject(personalIdentificationNumber)
+                .setIssuedAt(new Date())
+                .setExpiration(
+                    new Date(
+                        System.currentTimeMillis() + Long.parseLong(ACCESS_TOKEN_EXPIRATION_TIME)))
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                .compact());
   }
 
   @Override
-  public String generateRefreshToken(String personalIdentificationNumber) {
-    return Jwts.builder()
-        .setSubject(personalIdentificationNumber)
-        .setIssuedAt(new Date())
-        .setExpiration(
-            new Date(System.currentTimeMillis() + Long.parseLong(REFRESH_TOKEN_EXPIRATION_TIME)))
-        .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
-        .compact();
+  public CompletableFuture<String> generateRefreshToken(String personalIdentificationNumber) {
+
+    return CompletableFuture.supplyAsync(
+        () ->
+            Jwts.builder()
+                .setSubject(personalIdentificationNumber)
+                .setIssuedAt(new Date())
+                .setExpiration(
+                    new Date(
+                        System.currentTimeMillis() + Long.parseLong(REFRESH_TOKEN_EXPIRATION_TIME)))
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                .compact());
   }
 
   @Override

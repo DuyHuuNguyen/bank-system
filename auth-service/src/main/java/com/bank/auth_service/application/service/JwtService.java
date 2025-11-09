@@ -1,9 +1,11 @@
 package com.bank.auth_service.application.service;
 
-public interface JwtService {
-  String generateAccessToken(String personalIdentificationNumber);
+import java.util.concurrent.CompletableFuture;
 
-  String generateRefreshToken(String personalIdentificationNumber);
+public interface JwtService {
+  CompletableFuture<String> generateAccessToken(String personalIdentificationNumber);
+
+  CompletableFuture<String> generateRefreshToken(String personalIdentificationNumber);
 
   Boolean validateToken(String token);
 
