@@ -1,4 +1,3 @@
 package com.bank.transaction_service.application.service;
 
-public interface FeeService {
-}
+public interface FeeService {}

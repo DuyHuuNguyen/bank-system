@@ -8,5 +8,5 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class TransactionMethodServiceImpl implements TransactionMethodService {
-    private final TransactionMethodRepository transactionMethodRepository;
+  private final TransactionMethodRepository transactionMethodRepository;
 }

@@ -8,5 +8,5 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class IdentifyDocumentServiceImpl implements IdentifyDocumentService {
-    private final IdentifyDocumentRepository identifyDocumentRepository;
+  private final IdentifyDocumentRepository identifyDocumentRepository;
 }

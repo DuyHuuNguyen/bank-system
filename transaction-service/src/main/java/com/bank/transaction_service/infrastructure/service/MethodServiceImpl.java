@@ -8,5 +8,5 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MethodServiceImpl implements MethodService {
-    private final MethodRepository methodRepository;
+  private final MethodRepository methodRepository;
 }

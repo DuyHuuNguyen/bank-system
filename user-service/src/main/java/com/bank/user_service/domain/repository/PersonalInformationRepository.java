@@ -5,5 +5,4 @@ import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PersonalInformationRepository extends R2dbcRepository<PersonalInformation, Long> {
-}
+public interface PersonalInformationRepository extends R2dbcRepository<PersonalInformation, Long> {}

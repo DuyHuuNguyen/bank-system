@@ -5,5 +5,4 @@ import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MethodRepository extends R2dbcRepository<Method, Long> {
-}
+public interface MethodRepository extends R2dbcRepository<Method, Long> {}
