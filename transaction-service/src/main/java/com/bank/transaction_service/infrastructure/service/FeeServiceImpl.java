@@ -8,5 +8,5 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class FeeServiceImpl implements FeeService {
-    private final FeeRepository feeRepository;
+  private final FeeRepository feeRepository;
 }

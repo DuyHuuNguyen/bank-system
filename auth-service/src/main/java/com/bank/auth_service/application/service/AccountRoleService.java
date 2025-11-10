@@ -1,4 +1,3 @@
 package com.bank.auth_service.application.service;
 
-public interface AccountRoleService {
-}
+public interface AccountRoleService {}

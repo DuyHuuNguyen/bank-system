@@ -1,0 +1,8 @@
+--java_out=D:\xxx-system\grpc-protocol\target\generated-sources\protobuf
+--plugin=protoc-gen-jGDjpmlhjoYjWV5g3i2PepWIGhA=C:\Users\Omni\.m2\repository\io\grpc\protoc-gen-grpc-java\1.72.0\protoc-gen-grpc-java-1.72.0-windows-x86_64.exe
+--jGDjpmlhjoYjWV5g3i2PepWIGhA_out=D:\xxx-system\grpc-protocol\target\generated-sources\protobuf
+--jGDjpmlhjoYjWV5g3i2PepWIGhA_opt=@generated=omit
+D:\xxx-system\grpc-protocol\src\main\proto\auth.proto
+--proto_path=D:\xxx-system\grpc-protocol\src\main\proto
+--proto_path=D:\xxx-system\grpc-protocol\target\protobuf-maven-plugin\generate\default-cli\archives\protobuf-java-4.30.2-JmdCG_LkSOJ80xjMRgB8ykUjx7Q
+--proto_path=D:\xxx-system\grpc-protocol\target\protobuf-maven-plugin\generate\default-cli\archives\proto-google-common-protos-2.54.1-ipEG5foGpyKZZWu7z5Zbntt7dpM

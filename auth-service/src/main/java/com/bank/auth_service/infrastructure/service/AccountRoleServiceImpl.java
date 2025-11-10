@@ -8,5 +8,5 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AccountRoleServiceImpl implements AccountRoleService {
-    private final AccountRoleRepository accountRoleRepository;
+  private final AccountRoleRepository accountRoleRepository;
 }

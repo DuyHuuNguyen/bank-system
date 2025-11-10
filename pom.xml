@@ -20,7 +20,7 @@
         <module>transaction-service</module>
         <module>eureka-server</module>
         <module>gateway</module>
-<!--        <module>common-proto</module>-->
+        <module>grpc-protocol</module>
     </modules>
 
     <dependencies>

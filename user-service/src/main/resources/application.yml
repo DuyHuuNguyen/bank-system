@@ -24,9 +24,14 @@ spring:
           max-interval: 10000ms
         acknowledge-mode: manual
 ---
-logging:
-  config: classpath:log4j2-spring.xml
-
+#logging:
+#  config: classpath:log4j2-spring.xml
+---
+grpc:
+  client:
+    parse-token:
+      address: 'static://localhost:9090'
+      negotiationType: plaintext
 eureka:
   client:
     serviceUrl:
