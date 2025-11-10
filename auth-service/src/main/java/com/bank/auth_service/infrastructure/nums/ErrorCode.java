@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum ErrorCode {
   JWT_INVALID("Jwt invalid"),
   ACCOUNT_NOT_FOUND("Account not found"),
-  ROLE_NOT_FOUND("Role not found");
+  ROLE_NOT_FOUND("Role not found"),
+  STORE_IS_ERROR("System error");
 
   private final String message;
 }

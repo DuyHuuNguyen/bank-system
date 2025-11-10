@@ -42,7 +42,7 @@ public class SecurityUserDetails implements UserDetails {
 
   @Override
   public String getPassword() {
-    return "";
+    return this.password;
   }
 
   @Override

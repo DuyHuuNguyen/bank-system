@@ -3,7 +3,6 @@ package com.bank.auth_service.infrastructure.service;
 import com.bank.auth_service.application.service.CacheService;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -12,7 +11,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class CacheServiceImpl implements CacheService {
 
-  @Qualifier("redis-jwt")
+  //  @Qualifier("redis-jwt")
   private final ReactiveRedisTemplate<String, String> redisTemplate;
 
   @Override
