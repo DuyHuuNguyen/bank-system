@@ -1,11 +1,17 @@
 package com.bank.transaction_service.infrastructure.config;
 
+import com.bank.transaction_service.application.service.AuthGrpcClientService;
+import com.bank.transaction_service.infrastructure.rest.interceptor.AuthTokenInterceptor;
+import com.bank.transaction_service.infrastructure.security.SecurityReactiveUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +24,9 @@ import org.springframework.security.web.server.context.NoOpServerSecurityContext
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
+  private final SecurityReactiveUserDetailsService securityReactiveUserDetailsService;
+  private final AuthGrpcClientService authGrpcClientService;
+
   private static final String[] WHITE_LISTS = {
     "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/**"
   };
@@ -28,7 +37,16 @@ public class SecurityConfig {
   }
 
   @Bean
-  public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+  public ReactiveAuthenticationManager authenticationManager(PasswordEncoder passwordEncoder) {
+    UserDetailsRepositoryReactiveAuthenticationManager reactiveAuthenticationManager =
+        new UserDetailsRepositoryReactiveAuthenticationManager(securityReactiveUserDetailsService);
+    reactiveAuthenticationManager.setPasswordEncoder(passwordEncoder);
+    return reactiveAuthenticationManager;
+  }
+
+  @Bean
+  public SecurityWebFilterChain springSecurityFilterChain(
+      ServerHttpSecurity http, ReactiveAuthenticationManager reactiveAuthenticationManager) {
     http.csrf(ServerHttpSecurity.CsrfSpec::disable)
         .cors(ServerHttpSecurity.CorsSpec::disable)
         .httpBasic(
@@ -39,7 +57,11 @@ public class SecurityConfig {
         .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
         .authorizeExchange(
             exchanges ->
-                exchanges.pathMatchers(WHITE_LISTS).permitAll().anyExchange().authenticated());
+                exchanges.pathMatchers(WHITE_LISTS).permitAll().anyExchange().authenticated())
+        .addFilterBefore(
+            new AuthTokenInterceptor(this.authGrpcClientService),
+            SecurityWebFiltersOrder.HTTP_BASIC)
+        .authenticationManager(reactiveAuthenticationManager);
     return http.build();
   }
 }
