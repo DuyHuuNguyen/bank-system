@@ -7,4 +7,6 @@ import reactor.core.publisher.Mono;
 
 public interface AuthFacade {
   Mono<BaseResponse<LoginResponse>> login(LoginRequest loginRequest);
+
+  Mono<BaseResponse<Void>> logout();
 }

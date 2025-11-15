@@ -10,12 +10,15 @@ import com.bank.auth_service.application.service.CacheService;
 import com.bank.auth_service.application.service.JwtService;
 import com.bank.auth_service.infrastructure.nums.CacheTemplate;
 import com.bank.auth_service.infrastructure.nums.ErrorCode;
+import com.bank.auth_service.infrastructure.security.SecurityUserDetails;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -78,6 +81,31 @@ public class AuthFacadeImpl implements AuthFacade {
                         throw new CacheException(ErrorCode.STORE_IS_ERROR);
                       })
                   .thenReturn(BaseResponse.build(response, true));
+            });
+  }
+
+  @Override
+  public Mono<BaseResponse<Void>> logout() {
+    return ReactiveSecurityContextHolder.getContext()
+        .map(SecurityContext::getAuthentication)
+        .map(authentication -> (SecurityUserDetails) authentication.getPrincipal())
+        .flatMap(
+            principal -> {
+              var personalId = principal.getPersonalId();
+              var refreshTokenCacheKey =
+                  String.format(CacheTemplate.REFRESH_TOKEN_KEY.getContent(), personalId);
+              var accessTokenKey =
+                  String.format(CacheTemplate.ACCESS_TOKEN_KEY.getContent(), personalId);
+
+              Mono<Boolean> removeAccessToken = this.cacheService.remove(accessTokenKey);
+              Mono<Boolean> removeRefreshToken = this.cacheService.remove(refreshTokenCacheKey);
+
+              return Mono.zip(removeAccessToken, removeRefreshToken)
+                  .doOnError(
+                      cacheIsError -> {
+                        throw new CacheException(ErrorCode.STORE_IS_ERROR);
+                      })
+                  .thenReturn(BaseResponse.ok());
             });
   }
 }

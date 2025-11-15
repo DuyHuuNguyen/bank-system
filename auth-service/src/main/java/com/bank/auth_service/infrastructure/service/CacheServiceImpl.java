@@ -23,4 +23,9 @@ public class CacheServiceImpl implements CacheService {
   public Mono<Boolean> store(String key, String value, Duration timeout) {
     return redisTemplate.opsForValue().set(key, value, timeout);
   }
+
+  @Override
+  public Mono<Boolean> remove(String key) {
+    return redisTemplate.opsForValue().delete(key);
+  }
 }
