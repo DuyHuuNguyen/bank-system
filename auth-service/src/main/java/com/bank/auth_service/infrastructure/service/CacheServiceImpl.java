@@ -28,4 +28,9 @@ public class CacheServiceImpl implements CacheService {
   public Mono<Boolean> remove(String key) {
     return redisTemplate.opsForValue().delete(key);
   }
+
+  @Override
+  public Mono<Boolean> hasKey(String key) {
+    return redisTemplate.hasKey(key);
+  }
 }

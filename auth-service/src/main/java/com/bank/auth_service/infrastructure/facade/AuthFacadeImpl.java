@@ -2,9 +2,11 @@ package com.bank.auth_service.infrastructure.facade;
 
 import com.bank.auth_service.api.facade.AuthFacade;
 import com.bank.auth_service.api.request.LoginRequest;
+import com.bank.auth_service.api.request.RefreshTokenRequest;
 import com.bank.auth_service.api.response.BaseResponse;
 import com.bank.auth_service.api.response.LoginResponse;
 import com.bank.auth_service.application.exception.CacheException;
+import com.bank.auth_service.application.exception.EntityNotFoundException;
 import com.bank.auth_service.application.service.AccountService;
 import com.bank.auth_service.application.service.CacheService;
 import com.bank.auth_service.application.service.JwtService;
@@ -106,6 +108,52 @@ public class AuthFacadeImpl implements AuthFacade {
                         throw new CacheException(ErrorCode.STORE_IS_ERROR);
                       })
                   .thenReturn(BaseResponse.ok());
+            });
+  }
+
+  @Override
+  public Mono<BaseResponse<LoginResponse>> refresh(RefreshTokenRequest request) {
+
+    return this.jwtService
+        .getPersonalIdFromToken(request.getRefreshToken())
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND)))
+        .doOnError(
+            cacheIsError -> {
+              throw new EntityNotFoundException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
+            })
+        .flatMap(
+            personalId -> {
+              var refreshTokenCacheKey =
+                  String.format(CacheTemplate.REFRESH_TOKEN_KEY.getContent(), personalId);
+              return this.cacheService
+                  .hasKey(refreshTokenCacheKey)
+                  .doOnError(
+                      cacheIsError -> {
+                        throw new CacheException(ErrorCode.STORE_IS_ERROR);
+                      })
+                  .flatMap(
+                      isExited -> {
+                        if (!isExited) return Mono.just(BaseResponse.fail());
+
+                        var accessTokenCacheKey =
+                            String.format(CacheTemplate.ACCESS_TOKEN_KEY.getContent(), personalId);
+                        return Mono.fromFuture(this.jwtService.generateAccessToken(personalId))
+                            .doOnError(
+                                cacheIsError -> {
+                                  throw new CacheException(ErrorCode.STORE_IS_ERROR);
+                                })
+                            .flatMap(
+                                accessToken ->
+                                    this.cacheService
+                                        .store(accessTokenCacheKey, accessToken, Duration.ofDays(3))
+                                        .thenReturn(
+                                            BaseResponse.build(
+                                                LoginResponse.builder()
+                                                    .accessToken(accessToken)
+                                                    .refreshToken(request.getRefreshToken())
+                                                    .build(),
+                                                true)));
+                      });
             });
   }
 }

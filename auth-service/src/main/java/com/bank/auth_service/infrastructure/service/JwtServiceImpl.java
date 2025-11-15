@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Service
 public class JwtServiceImpl implements JwtService {
@@ -63,6 +64,18 @@ public class JwtServiceImpl implements JwtService {
                 System.currentTimeMillis() + Long.parseLong(RESET_PASSWORD_TOKEN_EXPIRATION_TIME)))
         .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
         .compact();
+  }
+
+  @Override
+  public Mono<String> getPersonalIdFromToken(String token) {
+    return Mono.fromFuture(
+        CompletableFuture.supplyAsync(
+            () ->
+                Jwts.parser()
+                    .setSigningKey(SECRET_KEY)
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .get("sub", String.class)));
   }
 
   @Override

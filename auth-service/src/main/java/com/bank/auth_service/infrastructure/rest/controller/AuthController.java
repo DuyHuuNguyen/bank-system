@@ -34,4 +34,9 @@ public class AuthController {
   public Mono<BaseResponse<Void>> logout() {
     return this.authFacade.logout();
   }
+
+  //  @PostMapping("refresh-token")
+  //  @ResponseStatus(HttpStatus.OK)
+  //  @Operation(tags = {"Auths APIs"})
+  //
 }
