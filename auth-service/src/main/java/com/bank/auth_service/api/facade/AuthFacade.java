@@ -1,9 +1,6 @@
 package com.bank.auth_service.api.facade;
 
-import com.bank.auth_service.api.request.ForgotPasswordRequest;
-import com.bank.auth_service.api.request.LoginRequest;
-import com.bank.auth_service.api.request.RefreshTokenRequest;
-import com.bank.auth_service.api.request.ResetPasswordRequest;
+import com.bank.auth_service.api.request.*;
 import com.bank.auth_service.api.response.BaseResponse;
 import com.bank.auth_service.api.response.ForgotPasswordResponse;
 import com.bank.auth_service.api.response.LoginResponse;
@@ -19,4 +16,6 @@ public interface AuthFacade {
   Mono<BaseResponse<ForgotPasswordResponse>> forgotPassword(ForgotPasswordRequest request);
 
   Mono<BaseResponse<Void>> resetPassword(ResetPasswordRequest request);
+
+  Mono<BaseResponse<Void>> createAccount(UpsertAccountRequest request);
 }

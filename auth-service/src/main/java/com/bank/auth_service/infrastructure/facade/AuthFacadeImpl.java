@@ -1,10 +1,7 @@
 package com.bank.auth_service.infrastructure.facade;
 
 import com.bank.auth_service.api.facade.AuthFacade;
-import com.bank.auth_service.api.request.ForgotPasswordRequest;
-import com.bank.auth_service.api.request.LoginRequest;
-import com.bank.auth_service.api.request.RefreshTokenRequest;
-import com.bank.auth_service.api.request.ResetPasswordRequest;
+import com.bank.auth_service.api.request.*;
 import com.bank.auth_service.api.response.BaseResponse;
 import com.bank.auth_service.api.response.ForgotPasswordResponse;
 import com.bank.auth_service.api.response.LoginResponse;
@@ -14,6 +11,7 @@ import com.bank.auth_service.application.exception.PermissionDeniedException;
 import com.bank.auth_service.application.service.AccountService;
 import com.bank.auth_service.application.service.CacheService;
 import com.bank.auth_service.application.service.JwtService;
+import com.bank.auth_service.domain.entity.Account;
 import com.bank.auth_service.infrastructure.nums.CacheTemplate;
 import com.bank.auth_service.infrastructure.nums.ErrorCode;
 import com.bank.auth_service.infrastructure.security.SecurityUserDetails;
@@ -206,5 +204,23 @@ public class AuthFacadeImpl implements AuthFacade {
                             .map(accountStored -> BaseResponse.ok());
                       });
             });
+  }
+
+  @Override
+  @Transactional
+  public Mono<BaseResponse<Void>> createAccount(UpsertAccountRequest request) {
+    String passwordEncoded = this.passwordEncoder.encode(request.getPassword());
+    Account newAccount =
+        Account.builder()
+            .email(request.getEmail())
+            .phone(request.getPhone())
+            .personalId(request.getPersonalId())
+            .password(passwordEncoded)
+            .isActive(false)
+            .build();
+    return this.accountService
+        .save(newAccount)
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND)))
+        .map(accountStored -> BaseResponse.ok());
   }
 }

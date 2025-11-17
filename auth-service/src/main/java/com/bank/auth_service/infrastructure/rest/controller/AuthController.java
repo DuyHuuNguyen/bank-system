@@ -1,10 +1,7 @@
 package com.bank.auth_service.infrastructure.rest.controller;
 
 import com.bank.auth_service.api.facade.AuthFacade;
-import com.bank.auth_service.api.request.ForgotPasswordRequest;
-import com.bank.auth_service.api.request.LoginRequest;
-import com.bank.auth_service.api.request.RefreshTokenRequest;
-import com.bank.auth_service.api.request.ResetPasswordRequest;
+import com.bank.auth_service.api.request.*;
 import com.bank.auth_service.api.response.BaseResponse;
 import com.bank.auth_service.api.response.ForgotPasswordResponse;
 import com.bank.auth_service.api.response.LoginResponse;
@@ -58,7 +55,17 @@ public class AuthController {
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Auths APIs"})
   @SecurityRequirement(name = "Authentication Bearer")
+  @PreAuthorize("isAuthenticated()")
   public Mono<BaseResponse<Void>> restPassword(@RequestBody ResetPasswordRequest request) {
     return this.authFacade.resetPassword(request);
+  }
+
+  @PostMapping
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auths APIs"})
+  @SecurityRequirement(name = "Authentication Bearer")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public Mono<BaseResponse<Void>> createAccount(@RequestBody UpsertAccountRequest request) {
+    return this.authFacade.createAccount(request);
   }
 }
