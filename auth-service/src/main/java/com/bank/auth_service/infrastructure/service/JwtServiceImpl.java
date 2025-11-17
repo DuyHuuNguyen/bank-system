@@ -55,15 +55,19 @@ public class JwtServiceImpl implements JwtService {
   }
 
   @Override
-  public String generateResetPasswordToken(String personalIdentificationNumber) {
-    return Jwts.builder()
-        .setSubject(personalIdentificationNumber)
-        .setIssuedAt(new Date())
-        .setExpiration(
-            new Date(
-                System.currentTimeMillis() + Long.parseLong(RESET_PASSWORD_TOKEN_EXPIRATION_TIME)))
-        .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
-        .compact();
+  public Mono<String> generateResetPasswordToken(String personalIdentificationNumber) {
+    return Mono.fromFuture(
+        CompletableFuture.supplyAsync(
+            () ->
+                Jwts.builder()
+                    .setSubject(personalIdentificationNumber)
+                    .setIssuedAt(new Date())
+                    .setExpiration(
+                        new Date(
+                            System.currentTimeMillis()
+                                + Long.parseLong(RESET_PASSWORD_TOKEN_EXPIRATION_TIME)))
+                    .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                    .compact()));
   }
 
   @Override

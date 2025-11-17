@@ -1,9 +1,11 @@
 package com.bank.auth_service.infrastructure.facade;
 
 import com.bank.auth_service.api.facade.AuthFacade;
+import com.bank.auth_service.api.request.ForgotPasswordRequest;
 import com.bank.auth_service.api.request.LoginRequest;
 import com.bank.auth_service.api.request.RefreshTokenRequest;
 import com.bank.auth_service.api.response.BaseResponse;
+import com.bank.auth_service.api.response.ForgotPasswordResponse;
 import com.bank.auth_service.api.response.LoginResponse;
 import com.bank.auth_service.application.exception.CacheException;
 import com.bank.auth_service.application.exception.EntityNotFoundException;
@@ -155,5 +157,27 @@ public class AuthFacadeImpl implements AuthFacade {
                                                 true)));
                       });
             });
+  }
+
+  @Override
+  public Mono<BaseResponse<ForgotPasswordResponse>> forgotPassword(ForgotPasswordRequest request) {
+    return this.accountService
+        .findByPersonalId(request.getPersonalId())
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND)))
+        .flatMap(
+            account ->
+                this.jwtService
+                    .generateResetPasswordToken(account.getPersonalId())
+                    .doOnError(
+                        cacheIsError -> {
+                          throw new EntityNotFoundException(ErrorCode.JWT_INVALID);
+                        })
+                    .map(
+                        resetPasswordToken ->
+                            BaseResponse.build(
+                                ForgotPasswordResponse.builder()
+                                    .resetPasswordToken(resetPasswordToken)
+                                    .build(),
+                                true)));
   }
 }

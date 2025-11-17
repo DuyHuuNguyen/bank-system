@@ -1,8 +1,11 @@
 package com.bank.auth_service.infrastructure.rest.controller;
 
 import com.bank.auth_service.api.facade.AuthFacade;
+import com.bank.auth_service.api.request.ForgotPasswordRequest;
 import com.bank.auth_service.api.request.LoginRequest;
+import com.bank.auth_service.api.request.RefreshTokenRequest;
 import com.bank.auth_service.api.response.BaseResponse;
+import com.bank.auth_service.api.response.ForgotPasswordResponse;
 import com.bank.auth_service.api.response.LoginResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -35,8 +38,18 @@ public class AuthController {
     return this.authFacade.logout();
   }
 
-  //  @PostMapping("refresh-token")
-  //  @ResponseStatus(HttpStatus.OK)
-  //  @Operation(tags = {"Auths APIs"})
-  //
+  @PostMapping("refresh-token")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auths APIs"})
+  public Mono<BaseResponse<LoginResponse>> refreshToken(@RequestBody RefreshTokenRequest request) {
+    return this.authFacade.refresh(request);
+  }
+
+  @PostMapping("forgot-password")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auths APIs"})
+  public Mono<BaseResponse<ForgotPasswordResponse>> forgotPassword(
+      @RequestBody ForgotPasswordRequest request) {
+    return this.authFacade.forgotPassword(request);
+  }
 }

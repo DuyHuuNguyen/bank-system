@@ -12,7 +12,7 @@ public interface JwtService {
 
   String getPersonalIdentificationNumberFromJwtToken(String token);
 
-  String generateResetPasswordToken(String personalIdentificationNumber);
+  Mono<String> generateResetPasswordToken(String personalIdentificationNumber);
 
   Mono<String> getPersonalIdFromToken(String token);
 }
