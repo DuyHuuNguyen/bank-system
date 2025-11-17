@@ -54,7 +54,7 @@ public class AuthController {
   @PutMapping("/reset-password")
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Auths APIs"})
-  @SecurityRequirement(name = "Authentication Bearer")
+  @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("isAuthenticated()")
   public Mono<BaseResponse<Void>> restPassword(@RequestBody ResetPasswordRequest request) {
     return this.authFacade.resetPassword(request);
