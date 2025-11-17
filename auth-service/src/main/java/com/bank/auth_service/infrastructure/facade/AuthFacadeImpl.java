@@ -4,11 +4,13 @@ import com.bank.auth_service.api.facade.AuthFacade;
 import com.bank.auth_service.api.request.ForgotPasswordRequest;
 import com.bank.auth_service.api.request.LoginRequest;
 import com.bank.auth_service.api.request.RefreshTokenRequest;
+import com.bank.auth_service.api.request.ResetPasswordRequest;
 import com.bank.auth_service.api.response.BaseResponse;
 import com.bank.auth_service.api.response.ForgotPasswordResponse;
 import com.bank.auth_service.api.response.LoginResponse;
 import com.bank.auth_service.application.exception.CacheException;
 import com.bank.auth_service.application.exception.EntityNotFoundException;
+import com.bank.auth_service.application.exception.PermissionDeniedException;
 import com.bank.auth_service.application.service.AccountService;
 import com.bank.auth_service.application.service.CacheService;
 import com.bank.auth_service.application.service.JwtService;
@@ -25,6 +27,7 @@ import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 @Log4j2
@@ -179,5 +182,29 @@ public class AuthFacadeImpl implements AuthFacade {
                                     .resetPasswordToken(resetPasswordToken)
                                     .build(),
                                 true)));
+  }
+
+  @Override
+  @Transactional
+  public Mono<BaseResponse<Void>> resetPassword(ResetPasswordRequest request) {
+    return ReactiveSecurityContextHolder.getContext()
+        .map(SecurityContext::getAuthentication)
+        .map(authentication -> (SecurityUserDetails) authentication.getPrincipal())
+        .flatMap(
+            principal -> {
+              boolean validPassword = request.getPassword().equals(request.getPasswordConfig());
+              if (!validPassword)
+                return Mono.error(new PermissionDeniedException(ErrorCode.PASSWORD_DONT_MATCH));
+              return this.accountService
+                  .findByPersonalId(principal.getPersonalId())
+                  .flatMap(
+                      account -> {
+                        String passwordEncoded = this.passwordEncoder.encode(request.getPassword());
+                        account.changePassword(passwordEncoded);
+                        return this.accountService
+                            .save(account)
+                            .map(accountStored -> BaseResponse.ok());
+                      });
+            });
   }
 }

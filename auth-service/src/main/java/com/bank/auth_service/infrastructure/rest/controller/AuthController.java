@@ -4,6 +4,7 @@ import com.bank.auth_service.api.facade.AuthFacade;
 import com.bank.auth_service.api.request.ForgotPasswordRequest;
 import com.bank.auth_service.api.request.LoginRequest;
 import com.bank.auth_service.api.request.RefreshTokenRequest;
+import com.bank.auth_service.api.request.ResetPasswordRequest;
 import com.bank.auth_service.api.response.BaseResponse;
 import com.bank.auth_service.api.response.ForgotPasswordResponse;
 import com.bank.auth_service.api.response.LoginResponse;
@@ -51,5 +52,13 @@ public class AuthController {
   public Mono<BaseResponse<ForgotPasswordResponse>> forgotPassword(
       @RequestBody ForgotPasswordRequest request) {
     return this.authFacade.forgotPassword(request);
+  }
+
+  @PutMapping("/reset-password")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auths APIs"})
+  @SecurityRequirement(name = "Authentication Bearer")
+  public Mono<BaseResponse<Void>> restPassword(@RequestBody ResetPasswordRequest request) {
+    return this.authFacade.resetPassword(request);
   }
 }

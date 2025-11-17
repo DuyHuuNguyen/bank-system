@@ -10,7 +10,8 @@ public enum ErrorCode {
   ACCOUNT_NOT_FOUND("Account not found"),
   ROLE_NOT_FOUND("Role not found"),
   STORE_IS_ERROR("System error"),
-  REFRESH_TOKEN_NOT_FOUND("Refresh token not found");
+  REFRESH_TOKEN_NOT_FOUND("Refresh token not found"),
+  PASSWORD_DONT_MATCH("Password don't match");
 
   private final String message;
 }

@@ -16,4 +16,10 @@ public class AccountServiceImpl implements AccountService {
   public Mono<Account> findByPersonalId(String personalId) {
     return this.accountRepository.findByPersonalId(personalId);
   }
+
+  @Override
+  public Mono<Account> save(Account account) {
+    if (!account.isFirstSave()) account.reUpdate();
+    return this.accountRepository.save(account);
+  }
 }

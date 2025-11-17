@@ -5,4 +5,6 @@ import reactor.core.publisher.Mono;
 
 public interface AccountService {
   Mono<Account> findByPersonalId(String personalId);
+
+  Mono<Account> save(Account account);
 }
