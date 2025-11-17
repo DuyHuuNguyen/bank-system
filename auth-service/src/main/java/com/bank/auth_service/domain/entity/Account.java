@@ -29,4 +29,8 @@ public class Account extends BaseEntity {
 
   @Column("otp")
   private String otp;
+
+  public void changePassword(String passwordEncoded) {
+    this.password = passwordEncoded;
+  }
 }

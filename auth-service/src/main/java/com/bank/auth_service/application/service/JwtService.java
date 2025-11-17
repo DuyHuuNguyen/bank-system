@@ -1,6 +1,7 @@
 package com.bank.auth_service.application.service;
 
 import java.util.concurrent.CompletableFuture;
+import reactor.core.publisher.Mono;
 
 public interface JwtService {
   CompletableFuture<String> generateAccessToken(String personalIdentificationNumber);
@@ -11,5 +12,7 @@ public interface JwtService {
 
   String getPersonalIdentificationNumberFromJwtToken(String token);
 
-  String generateResetPasswordToken(String personalIdentificationNumber);
+  Mono<String> generateResetPasswordToken(String personalIdentificationNumber);
+
+  Mono<String> getPersonalIdFromToken(String token);
 }

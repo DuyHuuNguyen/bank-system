@@ -20,4 +20,8 @@ public class BaseResponse<T> {
   public static <T> BaseResponse<T> ok() {
     return (BaseResponse<T>) BaseResponse.builder().isSuccess(true).metadata("Success").build();
   }
+
+  public static <T> BaseResponse<T> fail() {
+    return (BaseResponse<T>) BaseResponse.builder().isSuccess(false).metadata("Unsuccess").build();
+  }
 }

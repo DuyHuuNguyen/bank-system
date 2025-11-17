@@ -7,4 +7,8 @@ public interface CacheService {
   Mono<Boolean> store(String key, String value);
 
   Mono<Boolean> store(String key, String value, Duration timeOut);
+
+  Mono<Boolean> remove(String key);
+
+  Mono<Boolean> hasKey(String key);
 }

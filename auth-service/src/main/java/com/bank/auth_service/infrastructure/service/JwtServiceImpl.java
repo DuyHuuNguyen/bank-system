@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Service
 public class JwtServiceImpl implements JwtService {
@@ -54,15 +55,31 @@ public class JwtServiceImpl implements JwtService {
   }
 
   @Override
-  public String generateResetPasswordToken(String personalIdentificationNumber) {
-    return Jwts.builder()
-        .setSubject(personalIdentificationNumber)
-        .setIssuedAt(new Date())
-        .setExpiration(
-            new Date(
-                System.currentTimeMillis() + Long.parseLong(RESET_PASSWORD_TOKEN_EXPIRATION_TIME)))
-        .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
-        .compact();
+  public Mono<String> generateResetPasswordToken(String personalIdentificationNumber) {
+    return Mono.fromFuture(
+        CompletableFuture.supplyAsync(
+            () ->
+                Jwts.builder()
+                    .setSubject(personalIdentificationNumber)
+                    .setIssuedAt(new Date())
+                    .setExpiration(
+                        new Date(
+                            System.currentTimeMillis()
+                                + Long.parseLong(RESET_PASSWORD_TOKEN_EXPIRATION_TIME)))
+                    .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                    .compact()));
+  }
+
+  @Override
+  public Mono<String> getPersonalIdFromToken(String token) {
+    return Mono.fromFuture(
+        CompletableFuture.supplyAsync(
+            () ->
+                Jwts.parser()
+                    .setSigningKey(SECRET_KEY)
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .get("sub", String.class)));
   }
 
   @Override

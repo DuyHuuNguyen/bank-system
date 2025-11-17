@@ -36,4 +36,8 @@ public class BaseEntity {
   public void changeActive(Boolean isActive) {
     this.isActive = isActive;
   }
+
+  public boolean isFirstSave() {
+    return this.id == null;
+  }
 }
