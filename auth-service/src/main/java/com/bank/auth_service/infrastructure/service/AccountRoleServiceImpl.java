@@ -28,4 +28,9 @@ public class AccountRoleServiceImpl implements AccountRoleService {
   public Flux<AccountRole> save(List<AccountRole> accountRoles) {
     return this.accountRoleRepository.saveAll(accountRoles);
   }
+
+  @Override
+  public Mono<AccountRole> save(AccountRole accountRole) {
+    return this.accountRoleRepository.save(accountRole);
+  }
 }
