@@ -4,6 +4,8 @@ import com.bank.user_service.application.service.AuthGrpcClientService;
 import com.bank.user_service.infrastructure.rest.interceptor.AuthTokenInterceptor;
 import com.bank.user_service.infrastructure.security.SecurityReactiveUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -27,12 +29,17 @@ public class SecurityConfig {
   private final SecurityReactiveUserDetailsService securityReactiveUserDetailsService;
   private final AuthGrpcClientService authGrpcClientService;
   private static final String[] WHITE_LISTS = {
-    "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/**"
+    "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/**", "/api/v1/users/sign-up"
   };
 
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
+  }
+
+  @Bean
+  public MessageConverter jsonMessageConverter() {
+    return new Jackson2JsonMessageConverter();
   }
 
   @Bean

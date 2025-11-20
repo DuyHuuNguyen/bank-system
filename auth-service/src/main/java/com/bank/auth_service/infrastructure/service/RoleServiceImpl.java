@@ -3,6 +3,7 @@ package com.bank.auth_service.infrastructure.service;
 import com.bank.auth_service.application.service.RoleService;
 import com.bank.auth_service.domain.entity.Role;
 import com.bank.auth_service.domain.respository.RoleRepository;
+import com.bank.auth_service.infrastructure.nums.RoleEnum;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,5 +34,10 @@ public class RoleServiceImpl implements RoleService {
   @Override
   public Flux<Role> findByIds(List<Long> ids) {
     return this.roleRepository.findByIds(ids);
+  }
+
+  @Override
+  public Mono<Role> findByRoleName(RoleEnum roleEnum) {
+    return this.roleRepository.findByRoleName(roleEnum);
   }
 }

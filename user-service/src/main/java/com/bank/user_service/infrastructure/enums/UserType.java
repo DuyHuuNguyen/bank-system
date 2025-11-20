@@ -1,3 +1,6 @@
 package com.bank.user_service.infrastructure.enums;
 
-public enum UserType {}
+public enum UserType {
+  COMPANY,
+  PERSONAL
+}

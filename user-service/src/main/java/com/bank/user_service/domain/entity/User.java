@@ -24,7 +24,4 @@ public class User extends BaseEntity {
 
   @Column("identify_document_id")
   private Long identifyDocumentId;
-
-  @Column("account_id")
-  private Long accountId;
 }

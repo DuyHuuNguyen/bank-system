@@ -26,15 +26,19 @@ spring:
           initial-interval: 1000ms
           multiplier: 2.0
           max-interval: 10000ms
-        acknowledge-mode: manual
+        acknowledge-mode: auto
 
 rabbitmq:
   queue:
     update-info-account: 23130075-queue
+    create-account: 23130075-create-account-queue
   exchange:
     update-info-account: 23130075-direct-exchange
+    create-account: 23130075-create-account-exchange
   routing-key:
     update-info-account: 23130075-routing-key
+    create-account: 23130075-create-account-routing-key
+
 ---
 jwt:
   secretKey: 16502ee43b73ce88149ca42ab31db111063820asdbd106505a6sfsafg345ecbb33a7bbe6b38578b23baee473c7aaf89c8e490c8e1429fbb264f137d1e2b3fb2ef396d8

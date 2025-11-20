@@ -6,7 +6,7 @@ server:
 ---
 spring:
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/db_account_banking
+    url: r2dbc:postgresql://localhost:5432/db_user_banking
     username: postgres
     password: 1111
   rabbitmq:
@@ -26,6 +26,14 @@ spring:
 ---
 #logging:
 #  config: classpath:log4j2-spring.xml
+---
+rabbitmqs:
+  queue:
+    create-account: 23130075-create-account-queue
+  exchange:
+    create-account: 23130075-create-account-exchange
+  routing-key:
+    create-account: 23130075-create-account-routing-key
 ---
 grpc:
   client:

@@ -11,4 +11,6 @@ public interface AccountRoleService {
   Mono<Void> deleteByAccountId(Long accountId);
 
   Flux<AccountRole> save(List<AccountRole> accountRoles);
+
+  Mono<AccountRole> save(AccountRole accountRole);
 }
