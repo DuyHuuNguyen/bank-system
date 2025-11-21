@@ -3,6 +3,8 @@ package com.bank.user_service.infrastructure.facade;
 import com.bank.user_service.api.facade.UserFacade;
 import com.bank.user_service.api.request.CreateUserRequest;
 import com.bank.user_service.api.response.BaseResponse;
+import com.bank.user_service.api.response.UserDetailResponse;
+import com.bank.user_service.application.dto.LocationDTO;
 import com.bank.user_service.application.exception.EntityNotFoundException;
 import com.bank.user_service.application.messsage.CreateAccountMessage;
 import com.bank.user_service.application.service.IdentifyDocumentService;
@@ -13,8 +15,12 @@ import com.bank.user_service.domain.entity.IdentifyDocument;
 import com.bank.user_service.domain.entity.PersonalInformation;
 import com.bank.user_service.domain.entity.User;
 import com.bank.user_service.infrastructure.enums.ErrorCode;
+import com.bank.user_service.infrastructure.security.SecurityUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
@@ -32,9 +38,10 @@ public class UserFacadeImpl implements UserFacade {
   @Transactional
   public Mono<BaseResponse<Void>> createUser(CreateUserRequest request) {
     return Mono.zip(this.createIdentifyDocument(request), this.createPersonalInformation(request))
-        //            .doOnError( throwable ->{
-        //                throw  new EntityNotFoundException(ErrorCode.IDENTITY_DOCUMENT_NOT_FOUND);
-        //            })
+        .doOnError(
+            throwable -> {
+              throw new EntityNotFoundException(ErrorCode.STORE_INFO_USER_ERROR);
+            })
         .flatMap(
             pair -> {
               IdentifyDocument identifyDocument = pair.getT1();
@@ -57,12 +64,92 @@ public class UserFacadeImpl implements UserFacade {
                       .build();
               return this.userService
                   .save(user)
-                  .switchIfEmpty(Mono.error(new Exception("I have not created this")))
+                  .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.USER_NOT_FOUND)))
                   .map(
                       userStored ->
                           createAccountMessage.addUserIdAndReceiveMessage(userStored.getId()))
                   .flatMap(this.producerCreateAccountService::onCreateAccountMessage)
                   .thenReturn(BaseResponse.ok());
+            });
+  }
+
+  @Override
+  public Mono<BaseResponse<UserDetailResponse>> findUserDetailById(Long id) {
+    return findUserById(id);
+  }
+
+  @Override
+  public Mono<BaseResponse<UserDetailResponse>> findProfile() {
+    return ReactiveSecurityContextHolder.getContext()
+        .map(SecurityContext::getAuthentication)
+        .map(Authentication::getPrincipal)
+        .cast(SecurityUserDetails.class)
+        .flatMap(principal -> this.findUserById(principal.getUserId()));
+  }
+
+  private Mono<BaseResponse<UserDetailResponse>> findUserById(Long id) {
+    return this.userService
+        .findById(id)
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.USER_NOT_FOUND)))
+        .doOnSuccess(ok -> log.info("Find user"))
+        .doOnError(err -> log.error("Find error", err))
+        .flatMap(
+            user -> {
+              Mono<PersonalInformation> personalInformationMono =
+                  this.personalInformationService
+                      .findById(user.getPersonalInformationId())
+                      .switchIfEmpty(
+                          Mono.error(
+                              new EntityNotFoundException(
+                                  ErrorCode.PERSONAL_INFORMATION_NOT_FOUND)))
+                      .doOnSuccess(ok -> log.info("Personal"));
+              Mono<IdentifyDocument> identifyDocumentMono =
+                  this.identifyDocumentService
+                      .findById(user.getIdentifyDocumentId())
+                      .switchIfEmpty(
+                          Mono.error(
+                              new EntityNotFoundException(ErrorCode.IDENTIFY_DOCUMENT_NOT_FOUND)))
+                      .doOnSuccess(ok -> log.info("Identify"));
+              return Mono.zip(identifyDocumentMono, personalInformationMono)
+                  .map(
+                      pair -> {
+                        IdentifyDocument identifyDocument = pair.getT1();
+                        LocationDTO locationOfIdentifyDocument =
+                            LocationDTO.builder()
+                                .country(identifyDocument.getCountry())
+                                .province(identifyDocument.getProvince())
+                                .district(identifyDocument.getDistrict())
+                                .ward(identifyDocument.getWard())
+                                .street(identifyDocument.getStreet())
+                                .homesNumber(identifyDocument.getHomesNumber())
+                                .build();
+                        PersonalInformation personalInformation = pair.getT2();
+                        LocationDTO locationOfUser =
+                            LocationDTO.builder()
+                                .country(personalInformation.getCountry())
+                                .province(personalInformation.getProvince())
+                                .district(personalInformation.getDistrict())
+                                .ward(personalInformation.getWard())
+                                .street(personalInformation.getStreet())
+                                .homesNumber(personalInformation.getHomesNumber())
+                                .build();
+
+                        return BaseResponse.build(
+                            UserDetailResponse.builder()
+                                .id(user.getId())
+                                .personalId(identifyDocument.getPersonalId())
+                                .issuesAt(identifyDocument.getIssuedAt())
+                                .citizenIdFront(identifyDocument.getCitizenIdFront())
+                                .citizenIdBack(identifyDocument.getCitizenIdBack())
+                                .locationOfIdentifyDocument(locationOfIdentifyDocument)
+                                .firstName(personalInformation.getFirstName())
+                                .lastName(personalInformation.getLastName())
+                                .dateOfBirth(personalInformation.getDateOfBirth())
+                                .gender(personalInformation.getGender())
+                                .locationOfUser(locationOfUser)
+                                .build(),
+                            true);
+                      });
             });
   }
 
@@ -93,18 +180,4 @@ public class UserFacadeImpl implements UserFacade {
         .switchIfEmpty(
             Mono.error(new EntityNotFoundException(ErrorCode.IDENTITY_DOCUMENT_NOT_FOUND)));
   }
-
-  //  @PostConstruct
-  //  void run(){
-  //    IdentifyDocument identifyDocument =
-  //            IdentifyDocument.builder()
-  //                    .personalId("request.getPersonalId()")
-  //                    .createdAt(6513516l)
-  //                    .updatedAt(12321321l)
-  //                    .isActive(true)
-  //                    .version(1l)
-  //                    .build();
-  //    this.identifyDocumentService
-  //            .save(identifyDocument).subscribe();
-  //  }
 }

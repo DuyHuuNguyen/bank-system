@@ -11,6 +11,7 @@ import com.example.server.grpc.AuthResponse;
 import com.example.server.grpc.AuthTokenServiceGrpc;
 import io.grpc.stub.StreamObserver;
 import io.jsonwebtoken.JwtException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -29,8 +30,10 @@ public class GrpcServer extends AuthTokenServiceGrpc.AuthTokenServiceImplBase {
       AccessTokenRequest request, StreamObserver<AuthResponse> responseObserver) {
     String accessToken = request.getAccessToken();
     var isValidateToken = this.jwtService.validateToken(accessToken);
-    if (!isValidateToken)
+    if (!isValidateToken) {
       responseObserver.onError(new JwtException(ErrorCode.JWT_INVALID.getMessage()));
+      return;
+    }
 
     String personalIdentifyInformation =
         this.jwtService.getPersonalIdentificationNumberFromJwtToken(accessToken);
@@ -39,15 +42,15 @@ public class GrpcServer extends AuthTokenServiceGrpc.AuthTokenServiceImplBase {
         .findByPersonalId(personalIdentifyInformation)
         .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND)))
         .flatMap(this::buildAuthResponse)
+        .doOnError(err -> log.error("PIPELINE ERROR !!!", err))
+        .doOnNext(ok -> log.info("resp {} ", ok))
         .subscribe(
             response -> {
               log.info("{}", response.toString());
               responseObserver.onNext(response);
               responseObserver.onCompleted();
             },
-            error -> {
-              responseObserver.onError(error);
-            });
+            responseObserver::onError);
   }
 
   private Mono<AuthResponse> buildAuthResponse(Account account) {
@@ -60,12 +63,13 @@ public class GrpcServer extends AuthTokenServiceGrpc.AuthTokenServiceImplBase {
             roles ->
                 Mono.just(
                     AuthResponse.newBuilder()
-                        .setAccountId(account.getId())
-                        .setEmail(account.getEmail())
-                        .setPhone(account.getPhone())
-                        .setOtp(account.getOtp())
-                        .setPersonalId(account.getPersonalId())
-                        .setIsActive(account.isActive())
+                        .setUserId(Optional.ofNullable(account.getUserId()).orElse(-1L))
+                        .setAccountId(Optional.ofNullable(account.getId()).orElse(-1L))
+                        .setEmail(Optional.ofNullable(account.getEmail()).orElse(""))
+                        .setPhone(Optional.ofNullable(account.getPhone()).orElse(""))
+                        .setOtp(Optional.ofNullable(account.getOtp()).orElse(""))
+                        .setPersonalId(Optional.ofNullable(account.getPersonalId()).orElse(""))
+                        .setIsActive(Optional.of(account.isActive()).orElse(false))
                         .setIsEnabled(true)
                         .addAllRoles(roles)
                         .build()));

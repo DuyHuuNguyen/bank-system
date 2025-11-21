@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Builder
 public class SecurityUserDetails implements UserDetails {
 
+  @Getter private Long userId;
+
   @Getter private Long accountId;
 
   private String password;
@@ -30,6 +32,7 @@ public class SecurityUserDetails implements UserDetails {
   public static SecurityUserDetails build(AuthResponse authResponse) {
     return SecurityUserDetails.builder()
         .accountId(authResponse.getAccountId())
+        .userId(authResponse.getUserId())
         .password("")
         .email(authResponse.getEmail())
         .phone(authResponse.getPhone())

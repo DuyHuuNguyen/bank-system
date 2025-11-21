@@ -59,6 +59,17 @@ private static final long serialVersionUID = 0L;
     return accountId_;
   }
 
+  public static final int USERID_FIELD_NUMBER = 2;
+  private long userId_ = 0L;
+  /**
+   * <code>int64 userId = 2;</code>
+   * @return The userId.
+   */
+  @java.lang.Override
+  public long getUserId() {
+    return userId_;
+  }
+
   public static final int EMAIL_FIELD_NUMBER = 3;
   @SuppressWarnings("serial")
   private volatile java.lang.Object email_ = "";
@@ -291,6 +302,9 @@ private static final long serialVersionUID = 0L;
     if (accountId_ != 0L) {
       output.writeInt64(1, accountId_);
     }
+    if (userId_ != 0L) {
+      output.writeInt64(2, userId_);
+    }
     if (!com.google.protobuf.GeneratedMessage.isStringEmpty(email_)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 3, email_);
     }
@@ -324,6 +338,10 @@ private static final long serialVersionUID = 0L;
     if (accountId_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt64Size(1, accountId_);
+    }
+    if (userId_ != 0L) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(2, userId_);
     }
     if (!com.google.protobuf.GeneratedMessage.isStringEmpty(email_)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(3, email_);
@@ -370,6 +388,8 @@ private static final long serialVersionUID = 0L;
 
     if (getAccountId()
         != other.getAccountId()) return false;
+    if (getUserId()
+        != other.getUserId()) return false;
     if (!getEmail()
         .equals(other.getEmail())) return false;
     if (!getPhone()
@@ -398,6 +418,9 @@ private static final long serialVersionUID = 0L;
     hash = (37 * hash) + ACCOUNTID_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
         getAccountId());
+    hash = (37 * hash) + USERID_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getUserId());
     hash = (37 * hash) + EMAIL_FIELD_NUMBER;
     hash = (53 * hash) + getEmail().hashCode();
     hash = (37 * hash) + PHONE_FIELD_NUMBER;
@@ -548,6 +571,7 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       accountId_ = 0L;
+      userId_ = 0L;
       email_ = "";
       phone_ = "";
       otp_ = "";
@@ -593,25 +617,28 @@ private static final long serialVersionUID = 0L;
         result.accountId_ = accountId_;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.email_ = email_;
+        result.userId_ = userId_;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.phone_ = phone_;
+        result.email_ = email_;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
-        result.otp_ = otp_;
+        result.phone_ = phone_;
       }
       if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.personalId_ = personalId_;
+        result.otp_ = otp_;
       }
       if (((from_bitField0_ & 0x00000020) != 0)) {
-        result.isActive_ = isActive_;
+        result.personalId_ = personalId_;
       }
       if (((from_bitField0_ & 0x00000040) != 0)) {
+        result.isActive_ = isActive_;
+      }
+      if (((from_bitField0_ & 0x00000080) != 0)) {
         roles_.makeImmutable();
         result.roles_ = roles_;
       }
-      if (((from_bitField0_ & 0x00000080) != 0)) {
+      if (((from_bitField0_ & 0x00000100) != 0)) {
         result.isEnabled_ = isEnabled_;
       }
     }
@@ -631,24 +658,27 @@ private static final long serialVersionUID = 0L;
       if (other.getAccountId() != 0L) {
         setAccountId(other.getAccountId());
       }
+      if (other.getUserId() != 0L) {
+        setUserId(other.getUserId());
+      }
       if (!other.getEmail().isEmpty()) {
         email_ = other.email_;
-        bitField0_ |= 0x00000002;
+        bitField0_ |= 0x00000004;
         onChanged();
       }
       if (!other.getPhone().isEmpty()) {
         phone_ = other.phone_;
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000008;
         onChanged();
       }
       if (!other.getOtp().isEmpty()) {
         otp_ = other.otp_;
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000010;
         onChanged();
       }
       if (!other.getPersonalId().isEmpty()) {
         personalId_ = other.personalId_;
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000020;
         onChanged();
       }
       if (other.getIsActive() != false) {
@@ -657,7 +687,7 @@ private static final long serialVersionUID = 0L;
       if (!other.roles_.isEmpty()) {
         if (roles_.isEmpty()) {
           roles_ = other.roles_;
-          bitField0_ |= 0x00000040;
+          bitField0_ |= 0x00000080;
         } else {
           ensureRolesIsMutable();
           roles_.addAll(other.roles_);
@@ -698,29 +728,34 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 8
+            case 16: {
+              userId_ = input.readInt64();
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 16
             case 26: {
               email_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000002;
+              bitField0_ |= 0x00000004;
               break;
             } // case 26
             case 34: {
               phone_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000004;
+              bitField0_ |= 0x00000008;
               break;
             } // case 34
             case 42: {
               otp_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000008;
+              bitField0_ |= 0x00000010;
               break;
             } // case 42
             case 50: {
               personalId_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000010;
+              bitField0_ |= 0x00000020;
               break;
             } // case 50
             case 56: {
               isActive_ = input.readBool();
-              bitField0_ |= 0x00000020;
+              bitField0_ |= 0x00000040;
               break;
             } // case 56
             case 66: {
@@ -731,7 +766,7 @@ private static final long serialVersionUID = 0L;
             } // case 66
             case 72: {
               isEnabled_ = input.readBool();
-              bitField0_ |= 0x00000080;
+              bitField0_ |= 0x00000100;
               break;
             } // case 72
             default: {
@@ -783,6 +818,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private long userId_ ;
+    /**
+     * <code>int64 userId = 2;</code>
+     * @return The userId.
+     */
+    @java.lang.Override
+    public long getUserId() {
+      return userId_;
+    }
+    /**
+     * <code>int64 userId = 2;</code>
+     * @param value The userId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setUserId(long value) {
+
+      userId_ = value;
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int64 userId = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearUserId() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      userId_ = 0L;
+      onChanged();
+      return this;
+    }
+
     private java.lang.Object email_ = "";
     /**
      * <code>string email = 3;</code>
@@ -826,7 +893,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       email_ = value;
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -836,7 +903,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder clearEmail() {
       email_ = getDefaultInstance().getEmail();
-      bitField0_ = (bitField0_ & ~0x00000002);
+      bitField0_ = (bitField0_ & ~0x00000004);
       onChanged();
       return this;
     }
@@ -850,7 +917,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       email_ = value;
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -898,7 +965,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       phone_ = value;
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -908,7 +975,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder clearPhone() {
       phone_ = getDefaultInstance().getPhone();
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000008);
       onChanged();
       return this;
     }
@@ -922,7 +989,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       phone_ = value;
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -970,7 +1037,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       otp_ = value;
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -980,7 +1047,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder clearOtp() {
       otp_ = getDefaultInstance().getOtp();
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000010);
       onChanged();
       return this;
     }
@@ -994,7 +1061,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       otp_ = value;
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -1042,7 +1109,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       personalId_ = value;
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1052,7 +1119,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder clearPersonalId() {
       personalId_ = getDefaultInstance().getPersonalId();
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000020);
       onChanged();
       return this;
     }
@@ -1066,7 +1133,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       personalId_ = value;
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1088,7 +1155,7 @@ private static final long serialVersionUID = 0L;
     public Builder setIsActive(boolean value) {
 
       isActive_ = value;
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000040;
       onChanged();
       return this;
     }
@@ -1097,7 +1164,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearIsActive() {
-      bitField0_ = (bitField0_ & ~0x00000020);
+      bitField0_ = (bitField0_ & ~0x00000040);
       isActive_ = false;
       onChanged();
       return this;
@@ -1109,7 +1176,7 @@ private static final long serialVersionUID = 0L;
       if (!roles_.isModifiable()) {
         roles_ = new com.google.protobuf.LazyStringArrayList(roles_);
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000080;
     }
     /**
      * <code>repeated string roles = 8;</code>
@@ -1155,7 +1222,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       ensureRolesIsMutable();
       roles_.set(index, value);
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000080;
       onChanged();
       return this;
     }
@@ -1169,7 +1236,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       ensureRolesIsMutable();
       roles_.add(value);
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000080;
       onChanged();
       return this;
     }
@@ -1183,7 +1250,7 @@ private static final long serialVersionUID = 0L;
       ensureRolesIsMutable();
       com.google.protobuf.AbstractMessageLite.Builder.addAll(
           values, roles_);
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000080;
       onChanged();
       return this;
     }
@@ -1194,7 +1261,7 @@ private static final long serialVersionUID = 0L;
     public Builder clearRoles() {
       roles_ =
         com.google.protobuf.LazyStringArrayList.emptyList();
-      bitField0_ = (bitField0_ & ~0x00000040);;
+      bitField0_ = (bitField0_ & ~0x00000080);;
       onChanged();
       return this;
     }
@@ -1209,7 +1276,7 @@ private static final long serialVersionUID = 0L;
       checkByteStringIsUtf8(value);
       ensureRolesIsMutable();
       roles_.add(value);
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000080;
       onChanged();
       return this;
     }
@@ -1231,7 +1298,7 @@ private static final long serialVersionUID = 0L;
     public Builder setIsEnabled(boolean value) {
 
       isEnabled_ = value;
-      bitField0_ |= 0x00000080;
+      bitField0_ |= 0x00000100;
       onChanged();
       return this;
     }
@@ -1240,7 +1307,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearIsEnabled() {
-      bitField0_ = (bitField0_ & ~0x00000080);
+      bitField0_ = (bitField0_ & ~0x00000100);
       isEnabled_ = false;
       onChanged();
       return this;

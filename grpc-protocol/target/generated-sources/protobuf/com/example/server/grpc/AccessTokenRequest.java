@@ -11,7 +11,7 @@ package com.example.server.grpc;
 public final class AccessTokenRequest extends
     com.google.protobuf.GeneratedMessage implements
     // @@protoc_insertion_point(message_implements:com.example.auth.AccessTokenRequest)
-        com.example.server.grpc.AccessTokenRequestOrBuilder {
+    AccessTokenRequestOrBuilder {
 private static final long serialVersionUID = 0L;
   static {
     com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
