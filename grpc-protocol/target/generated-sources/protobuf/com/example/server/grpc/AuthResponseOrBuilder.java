@@ -16,6 +16,12 @@ public interface AuthResponseOrBuilder extends
   long getAccountId();
 
   /**
+   * <code>int64 userId = 2;</code>
+   * @return The userId.
+   */
+  long getUserId();
+
+  /**
    * <code>string email = 3;</code>
    * @return The email.
    */

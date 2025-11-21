@@ -44,16 +44,16 @@ public final class AuthProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\nauth.proto\022\020com.example.auth\"\224\001\n\014AuthR" +
-      "esponse\022\021\n\taccountId\030\001 \001(\003\022\r\n\005email\030\003 \001(" +
-      "\t\022\r\n\005phone\030\004 \001(\t\022\013\n\003otp\030\005 \001(\t\022\022\n\npersona" +
-      "lId\030\006 \001(\t\022\020\n\010isActive\030\007 \001(\010\022\r\n\005roles\030\010 \003" +
-      "(\t\022\021\n\tisEnabled\030\t \001(\010\")\n\022AccessTokenRequ" +
-      "est\022\023\n\013accessToken\030\001 \001(\t2f\n\020AuthTokenSer" +
-      "vice\022R\n\nparseToken\022$.com.example.auth.Ac" +
-      "cessTokenRequest\032\036.com.example.auth.Auth" +
-      "ResponseB&\n\027com.example.server.grpcB\tAut" +
-      "hProtoP\001b\006proto3"
+      "\n\nauth.proto\022\020com.example.auth\"\244\001\n\014AuthR" +
+      "esponse\022\021\n\taccountId\030\001 \001(\003\022\016\n\006userId\030\002 \001" +
+      "(\003\022\r\n\005email\030\003 \001(\t\022\r\n\005phone\030\004 \001(\t\022\013\n\003otp\030" +
+      "\005 \001(\t\022\022\n\npersonalId\030\006 \001(\t\022\020\n\010isActive\030\007 " +
+      "\001(\010\022\r\n\005roles\030\010 \003(\t\022\021\n\tisEnabled\030\t \001(\010\")\n" +
+      "\022AccessTokenRequest\022\023\n\013accessToken\030\001 \001(\t" +
+      "2f\n\020AuthTokenService\022R\n\nparseToken\022$.com" +
+      ".example.auth.AccessTokenRequest\032\036.com.e" +
+      "xample.auth.AuthResponseB&\n\027com.example." +
+      "server.grpcB\tAuthProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -64,7 +64,7 @@ public final class AuthProto {
     internal_static_com_example_auth_AuthResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_example_auth_AuthResponse_descriptor,
-        new java.lang.String[] { "AccountId", "Email", "Phone", "Otp", "PersonalId", "IsActive", "Roles", "IsEnabled", });
+        new java.lang.String[] { "AccountId", "UserId", "Email", "Phone", "Otp", "PersonalId", "IsActive", "Roles", "IsEnabled", });
     internal_static_com_example_auth_AccessTokenRequest_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_com_example_auth_AccessTokenRequest_fieldAccessorTable = new

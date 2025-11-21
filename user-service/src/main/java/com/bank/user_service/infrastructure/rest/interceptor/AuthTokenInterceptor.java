@@ -48,13 +48,14 @@ public class AuthTokenInterceptor implements WebFilter {
               });
 
     String token = this.getTokenFromHeader(exchange);
-    log.info("token: {}", token);
+    //    log.info("token: {}", token);
 
     var isNullAccessToken = (token == null);
     if (isNullAccessToken) return this.setResponseUnAuthenticated(exchange);
 
     return this.authGrpcClientService
         .parseToken(token)
+        .doOnNext(next -> log.info("resp {} " + next.getPersonalId(), next))
         .flatMap(
             authResponse ->
                 authResponse.getIsEnabled()
@@ -106,7 +107,7 @@ public class AuthTokenInterceptor implements WebFilter {
     log.info("path {}", path);
     boolean isSwagger = SWAGGER_URLS.stream().anyMatch(path::startsWith);
     boolean isPublic = PUBLIC_APIS.stream().anyMatch(path::startsWith);
-    log.info("isSkipAuth {}", isSwagger || isPublic);
+    log.info(" Publish API {}", isSwagger || isPublic);
     return isSwagger || isPublic;
   }
 

@@ -16,4 +16,9 @@ public class IdentifyDocumentServiceImpl implements IdentifyDocumentService {
   public Mono<IdentifyDocument> save(IdentifyDocument identifyDocument) {
     return this.identifyDocumentRepository.save(identifyDocument);
   }
+
+  @Override
+  public Mono<IdentifyDocument> findById(Long id) {
+    return this.identifyDocumentRepository.findById(id);
+  }
 }
