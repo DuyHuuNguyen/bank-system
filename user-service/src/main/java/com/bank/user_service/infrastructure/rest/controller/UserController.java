@@ -1,6 +1,7 @@
 package com.bank.user_service.infrastructure.rest.controller;
 
 import com.bank.user_service.api.facade.UserFacade;
+import com.bank.user_service.api.request.ChangeUserTypeRequest;
 import com.bank.user_service.api.request.CreateUserRequest;
 import com.bank.user_service.api.response.BaseResponse;
 import com.bank.user_service.api.response.UserDetailResponse;
@@ -42,5 +43,15 @@ public class UserController {
   @SecurityRequirement(name = "Bearer Authentication")
   public Mono<BaseResponse<UserDetailResponse>> findProfile() {
     return this.userFacade.findProfile();
+  }
+
+  @PatchMapping("/type/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = "User API")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @SecurityRequirement(name = "Bearer Authentication")
+  public Mono<BaseResponse<Void>> changeUserType(@PathVariable Long id, @RequestBody ChangeUserTypeRequest request) {
+    request.withId(id);
+    return this.userFacade.changeUserType(request);
   }
 }

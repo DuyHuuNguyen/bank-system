@@ -24,4 +24,8 @@ public class User extends BaseEntity {
 
   @Column("identify_document_id")
   private Long identifyDocumentId;
+
+  public void changeUserType(UserType userType) {
+    this.userType = userType;
+  }
 }
