@@ -22,4 +22,9 @@ public class AccountServiceImpl implements AccountService {
     if (!account.isFirstSave()) account.reUpdate();
     return this.accountRepository.save(account);
   }
+
+  @Override
+  public Mono<Account> findById(Long id) {
+    return this.accountRepository.findById(id);
+  }
 }

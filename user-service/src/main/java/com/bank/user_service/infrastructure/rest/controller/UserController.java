@@ -50,7 +50,8 @@ public class UserController {
   @Operation(tags = "User API")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @SecurityRequirement(name = "Bearer Authentication")
-  public Mono<BaseResponse<Void>> changeUserType(@PathVariable Long id, @RequestBody ChangeUserTypeRequest request) {
+  public Mono<BaseResponse<Void>> changeUserType(
+      @PathVariable Long id, @RequestBody ChangeUserTypeRequest request) {
     request.withId(id);
     return this.userFacade.changeUserType(request);
   }

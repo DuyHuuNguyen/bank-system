@@ -1,17 +1,16 @@
-package com.bank.user_service.api.response;
+package com.bank.user_service.api.request;
 
 import com.bank.user_service.infrastructure.enums.Gender;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Builder
-public class PersonalInformationResponse {
-  private Long id;
+public class UpsertPersonalInfoRequest {
+  @Hidden private Long id;
   private String firstName;
   private String lastName;
   private Long dateOfBirth;

@@ -36,4 +36,8 @@ public class Account extends BaseEntity {
   public void changePassword(String passwordEncoded) {
     this.password = passwordEncoded;
   }
+
+  public void changePersonalId(String personalId) {
+    this.personalId = personalId;
+  }
 }

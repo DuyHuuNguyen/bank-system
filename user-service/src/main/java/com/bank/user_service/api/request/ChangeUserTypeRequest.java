@@ -10,11 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class ChangeUserTypeRequest {
-    @Hidden
-    private Long id;
-    private UserType userType;
+  @Hidden private Long id;
+  private UserType userType;
 
-    public void withId(Long id) {
-        this.id = id;
-    }
+  public void withId(Long id) {
+    this.id = id;
+  }
 }

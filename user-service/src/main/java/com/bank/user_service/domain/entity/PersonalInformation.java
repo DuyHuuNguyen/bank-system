@@ -1,6 +1,6 @@
 package com.bank.user_service.domain.entity;
 
-import com.bank.user_service.api.request.ChangePersonalInfoRequest;
+import com.bank.user_service.api.request.UpsertPersonalInfoRequest;
 import com.bank.user_service.infrastructure.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -50,7 +50,7 @@ public class PersonalInformation extends BaseEntity {
   @Column("home_number")
   private String homesNumber;
 
-  public void changeInfo(ChangePersonalInfoRequest request) {
+  public void changeInfo(UpsertPersonalInfoRequest request) {
     this.firstName = request.getFirstName();
     this.lastName = request.getLastName();
     this.dateOfBirth = request.getDateOfBirth();
@@ -63,5 +63,4 @@ public class PersonalInformation extends BaseEntity {
     this.street = request.getStreet();
     this.homesNumber = request.getHomesNumber();
   }
-
 }

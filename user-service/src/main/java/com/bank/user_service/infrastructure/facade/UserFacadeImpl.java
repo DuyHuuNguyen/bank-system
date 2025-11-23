@@ -88,19 +88,23 @@ public class UserFacadeImpl implements UserFacade {
         .flatMap(principal -> this.findUserById(principal.getUserId()));
   }
 
-    @Override
-    public Mono<BaseResponse<Void>> changeUserType(ChangeUserTypeRequest request) {
-        return this.userService.findById(request.getId())
-                .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.USER_NOT_FOUND)))
-                .flatMap(user -> {
-                    user.changeUserType(request.getUserType());
-                    return this.userService.save(user)
-                            .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.STORE_INFO_USER_ERROR)))
-                            .thenReturn(BaseResponse.ok());
-                });
-    }
+  @Override
+  public Mono<BaseResponse<Void>> changeUserType(ChangeUserTypeRequest request) {
+    return this.userService
+        .findById(request.getId())
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.USER_NOT_FOUND)))
+        .flatMap(
+            user -> {
+              user.changeUserType(request.getUserType());
+              return this.userService
+                  .save(user)
+                  .switchIfEmpty(
+                      Mono.error(new EntityNotFoundException(ErrorCode.STORE_INFO_USER_ERROR)))
+                  .thenReturn(BaseResponse.ok());
+            });
+  }
 
-    private Mono<BaseResponse<UserDetailResponse>> findUserById(Long id) {
+  private Mono<BaseResponse<UserDetailResponse>> findUserById(Long id) {
     return this.userService
         .findById(id)
         .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.USER_NOT_FOUND)))
@@ -193,5 +197,4 @@ public class UserFacadeImpl implements UserFacade {
         .switchIfEmpty(
             Mono.error(new EntityNotFoundException(ErrorCode.IDENTITY_DOCUMENT_NOT_FOUND)));
   }
-
 }
