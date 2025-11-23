@@ -7,4 +7,6 @@ public interface AccountService {
   Mono<Account> findByPersonalId(String personalId);
 
   Mono<Account> save(Account account);
+
+  Mono<Account> findById(Long id);
 }

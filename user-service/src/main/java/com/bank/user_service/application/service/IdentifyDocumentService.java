@@ -7,4 +7,6 @@ public interface IdentifyDocumentService {
   Mono<IdentifyDocument> save(IdentifyDocument identifyDocument);
 
   Mono<IdentifyDocument> findById(Long id);
+
+  Mono<IdentifyDocument> findByUserId(Long userId);
 }

@@ -1,5 +1,6 @@
 package com.bank.user_service.domain.entity;
 
+import com.bank.user_service.api.request.ChangeIdentifyDocumentRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,4 +45,17 @@ public class IdentifyDocument extends BaseEntity {
 
   @Column("home_number")
   private String homesNumber;
+
+  public void changeInfo(ChangeIdentifyDocumentRequest request) {
+    this.personalId = request.getPersonalId();
+    this.issuedAt = request.getIssuedAt();
+    this.citizenIdFront = request.getCitizenIdFront();
+    this.citizenIdBack = request.getCitizenIdBack();
+    this.country = request.getCountry();
+    this.province = request.getProvince();
+    this.district = request.getDistrict();
+    this.ward = request.getWard();
+    this.street = request.getStreet();
+    this.homesNumber = request.getHomesNumber();
+  }
 }

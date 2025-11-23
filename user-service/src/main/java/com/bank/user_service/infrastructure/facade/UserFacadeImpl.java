@@ -1,6 +1,7 @@
 package com.bank.user_service.infrastructure.facade;
 
 import com.bank.user_service.api.facade.UserFacade;
+import com.bank.user_service.api.request.ChangeUserTypeRequest;
 import com.bank.user_service.api.request.CreateUserRequest;
 import com.bank.user_service.api.response.BaseResponse;
 import com.bank.user_service.api.response.UserDetailResponse;
@@ -87,6 +88,22 @@ public class UserFacadeImpl implements UserFacade {
         .flatMap(principal -> this.findUserById(principal.getUserId()));
   }
 
+  @Override
+  public Mono<BaseResponse<Void>> changeUserType(ChangeUserTypeRequest request) {
+    return this.userService
+        .findById(request.getId())
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.USER_NOT_FOUND)))
+        .flatMap(
+            user -> {
+              user.changeUserType(request.getUserType());
+              return this.userService
+                  .save(user)
+                  .switchIfEmpty(
+                      Mono.error(new EntityNotFoundException(ErrorCode.STORE_INFO_USER_ERROR)))
+                  .thenReturn(BaseResponse.ok());
+            });
+  }
+
   private Mono<BaseResponse<UserDetailResponse>> findUserById(Long id) {
     return this.userService
         .findById(id)
@@ -137,11 +154,13 @@ public class UserFacadeImpl implements UserFacade {
                         return BaseResponse.build(
                             UserDetailResponse.builder()
                                 .id(user.getId())
+                                .identifyDocumentId(identifyDocument.getId())
                                 .personalId(identifyDocument.getPersonalId())
                                 .issuesAt(identifyDocument.getIssuedAt())
                                 .citizenIdFront(identifyDocument.getCitizenIdFront())
                                 .citizenIdBack(identifyDocument.getCitizenIdBack())
                                 .locationOfIdentifyDocument(locationOfIdentifyDocument)
+                                .personalDocumentId(personalInformation.getId())
                                 .firstName(personalInformation.getFirstName())
                                 .lastName(personalInformation.getLastName())
                                 .dateOfBirth(personalInformation.getDateOfBirth())

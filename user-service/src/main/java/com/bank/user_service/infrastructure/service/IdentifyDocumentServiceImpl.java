@@ -21,4 +21,9 @@ public class IdentifyDocumentServiceImpl implements IdentifyDocumentService {
   public Mono<IdentifyDocument> findById(Long id) {
     return this.identifyDocumentRepository.findById(id);
   }
+
+  @Override
+  public Mono<IdentifyDocument> findByUserId(Long userId) {
+    return this.identifyDocumentRepository.findByUserId(userId);
+  }
 }
