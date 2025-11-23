@@ -19,7 +19,7 @@ public class BaseEntity {
   @Builder.Default
   private Long version = 0L;
 
-  @Builder.Default boolean isActive = true;
+  @Builder.Default private boolean isActive = true;
 
   @Column("created_at")
   @Builder.Default
