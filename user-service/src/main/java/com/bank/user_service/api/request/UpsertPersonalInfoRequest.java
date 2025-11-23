@@ -22,4 +22,8 @@ public class UpsertPersonalInfoRequest {
   private String ward;
   private String street;
   private String homesNumber;
+
+  public void withId(Long id){
+    this.id = id;
+  }
 }

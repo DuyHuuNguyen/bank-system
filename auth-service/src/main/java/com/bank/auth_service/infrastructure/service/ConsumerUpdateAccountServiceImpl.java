@@ -6,11 +6,13 @@ import com.bank.auth_service.application.service.AccountService;
 import com.bank.auth_service.application.service.ConsumerUpdateAccountService;
 import com.bank.auth_service.infrastructure.nums.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ConsumerUpdateAccountServiceImpl implements ConsumerUpdateAccountService {
@@ -20,6 +22,7 @@ public class ConsumerUpdateAccountServiceImpl implements ConsumerUpdateAccountSe
   @Transactional
   @RabbitListener(queues = "${rabbitmq.queue.update-info-account}")
   public Mono<Void> onCreateAccountMessage(UpdateAccountMessage updateAccountMessage) {
+      log.info("handle message update account");
     return Mono.just(updateAccountMessage)
         .flatMap(
             message ->
@@ -33,5 +36,6 @@ public class ConsumerUpdateAccountServiceImpl implements ConsumerUpdateAccountSe
                           return this.accountService.save(account);
                         })
                     .then());
+
   }
 }

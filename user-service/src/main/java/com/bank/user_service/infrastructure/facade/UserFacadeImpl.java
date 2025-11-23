@@ -154,11 +154,13 @@ public class UserFacadeImpl implements UserFacade {
                         return BaseResponse.build(
                             UserDetailResponse.builder()
                                 .id(user.getId())
+                                .identifyDocumentId(identifyDocument.getId())
                                 .personalId(identifyDocument.getPersonalId())
                                 .issuesAt(identifyDocument.getIssuedAt())
                                 .citizenIdFront(identifyDocument.getCitizenIdFront())
                                 .citizenIdBack(identifyDocument.getCitizenIdBack())
                                 .locationOfIdentifyDocument(locationOfIdentifyDocument)
+                                .personalDocumentId(personalInformation.getId())
                                 .firstName(personalInformation.getFirstName())
                                 .lastName(personalInformation.getLastName())
                                 .dateOfBirth(personalInformation.getDateOfBirth())

@@ -23,8 +23,9 @@ public class PersonalInformationController {
   @Operation(tags = "PERSONAL INFO API")
   @PreAuthorize("isAuthenticated()")
   @SecurityRequirement(name = "Bearer Authentication")
-  public Mono<BaseResponse<Void>> changePersonalInfo(
+  public Mono<BaseResponse<Void>> changePersonalInfo(@PathVariable Long id,
       @RequestBody UpsertPersonalInfoRequest request) {
+    request.withId(id);
     return this.personalInformationFacade.changePersonalInfo(request);
   }
 

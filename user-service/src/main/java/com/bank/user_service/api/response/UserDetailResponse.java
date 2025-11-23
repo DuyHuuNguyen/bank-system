@@ -13,11 +13,13 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserDetailResponse {
   private Long id;
+  private Long identifyDocumentId;
   private String personalId;
   private Long issuesAt;
   private String citizenIdFront;
   private String citizenIdBack;
   private LocationDTO locationOfIdentifyDocument;
+  private Long personalDocumentId;
   private String firstName;
   private String lastName;
   private Long dateOfBirth;
