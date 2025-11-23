@@ -1,6 +1,7 @@
 package com.bank.user_service.infrastructure.rest.controller;
 
 import com.bank.user_service.api.facade.UserFacade;
+import com.bank.user_service.api.request.ChangeUserTypeRequest;
 import com.bank.user_service.api.request.CreateUserRequest;
 import com.bank.user_service.api.response.BaseResponse;
 import com.bank.user_service.api.response.UserDetailResponse;
@@ -21,14 +22,14 @@ public class UserController {
 
   @PostMapping("/sign-up")
   @ResponseStatus(HttpStatus.OK)
-  @Operation(tags = "User API")
+  @Operation(tags = "USER API")
   public Mono<BaseResponse<Void>> createUser(@RequestBody CreateUserRequest request) {
     return this.userFacade.createUser(request);
   }
 
   @GetMapping("/user-detail/{id}")
   @ResponseStatus(HttpStatus.OK)
-  @Operation(tags = "User API")
+  @Operation(tags = "USER API")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @SecurityRequirement(name = "Bearer Authentication")
   public Mono<BaseResponse<UserDetailResponse>> findUserDetailById(@PathVariable Long id) {
@@ -37,10 +38,21 @@ public class UserController {
 
   @GetMapping("/profile")
   @ResponseStatus(HttpStatus.OK)
-  @Operation(tags = "User API")
+  @Operation(tags = "USER API")
   @PreAuthorize("isAuthenticated()")
   @SecurityRequirement(name = "Bearer Authentication")
   public Mono<BaseResponse<UserDetailResponse>> findProfile() {
     return this.userFacade.findProfile();
+  }
+
+  @PatchMapping("/type/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = "USER API")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @SecurityRequirement(name = "Bearer Authentication")
+  public Mono<BaseResponse<Void>> changeUserType(
+      @PathVariable Long id, @RequestBody ChangeUserTypeRequest request) {
+    request.withId(id);
+    return this.userFacade.changeUserType(request);
   }
 }

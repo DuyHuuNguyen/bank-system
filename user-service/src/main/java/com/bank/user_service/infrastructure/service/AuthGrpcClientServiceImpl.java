@@ -32,11 +32,4 @@ public class AuthGrpcClientServiceImpl implements AuthGrpcClientService {
               return Mono.just(Objects.requireNonNull(signal.get()));
             });
   }
-  //  @PostConstruct
-  //    void hehe(){
-  //
-  // this.parseToken("eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMjMiLCJpYXQiOjE3NjM2OTM5MjksImV4cCI6MTc2Mzk1MzEyOX0.kSfwCaDDnzvnsexs8BF1Buj-89CUMFv-3BylAO-NtPNKlKgG-9oPkxpyQWszNEgNYK8yCSmgXFToOQXmw27Fuw")
-  //              .doOnSuccess(ok -> log.info("data nef {}",ok.toString()))
-  //              .subscribe();
-  //  }
 }

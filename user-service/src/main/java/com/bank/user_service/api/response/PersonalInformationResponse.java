@@ -1,6 +1,5 @@
 package com.bank.user_service.api.response;
 
-import com.bank.user_service.application.dto.LocationDTO;
 import com.bank.user_service.infrastructure.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,18 +10,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Builder
-public class UserDetailResponse {
+public class PersonalInformationResponse {
   private Long id;
-  private Long identifyDocumentId;
-  private String personalId;
-  private Long issuesAt;
-  private String citizenIdFront;
-  private String citizenIdBack;
-  private LocationDTO locationOfIdentifyDocument;
-  private Long personalDocumentId;
   private String firstName;
   private String lastName;
   private Long dateOfBirth;
   private Gender gender;
-  private LocationDTO locationOfUser;
+  private String personalPhoto;
+  private String country;
+  private String province;
+  private String district;
+  private String ward;
+  private String street;
+  private String homesNumber;
 }

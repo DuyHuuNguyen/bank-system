@@ -9,4 +9,6 @@ public interface AccountService {
   Mono<Account> save(Account account);
 
   Mono<Account> findByUserId(Long userId);
+
+  Mono<Account> findById(Long id);
 }
