@@ -20,4 +20,8 @@ public class CreateAccountMessage {
     this.userId = userId;
     return this;
   }
+
+  public void addUserId(Long userId) {
+    this.userId = userId;
+  }
 }

@@ -4,5 +4,5 @@ import com.bank.user_service.application.messsage.CreateAccountMessage;
 import reactor.core.publisher.Mono;
 
 public interface ProducerCreateAccountService {
-  Mono<Void> onCreateAccountMessage(CreateAccountMessage createAccountMessage);
+  Mono<Void> sendCreateAccountMessage(CreateAccountMessage createAccountMessage);
 }

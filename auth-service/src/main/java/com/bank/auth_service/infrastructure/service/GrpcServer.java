@@ -9,6 +9,7 @@ import com.bank.auth_service.infrastructure.nums.ErrorCode;
 import com.example.server.grpc.AccessTokenRequest;
 import com.example.server.grpc.AuthResponse;
 import com.example.server.grpc.AuthTokenServiceGrpc;
+import com.example.server.grpc.UserIdRequest;
 import io.grpc.stub.StreamObserver;
 import io.jsonwebtoken.JwtException;
 import java.util.Optional;
@@ -24,6 +25,24 @@ public class GrpcServer extends AuthTokenServiceGrpc.AuthTokenServiceImplBase {
   private final JwtService jwtService;
   private final AccountService accountService;
   private final RoleService roleService;
+
+  @Override
+  public void findAccountByUserId(
+      UserIdRequest request, StreamObserver<AuthResponse> responseObserver) {
+    this.accountService
+        .findByUserId(request.getUserId())
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.ACCOUNT_NOT_FOUND)))
+        .flatMap(this::buildAuthResponse)
+        .doOnError(err -> log.error("PIPELINE ERROR !!!", err))
+        .doOnNext(ok -> log.info("resp {} ", ok))
+        .subscribe(
+            response -> {
+              log.info("{}", response.toString());
+              responseObserver.onNext(response);
+              responseObserver.onCompleted();
+            },
+            responseObserver::onError);
+  }
 
   @Override
   public void parseToken(

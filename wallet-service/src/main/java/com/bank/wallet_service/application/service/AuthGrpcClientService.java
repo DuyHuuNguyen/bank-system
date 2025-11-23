@@ -5,4 +5,6 @@ import reactor.core.publisher.Mono;
 
 public interface AuthGrpcClientService {
   Mono<AuthResponse> parseToken(String token);
+
+  Mono<AuthResponse> findAccountByUserId(Long userId);
 }

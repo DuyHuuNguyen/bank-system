@@ -30,10 +30,17 @@ spring:
 rabbitmqs:
   queue:
     create-account: 23130075-create-account-queue
+    queue-default-wallet: 23130075-default-wallet
   exchange:
     create-account: 23130075-create-account-exchange
+    exchange-default-wallet: 23130075-default-wallet
   routing-key:
     create-account: 23130075-create-account-routing-key
+    routing-key-default-wallet: 23130075-default-wallet
+---
+
+
+
 ---
 grpc:
   client:

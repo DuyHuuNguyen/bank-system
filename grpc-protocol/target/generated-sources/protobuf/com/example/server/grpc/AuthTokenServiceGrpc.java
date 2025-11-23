@@ -43,6 +43,37 @@ public final class AuthTokenServiceGrpc {
     return getParseTokenMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.example.server.grpc.UserIdRequest,
+      com.example.server.grpc.AuthResponse> getFindAccountByUserIdMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "findAccountByUserId",
+      requestType = com.example.server.grpc.UserIdRequest.class,
+      responseType = com.example.server.grpc.AuthResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.example.server.grpc.UserIdRequest,
+      com.example.server.grpc.AuthResponse> getFindAccountByUserIdMethod() {
+    io.grpc.MethodDescriptor<com.example.server.grpc.UserIdRequest, com.example.server.grpc.AuthResponse> getFindAccountByUserIdMethod;
+    if ((getFindAccountByUserIdMethod = AuthTokenServiceGrpc.getFindAccountByUserIdMethod) == null) {
+      synchronized (AuthTokenServiceGrpc.class) {
+        if ((getFindAccountByUserIdMethod = AuthTokenServiceGrpc.getFindAccountByUserIdMethod) == null) {
+          AuthTokenServiceGrpc.getFindAccountByUserIdMethod = getFindAccountByUserIdMethod =
+              io.grpc.MethodDescriptor.<com.example.server.grpc.UserIdRequest, com.example.server.grpc.AuthResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "findAccountByUserId"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.example.server.grpc.UserIdRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.example.server.grpc.AuthResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new AuthTokenServiceMethodDescriptorSupplier("findAccountByUserId"))
+              .build();
+        }
+      }
+    }
+    return getFindAccountByUserIdMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -112,6 +143,13 @@ public final class AuthTokenServiceGrpc {
         io.grpc.stub.StreamObserver<com.example.server.grpc.AuthResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getParseTokenMethod(), responseObserver);
     }
+
+    /**
+     */
+    default void findAccountByUserId(com.example.server.grpc.UserIdRequest request,
+        io.grpc.stub.StreamObserver<com.example.server.grpc.AuthResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getFindAccountByUserIdMethod(), responseObserver);
+    }
   }
 
   /**
@@ -148,6 +186,14 @@ public final class AuthTokenServiceGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getParseTokenMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void findAccountByUserId(com.example.server.grpc.UserIdRequest request,
+        io.grpc.stub.StreamObserver<com.example.server.grpc.AuthResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getFindAccountByUserIdMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -172,6 +218,13 @@ public final class AuthTokenServiceGrpc {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getParseTokenMethod(), getCallOptions(), request);
     }
+
+    /**
+     */
+    public com.example.server.grpc.AuthResponse findAccountByUserId(com.example.server.grpc.UserIdRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getFindAccountByUserIdMethod(), getCallOptions(), request);
+    }
   }
 
   /**
@@ -195,6 +248,13 @@ public final class AuthTokenServiceGrpc {
     public com.example.server.grpc.AuthResponse parseToken(com.example.server.grpc.AccessTokenRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getParseTokenMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.example.server.grpc.AuthResponse findAccountByUserId(com.example.server.grpc.UserIdRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getFindAccountByUserIdMethod(), getCallOptions(), request);
     }
   }
 
@@ -221,9 +281,18 @@ public final class AuthTokenServiceGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getParseTokenMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.example.server.grpc.AuthResponse> findAccountByUserId(
+        com.example.server.grpc.UserIdRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getFindAccountByUserIdMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_PARSE_TOKEN = 0;
+  private static final int METHODID_FIND_ACCOUNT_BY_USER_ID = 1;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -244,6 +313,10 @@ public final class AuthTokenServiceGrpc {
       switch (methodId) {
         case METHODID_PARSE_TOKEN:
           serviceImpl.parseToken((com.example.server.grpc.AccessTokenRequest) request,
+              (io.grpc.stub.StreamObserver<com.example.server.grpc.AuthResponse>) responseObserver);
+          break;
+        case METHODID_FIND_ACCOUNT_BY_USER_ID:
+          serviceImpl.findAccountByUserId((com.example.server.grpc.UserIdRequest) request,
               (io.grpc.stub.StreamObserver<com.example.server.grpc.AuthResponse>) responseObserver);
           break;
         default:
@@ -271,6 +344,13 @@ public final class AuthTokenServiceGrpc {
               com.example.server.grpc.AccessTokenRequest,
               com.example.server.grpc.AuthResponse>(
                 service, METHODID_PARSE_TOKEN)))
+        .addMethod(
+          getFindAccountByUserIdMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              com.example.server.grpc.UserIdRequest,
+              com.example.server.grpc.AuthResponse>(
+                service, METHODID_FIND_ACCOUNT_BY_USER_ID)))
         .build();
   }
 
@@ -320,6 +400,7 @@ public final class AuthTokenServiceGrpc {
           serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
               .setSchemaDescriptor(new AuthTokenServiceFileDescriptorSupplier())
               .addMethod(getParseTokenMethod())
+              .addMethod(getFindAccountByUserIdMethod())
               .build();
         }
       }

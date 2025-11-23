@@ -9,4 +9,6 @@ import reactor.core.publisher.Mono;
 public interface AccountRepository extends R2dbcRepository<Account, Long> {
 
   Mono<Account> findByPersonalId(String personalId);
+
+  Mono<Account> findByUserId(Long userId);
 }

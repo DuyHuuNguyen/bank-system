@@ -4,6 +4,7 @@ import com.bank.user_service.application.messsage.CreateAccountMessage;
 import com.bank.user_service.application.service.ProducerCreateAccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -14,17 +15,19 @@ public class ProducerCreateAccountServiceImpl implements ProducerCreateAccountSe
 
   private final RabbitTemplate rabbitTemplate;
 
+  @Value("${rabbitmqs.exchange.create-account}")
   private String createAccountDirectExchange;
 
+  @Value("${rabbitmqs.routing-key.create-account}")
   private String createAccountRoutingKey;
 
   @Override
-  public Mono<Void> onCreateAccountMessage(CreateAccountMessage createAccountMessage) {
+  public Mono<Void> sendCreateAccountMessage(CreateAccountMessage createAccountMessage) {
     return Mono.fromRunnable(
             () ->
                 rabbitTemplate.convertAndSend(
-                    "23130075-create-account-exchange",
-                    "23130075-create-account-routing-key",
+                    this.createAccountDirectExchange,
+                    this.createAccountRoutingKey,
                     createAccountMessage))
         .subscribeOn(Schedulers.boundedElastic())
         .then();

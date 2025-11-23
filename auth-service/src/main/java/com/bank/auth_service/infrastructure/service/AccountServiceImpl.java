@@ -27,4 +27,9 @@ public class AccountServiceImpl implements AccountService {
   public Mono<Account> findById(Long id) {
     return this.accountRepository.findById(id);
   }
+
+  @Override
+  public Mono<Account> findByUserId(Long userId) {
+    return null;
+  }
 }
