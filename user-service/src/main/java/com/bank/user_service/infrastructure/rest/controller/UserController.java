@@ -22,14 +22,14 @@ public class UserController {
 
   @PostMapping("/sign-up")
   @ResponseStatus(HttpStatus.OK)
-  @Operation(tags = "User API")
+  @Operation(tags = "USER API")
   public Mono<BaseResponse<Void>> createUser(@RequestBody CreateUserRequest request) {
     return this.userFacade.createUser(request);
   }
 
   @GetMapping("/user-detail/{id}")
   @ResponseStatus(HttpStatus.OK)
-  @Operation(tags = "User API")
+  @Operation(tags = "USER API")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @SecurityRequirement(name = "Bearer Authentication")
   public Mono<BaseResponse<UserDetailResponse>> findUserDetailById(@PathVariable Long id) {
@@ -38,7 +38,7 @@ public class UserController {
 
   @GetMapping("/profile")
   @ResponseStatus(HttpStatus.OK)
-  @Operation(tags = "User API")
+  @Operation(tags = "USER API")
   @PreAuthorize("isAuthenticated()")
   @SecurityRequirement(name = "Bearer Authentication")
   public Mono<BaseResponse<UserDetailResponse>> findProfile() {
@@ -47,7 +47,7 @@ public class UserController {
 
   @PatchMapping("/type/{id}")
   @ResponseStatus(HttpStatus.OK)
-  @Operation(tags = "User API")
+  @Operation(tags = "USER API")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @SecurityRequirement(name = "Bearer Authentication")
   public Mono<BaseResponse<Void>> changeUserType(

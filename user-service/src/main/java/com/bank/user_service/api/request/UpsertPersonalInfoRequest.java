@@ -23,7 +23,7 @@ public class UpsertPersonalInfoRequest {
   private String street;
   private String homesNumber;
 
-  public void withId(Long id){
+  public void withId(Long id) {
     this.id = id;
   }
 }

@@ -22,7 +22,7 @@ public class ConsumerUpdateAccountServiceImpl implements ConsumerUpdateAccountSe
   @Transactional
   @RabbitListener(queues = "${rabbitmq.queue.update-info-account}")
   public Mono<Void> onCreateAccountMessage(UpdateAccountMessage updateAccountMessage) {
-      log.info("handle message update account");
+    log.info("handle message update account");
     return Mono.just(updateAccountMessage)
         .flatMap(
             message ->
@@ -36,6 +36,5 @@ public class ConsumerUpdateAccountServiceImpl implements ConsumerUpdateAccountSe
                           return this.accountService.save(account);
                         })
                     .then());
-
   }
 }

@@ -22,10 +22,18 @@ public class IdentifyDocumentController {
   @Operation(tags = "IDENTIFY DOCUMENT API")
   @PreAuthorize("isAuthenticated()")
   @SecurityRequirement(name = "Bearer Authentication")
-  public Mono<BaseResponse<Void>> changeInfo(@PathVariable Long id,@RequestBody ChangeIdentifyDocumentRequest request) {
-      request.withId(id);
+  public Mono<BaseResponse<Void>> changeInfo(
+      @PathVariable Long id, @RequestBody ChangeIdentifyDocumentRequest request) {
+    request.withId(id);
     return this.identifyDocumentFacade.changeIdentifyDocument(request);
   }
 
-
+  @GetMapping("/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = "IDENTIFY DOCUMENT API")
+  @PreAuthorize("isAuthenticated()")
+  @SecurityRequirement(name = "Bearer Authentication")
+  public Mono<BaseResponse<Void>> findIdentifyDocumentById(@PathVariable Long id) {
+    return this.identifyDocumentFacade.findIdentifyDocumentById(id);
+  }
 }
