@@ -77,6 +77,6 @@
       "file:///D:/xxx-system/grpc-protocol/target/protobuf-maven-plugin/generate/default-cli/archives/proto-google-common-protos-2.54.1-ipEG5foGpyKZZWu7z5Zbntt7dpM/google/api/launch_stage.proto": "9g3g_fLO_nwWhVBBp-snEKmzvmh2S0gY5iO24RKDxF5pYXxUoBvx4RZI7niVmwPKkZF6yHK54WcXgo1DHPqmiA",
       "file:///D:/xxx-system/grpc-protocol/target/protobuf-maven-plugin/generate/default-cli/archives/proto-google-common-protos-2.54.1-ipEG5foGpyKZZWu7z5Zbntt7dpM/google/type/calendar_period.proto": "m7iLRvvU8tDS8giqcwfu31aGHzd140QTXCrDGdKwWyXxEBAG87g9_5u4QVbEnihFQK1AtUAFj3vH_q4bIupM5Q"
     },
-    "proto_sources": {"file:///D:/xxx-system/grpc-protocol/src/main/proto/auth.proto": "yI6yKeNxLl5jcqSrl6ZaNiO6eaT-sOwgTvGqWDe8aKGrRWH_YllGEP6wVLs-UVHR7Pq-04H30QChv5omxFPvzQ"},
+    "proto_sources": {"file:///D:/xxx-system/grpc-protocol/src/main/proto/auth.proto": "suuJ30eAk5LWYan-xfSzZOPiE8FkdSM3eWbjprywZAVLZA-rCTIwJLMhbp3J_20E9iAYAFJlMdHk0PQzfv9owQ"},
     "descriptor_files": {}
   }

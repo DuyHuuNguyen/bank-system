@@ -35,6 +35,11 @@ public final class AuthProto {
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_com_example_auth_AccessTokenRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_example_auth_UserIdRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_example_auth_UserIdRequest_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -50,10 +55,13 @@ public final class AuthProto {
       "\005 \001(\t\022\022\n\npersonalId\030\006 \001(\t\022\020\n\010isActive\030\007 " +
       "\001(\010\022\r\n\005roles\030\010 \003(\t\022\021\n\tisEnabled\030\t \001(\010\")\n" +
       "\022AccessTokenRequest\022\023\n\013accessToken\030\001 \001(\t" +
-      "2f\n\020AuthTokenService\022R\n\nparseToken\022$.com" +
-      ".example.auth.AccessTokenRequest\032\036.com.e" +
-      "xample.auth.AuthResponseB&\n\027com.example." +
-      "server.grpcB\tAuthProtoP\001b\006proto3"
+      "\"\037\n\rUserIdRequest\022\016\n\006userId\030\001 \001(\0032\276\001\n\020Au" +
+      "thTokenService\022R\n\nparseToken\022$.com.examp" +
+      "le.auth.AccessTokenRequest\032\036.com.example" +
+      ".auth.AuthResponse\022V\n\023findAccountByUserI" +
+      "d\022\037.com.example.auth.UserIdRequest\032\036.com" +
+      ".example.auth.AuthResponseB&\n\027com.exampl" +
+      "e.server.grpcB\tAuthProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -71,6 +79,12 @@ public final class AuthProto {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_example_auth_AccessTokenRequest_descriptor,
         new java.lang.String[] { "AccessToken", });
+    internal_static_com_example_auth_UserIdRequest_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_com_example_auth_UserIdRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_com_example_auth_UserIdRequest_descriptor,
+        new java.lang.String[] { "UserId", });
     descriptor.resolveAllFeaturesImmutable();
   }
 
