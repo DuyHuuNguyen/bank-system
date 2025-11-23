@@ -10,4 +10,6 @@ public interface CurrencyService {
   Mono<Currency> findById(Long id);
 
   Flux<Currency> findAll(int page, int size);
+
+  Mono<Currency> findByName(String name);
 }

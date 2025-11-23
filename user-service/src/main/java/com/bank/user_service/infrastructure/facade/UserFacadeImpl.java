@@ -7,10 +7,8 @@ import com.bank.user_service.api.response.UserDetailResponse;
 import com.bank.user_service.application.dto.LocationDTO;
 import com.bank.user_service.application.exception.EntityNotFoundException;
 import com.bank.user_service.application.messsage.CreateAccountMessage;
-import com.bank.user_service.application.service.IdentifyDocumentService;
-import com.bank.user_service.application.service.PersonalInformationService;
-import com.bank.user_service.application.service.ProducerCreateAccountService;
-import com.bank.user_service.application.service.UserService;
+import com.bank.user_service.application.messsage.DefaultWalletMessage;
+import com.bank.user_service.application.service.*;
 import com.bank.user_service.domain.entity.IdentifyDocument;
 import com.bank.user_service.domain.entity.PersonalInformation;
 import com.bank.user_service.domain.entity.User;
@@ -23,6 +21,7 @@ import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -33,6 +32,7 @@ public class UserFacadeImpl implements UserFacade {
   private final IdentifyDocumentService identifyDocumentService;
   private final PersonalInformationService personalInformationService;
   private final ProducerCreateAccountService producerCreateAccountService;
+  private final ProducerCreateDefaultWalletService producerCreateDefaultWalletService;
 
   @Override
   @Transactional
@@ -66,9 +66,16 @@ public class UserFacadeImpl implements UserFacade {
                   .save(user)
                   .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.USER_NOT_FOUND)))
                   .map(
-                      userStored ->
-                          createAccountMessage.addUserIdAndReceiveMessage(userStored.getId()))
-                  .flatMap(this.producerCreateAccountService::onCreateAccountMessage)
+                      userStored -> {
+                        createAccountMessage.addUserId(userStored.getId());
+                        DefaultWalletMessage defaultWalletMessage =
+                            DefaultWalletMessage.builder().userId(user.getId()).build();
+                        return Flux.just(
+                            this.producerCreateAccountService.sendCreateAccountMessage(
+                                createAccountMessage),
+                            this.producerCreateDefaultWalletService.sendMessageCreateDefaultWallet(
+                                defaultWalletMessage));
+                      })
                   .thenReturn(BaseResponse.ok());
             });
   }

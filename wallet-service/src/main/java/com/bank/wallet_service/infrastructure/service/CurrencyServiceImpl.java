@@ -46,4 +46,9 @@ public class CurrencyServiceImpl implements CurrencyService {
             }))
         .all();
   }
+
+  @Override
+  public Mono<Currency> findByName(String name) {
+    return this.currencyRepository.findByCurrencyName(name);
+  }
 }

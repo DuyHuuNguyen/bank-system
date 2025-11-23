@@ -9,6 +9,20 @@ spring:
     url: r2dbc:postgresql://localhost:5432/db_wallet_banking
     username: postgres
     password: 1111
+  rabbitmq:
+    port: 5672
+    host: localhost
+    username: guest
+    password: guest
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 5
+          initial-interval: 1000ms
+          multiplier: 2.0
+          max-interval: 10000ms
+        acknowledge-mode: manual
 ---
 eureka:
   client:
@@ -22,3 +36,8 @@ grpc:
       negotiationType: plaintext
 #logging:
 #  config: classpath:log4j2-spring.xml
+---
+rabbit-MQ:
+  queue-default-wallet: 23130075-default-wallet
+  exchange-default-wallet: 23130075-default-wallet
+  routing-key-default-wallet: 23130075-default-wallet
