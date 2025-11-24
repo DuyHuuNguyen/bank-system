@@ -4,5 +4,5 @@ import com.bank.transaction_service.application.message.TransactionMessage;
 import reactor.core.publisher.Mono;
 
 public interface ConsumerHandleTransferService {
-    Mono<Void> consumeTransferMessage(TransactionMessage transactionMessage);
+  Mono<Void> consumeTransferMessage(TransactionMessage transactionMessage);
 }

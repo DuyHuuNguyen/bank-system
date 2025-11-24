@@ -34,7 +34,8 @@ public class IdentifyDocumentController {
   @Operation(tags = "IDENTIFY DOCUMENT API")
   @PreAuthorize("isAuthenticated()")
   @SecurityRequirement(name = "Bearer Authentication")
-  public Mono<BaseResponse<IdentifyDocumentResponse>> findIdentifyDocumentById(@PathVariable Long id) {
+  public Mono<BaseResponse<IdentifyDocumentResponse>> findIdentifyDocumentById(
+      @PathVariable Long id) {
     return this.identifyDocumentFacade.findIdentifyDocumentById(id);
   }
 }

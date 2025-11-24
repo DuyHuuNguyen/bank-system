@@ -9,8 +9,8 @@ import reactor.core.publisher.Mono;
 @Service
 @RequiredArgsConstructor
 public class ConsumerHandleWithdrawServiceImpl implements ConsumerHandleWithdrawService {
-    @Override
-    public Mono<Void> consumeDepositMessage(TransactionMessage transactionMessage) {
-        return null;
-    }
+  @Override
+  public Mono<Void> consumeDepositMessage(TransactionMessage transactionMessage) {
+    return null;
+  }
 }

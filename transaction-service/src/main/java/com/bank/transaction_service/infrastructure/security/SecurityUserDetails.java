@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Builder
 public class SecurityUserDetails implements UserDetails {
-
+  @Getter private Long userId;
   @Getter private Long accountId;
 
   private String password;

@@ -65,3 +65,13 @@ james-config-rabbitmq:
       retry-transfer-queue: transfer.try
       retry-deposit-queue: deposit.try
       retry-withdraw-queue: withdraw.try
+---
+grpc:
+  client:
+    parse-token:
+      address: 'static://localhost:9090'
+      negotiationType: plaintext
+    wallet-service:
+      address: 'static://localhost:9091'
+      negotiationType: plaintext
+

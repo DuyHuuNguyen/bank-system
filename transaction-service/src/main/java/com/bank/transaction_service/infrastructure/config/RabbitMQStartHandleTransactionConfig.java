@@ -51,16 +51,22 @@ public class RabbitMQStartHandleTransactionConfig {
 
   @Bean
   public Binding transferBinding() {
-    return BindingBuilder.bind(this.transferQueue()).to(this.paymentExchange()).with(this.routingForTransfer);
+    return BindingBuilder.bind(this.transferQueue())
+        .to(this.paymentExchange())
+        .with(this.routingForTransfer);
   }
 
   @Bean
   public Binding depositBinding() {
-    return BindingBuilder.bind(this.depositQueue()).to(this.paymentExchange()).with(this.routingForDeposit);
+    return BindingBuilder.bind(this.depositQueue())
+        .to(this.paymentExchange())
+        .with(this.routingForDeposit);
   }
 
   @Bean
   public Binding withdrawBinding() {
-    return BindingBuilder.bind(this.withdrawQueue()).to(this.paymentExchange()).with(this.routingForWithdraw);
+    return BindingBuilder.bind(this.withdrawQueue())
+        .to(this.paymentExchange())
+        .with(this.routingForWithdraw);
   }
 }

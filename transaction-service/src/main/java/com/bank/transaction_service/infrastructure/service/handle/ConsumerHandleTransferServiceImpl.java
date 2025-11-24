@@ -9,8 +9,8 @@ import reactor.core.publisher.Mono;
 @Service
 @RequiredArgsConstructor
 public class ConsumerHandleTransferServiceImpl implements ConsumerHandleTransferService {
-    @Override
-    public Mono<Void> consumeTransferMessage(TransactionMessage transactionMessage) {
-        return null;
-    }
+  @Override
+  public Mono<Void> consumeTransferMessage(TransactionMessage transactionMessage) {
+    return null;
+  }
 }

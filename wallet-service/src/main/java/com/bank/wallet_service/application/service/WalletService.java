@@ -9,6 +9,8 @@ public interface WalletService {
   Mono<Wallet> save(Wallet wallet);
 
   Flux<WalletCurrencyDTO> findWalletCurrencyByUserId(Long userId);
-  Mono<WalletCurrencyDTO> findWalletCurrencyByUserIdAndWalletId(Long userId,Long walletId);
+
+  Mono<WalletCurrencyDTO> findWalletCurrencyByUserIdAndWalletId(Long userId, Long walletId);
+
   Mono<WalletCurrencyDTO> findWalletById(Long id);
 }

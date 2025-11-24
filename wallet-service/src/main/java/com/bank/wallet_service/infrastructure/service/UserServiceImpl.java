@@ -4,5 +4,4 @@ import com.bank.wallet_service.application.service.UserService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl implements UserService {
-}
+public class UserServiceImpl implements UserService {}
