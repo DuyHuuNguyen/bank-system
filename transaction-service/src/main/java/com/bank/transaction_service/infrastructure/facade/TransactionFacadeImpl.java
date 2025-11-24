@@ -49,7 +49,7 @@ public class TransactionFacadeImpl implements TransactionFacade {
                                 .build();
                         return this.producerHandleTransactionService
                             .sendMessageHandleTransaction(transactionMessage)
-                            .doOnError(error -> log.info("Bug  roi"))
+                            .doOnError(error -> log.info("Bug roi"))
                             .doOnSuccess(ok -> log.info("Sent to handle queue"))
                             .thenReturn(BaseResponse.ok());
                       });
