@@ -3,6 +3,7 @@ package com.bank.user_service.infrastructure.rest.controller;
 import com.bank.user_service.api.facade.IdentifyDocumentFacade;
 import com.bank.user_service.api.request.ChangeIdentifyDocumentRequest;
 import com.bank.user_service.api.response.BaseResponse;
+import com.bank.user_service.api.response.IdentifyDocumentResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class IdentifyDocumentController {
   @Operation(tags = "IDENTIFY DOCUMENT API")
   @PreAuthorize("isAuthenticated()")
   @SecurityRequirement(name = "Bearer Authentication")
-  public Mono<BaseResponse<Void>> findIdentifyDocumentById(@PathVariable Long id) {
+  public Mono<BaseResponse<IdentifyDocumentResponse>> findIdentifyDocumentById(@PathVariable Long id) {
     return this.identifyDocumentFacade.findIdentifyDocumentById(id);
   }
 }

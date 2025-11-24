@@ -1,0 +1,28 @@
+syntax = "proto3";
+package com.example.wallet;
+
+option java_multiple_files = true;
+option java_package = "com.example.server.wallet";
+option java_outer_classname = "WalletProto";
+
+message WalletResponse{
+  int64 id=1;
+  string currency=2;
+  int64 userId=3;
+  string availableBalance=4;
+  string fullName=5;
+}
+
+message WalletOwnerRequest{
+  int64 walletId=1;
+  int64 userId=2;
+}
+
+message WalletRequest{
+  int64 walletId=1;
+}
+service WalletService{
+  rpc findWalletByRequest(WalletRequest)  returns ( WalletResponse);
+  rpc findWalletOwnerByRequest(WalletOwnerRequest)  returns ( WalletResponse);
+}
+

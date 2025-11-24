@@ -37,4 +37,7 @@ public class Transaction extends BaseEntity {
 
   @Column("beneficiary_wallet_id")
   private Long beneficiaryWalletId;
+
+  @Column("description")
+  private String description;
 }

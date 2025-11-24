@@ -41,3 +41,7 @@ rabbit-MQ:
   queue-default-wallet: 23130075-default-wallet
   exchange-default-wallet: 23130075-default-wallet
   routing-key-default-wallet: 23130075-default-wallet
+---
+grpc:
+  server:
+    port: 9091

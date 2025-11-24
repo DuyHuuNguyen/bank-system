@@ -15,4 +15,5 @@ public class WalletCurrencyDTO {
   private BigDecimal availableBalance;
   private String currency;
   private Boolean isDefault;
+  private Long userId;
 }

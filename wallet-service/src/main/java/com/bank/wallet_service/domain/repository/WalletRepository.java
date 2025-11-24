@@ -16,6 +16,7 @@ public interface WalletRepository extends R2dbcRepository<Wallet, Long> {
        ,w.available_balance 
        ,w.is_default
        ,c.currency_name
+       ,w.user_id
    from wallets w
    join currencies c
    on w.currency_id  = c.id
@@ -23,5 +24,32 @@ public interface WalletRepository extends R2dbcRepository<Wallet, Long> {
     """)
     Flux<WalletCurrencyDTO> findAllByUserId(Long userId);
 
+    @Query("""
+   select 
+       w.id
+       ,w.available_balance 
+       ,w.is_default
+       ,c.currency_name
+       ,w.user_id
+   from wallets w
+   join currencies c
+   on w.currency_id  = c.id
+   where w.user_id =:userId and w.id =:walletId
+    """)
+    Mono<WalletCurrencyDTO> findByUserIdAndWalletId(Long userId,Long walletId);
+
+    @Query("""
+   select 
+       w.id
+       ,w.available_balance 
+       ,w.is_default
+       ,c.currency_name
+       ,w.user_id
+   from wallets w
+   join currencies c
+   on w.currency_id  = c.id
+   where w.id =:walletId
+    """)
+    Mono<WalletCurrencyDTO> findWalletById(Long id);
 
 }

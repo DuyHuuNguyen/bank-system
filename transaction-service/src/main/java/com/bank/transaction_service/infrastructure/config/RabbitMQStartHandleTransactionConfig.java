@@ -50,17 +50,17 @@ public class RabbitMQStartHandleTransactionConfig {
   }
 
   @Bean
-  public Binding transferBinding(Queue transferQueue, TopicExchange paymentExchange) {
-    return BindingBuilder.bind(transferQueue).to(paymentExchange).with(this.routingForTransfer);
+  public Binding transferBinding() {
+    return BindingBuilder.bind(this.transferQueue()).to(this.paymentExchange()).with(this.routingForTransfer);
   }
 
   @Bean
-  public Binding depositBinding(Queue depositQueue, TopicExchange paymentExchange) {
-    return BindingBuilder.bind(depositQueue).to(paymentExchange).with(this.routingForDeposit);
+  public Binding depositBinding() {
+    return BindingBuilder.bind(this.depositQueue()).to(this.paymentExchange()).with(this.routingForDeposit);
   }
 
   @Bean
-  public Binding withdrawBinding(Queue withdrawQueue, TopicExchange paymentExchange) {
-    return BindingBuilder.bind(withdrawQueue).to(paymentExchange).with(this.routingForWithdraw);
+  public Binding withdrawBinding() {
+    return BindingBuilder.bind(this.withdrawQueue()).to(this.paymentExchange()).with(this.routingForWithdraw);
   }
 }

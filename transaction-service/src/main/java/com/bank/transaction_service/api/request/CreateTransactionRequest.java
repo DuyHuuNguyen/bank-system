@@ -1,13 +1,20 @@
 package com.bank.transaction_service.api.request;
 
+import com.bank.transaction_service.infrastructure.enums.PaymentRouting;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 public class CreateTransactionRequest {
-
-  //    private String
+    private String IdempotencyKey;
+    private PaymentRouting paymentRouting;
+    private Long fromWalletId;
+    private Long toWalletId;
+    private String description;
+    private BigDecimal amount;
 }

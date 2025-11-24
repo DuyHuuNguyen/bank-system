@@ -24,4 +24,14 @@ public class WalletServiceImpl implements WalletService {
   public Flux<WalletCurrencyDTO> findWalletCurrencyByUserId(Long userId) {
     return this.walletRepository.findAllByUserId(userId);
   }
+
+  @Override
+  public Mono<WalletCurrencyDTO> findWalletCurrencyByUserIdAndWalletId(Long userId, Long walletId) {
+    return walletRepository.findByUserIdAndWalletId(userId, walletId);
+  }
+
+  @Override
+  public Mono<WalletCurrencyDTO> findWalletById(Long id) {
+    return this.walletRepository.findWalletById(id);
+  }
 }
