@@ -1,3 +1,10 @@
 package com.bank.transaction_service.application.service;
 
-public interface WalletService {}
+import java.math.BigDecimal;
+import reactor.core.publisher.Mono;
+
+public interface WalletService {
+  Mono<Long> subBalanceWallet(Long id, BigDecimal amount, Long version);
+
+  Mono<Long> addBalanceWallet(Long id, BigDecimal amount, Long version);
+}

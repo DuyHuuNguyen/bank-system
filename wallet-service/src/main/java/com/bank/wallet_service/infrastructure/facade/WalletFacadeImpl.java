@@ -71,7 +71,7 @@ public class WalletFacadeImpl implements WalletFacade {
                         walletCurrencyDTO ->
                             WalletResponse.builder()
                                 .id(walletCurrencyDTO.getId())
-                                .currency(walletCurrencyDTO.getCurrency())
+                                .currency(walletCurrencyDTO.getCurrencyName())
                                 .availableBalance(walletCurrencyDTO.getAvailableBalance())
                                 .isDefault(walletCurrencyDTO.getIsDefault())
                                 .build())

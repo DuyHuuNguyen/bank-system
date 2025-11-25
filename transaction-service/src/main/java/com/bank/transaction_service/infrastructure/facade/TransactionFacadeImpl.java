@@ -25,12 +25,14 @@ public class TransactionFacadeImpl implements TransactionFacade {
 
   @Override
   public Mono<BaseResponse<Void>> handleTransaction(CreateTransactionRequest request) {
+    log.info("request {} ", request);
     return this.idempotencyService
         .hasKey(request.getIdempotencyKey())
         .flatMap(
             isUnIdempotency -> {
-              if (!isUnIdempotency)
-                return Mono.error(new RuntimeException("Idempotency check failed"));
+              log.info("check idempotency key {}", isUnIdempotency);
+              //              if (!isUnIdempotency)
+              //                return Mono.error(new RuntimeException("Idempotency check failed"));
               return ReactiveSecurityContextHolder.getContext()
                   .map(SecurityContext::getAuthentication)
                   .map(Authentication::getPrincipal)
@@ -46,7 +48,15 @@ public class TransactionFacadeImpl implements TransactionFacade {
                                 .description(request.getDescription())
                                 .amount(request.getAmount())
                                 .createdAt(Instant.now().toEpochMilli())
+                                .methodId(request.getMethodId())
                                 .build();
+                        log.info("transactionMessage {}", principal);
+                        log.info(
+                            "transactionMessage {} ,{}",
+                            principal.getAuthorities(),
+                            principal.getUserId());
+                        log.info("{}", transactionMessage);
+                        //                        return Mono.just(BaseResponse.ok());
                         return this.producerHandleTransactionService
                             .sendMessageHandleTransaction(transactionMessage)
                             .doOnError(error -> log.info("Bug roi"))

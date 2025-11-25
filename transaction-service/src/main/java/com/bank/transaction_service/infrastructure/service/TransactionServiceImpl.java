@@ -1,12 +1,20 @@
 package com.bank.transaction_service.infrastructure.service;
 
 import com.bank.transaction_service.application.service.TransactionService;
+import com.bank.transaction_service.domain.entity.Transaction;
 import com.bank.transaction_service.domain.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
   private final TransactionRepository transactionRepository;
+
+  @Override
+  public Mono<Transaction> save(Transaction transaction) {
+    if (transaction.getId() != null) transaction.reUpdate();
+    return this.transactionRepository.save(transaction);
+  }
 }

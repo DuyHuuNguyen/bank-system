@@ -1,3 +1,29 @@
 package com.bank.transaction_service.infrastructure.rest.controller;
 
-public class TransactionController {}
+import com.bank.transaction_service.api.facade.TransactionFacade;
+import com.bank.transaction_service.api.request.CreateTransactionRequest;
+import com.bank.transaction_service.api.response.BaseResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
+
+@RestController
+@RequestMapping("/api/v1/transactions")
+@RequiredArgsConstructor
+public class TransactionController {
+  private final TransactionFacade transactionFacade;
+
+  @PostMapping
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auths APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public Mono<BaseResponse<Void>> createTransaction(
+      @RequestBody CreateTransactionRequest createTransactionRequest) {
+    return this.transactionFacade.handleTransaction(createTransactionRequest);
+  }
+}

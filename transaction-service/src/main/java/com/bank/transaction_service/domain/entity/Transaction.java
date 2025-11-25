@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -13,6 +14,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Getter
 @SuperBuilder
 @NoArgsConstructor
+@ToString
 @AllArgsConstructor
 @Table("transactions")
 public class Transaction extends BaseEntity {

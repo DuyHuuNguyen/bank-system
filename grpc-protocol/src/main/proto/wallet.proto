@@ -11,6 +11,7 @@ message WalletResponse{
   int64 userId=3;
   string availableBalance=4;
   string fullName=5;
+  int64 version=6;
 }
 
 message WalletOwnerRequest{
@@ -21,6 +22,8 @@ message WalletOwnerRequest{
 message WalletRequest{
   int64 walletId=1;
 }
+
+
 service WalletService{
   rpc findWalletByRequest(WalletRequest)  returns ( WalletResponse);
   rpc findWalletOwnerByRequest(WalletOwnerRequest)  returns ( WalletResponse);

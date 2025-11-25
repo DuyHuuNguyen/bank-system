@@ -56,4 +56,10 @@ public interface WalletResponseOrBuilder extends
    */
   com.google.protobuf.ByteString
       getFullNameBytes();
+
+  /**
+   * <code>int64 version = 6;</code>
+   * @return The version.
+   */
+  long getVersion();
 }

@@ -49,19 +49,19 @@ public final class WalletProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\014wallet.proto\022\022com.example.wallet\"j\n\016Wa" +
+      "\n\014wallet.proto\022\022com.example.wallet\"{\n\016Wa" +
       "lletResponse\022\n\n\002id\030\001 \001(\003\022\020\n\010currency\030\002 \001" +
       "(\t\022\016\n\006userId\030\003 \001(\003\022\030\n\020availableBalance\030\004" +
-      " \001(\t\022\020\n\010fullName\030\005 \001(\t\"6\n\022WalletOwnerReq" +
-      "uest\022\020\n\010walletId\030\001 \001(\003\022\016\n\006userId\030\002 \001(\003\"!" +
-      "\n\rWalletRequest\022\020\n\010walletId\030\001 \001(\0032\325\001\n\rWa" +
-      "lletService\022\\\n\023findWalletByRequest\022!.com" +
-      ".example.wallet.WalletRequest\032\".com.exam" +
-      "ple.wallet.WalletResponse\022f\n\030findWalletO" +
-      "wnerByRequest\022&.com.example.wallet.Walle" +
-      "tOwnerRequest\032\".com.example.wallet.Walle" +
-      "tResponseB*\n\031com.example.server.walletB\013" +
-      "WalletProtoP\001b\006proto3"
+      " \001(\t\022\020\n\010fullName\030\005 \001(\t\022\017\n\007version\030\006 \001(\003\"" +
+      "6\n\022WalletOwnerRequest\022\020\n\010walletId\030\001 \001(\003\022" +
+      "\016\n\006userId\030\002 \001(\003\"!\n\rWalletRequest\022\020\n\010wall" +
+      "etId\030\001 \001(\0032\325\001\n\rWalletService\022\\\n\023findWall" +
+      "etByRequest\022!.com.example.wallet.WalletR" +
+      "equest\032\".com.example.wallet.WalletRespon" +
+      "se\022f\n\030findWalletOwnerByRequest\022&.com.exa" +
+      "mple.wallet.WalletOwnerRequest\032\".com.exa" +
+      "mple.wallet.WalletResponseB*\n\031com.exampl" +
+      "e.server.walletB\013WalletProtoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -72,7 +72,7 @@ public final class WalletProto {
     internal_static_com_example_wallet_WalletResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_example_wallet_WalletResponse_descriptor,
-        new java.lang.String[] { "Id", "Currency", "UserId", "AvailableBalance", "FullName", });
+        new java.lang.String[] { "Id", "Currency", "UserId", "AvailableBalance", "FullName", "Version", });
     internal_static_com_example_wallet_WalletOwnerRequest_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_com_example_wallet_WalletOwnerRequest_fieldAccessorTable = new
