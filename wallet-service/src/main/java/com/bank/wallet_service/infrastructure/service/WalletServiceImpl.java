@@ -4,7 +4,6 @@ import com.bank.wallet_service.application.dto.WalletCurrencyDTO;
 import com.bank.wallet_service.application.service.WalletService;
 import com.bank.wallet_service.domain.entity.Wallet;
 import com.bank.wallet_service.domain.repository.WalletRepository;
-import jakarta.annotation.PostConstruct;
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,14 +48,14 @@ public class WalletServiceImpl implements WalletService {
     return this.walletRepository.addBalanceWallet(id, amount, version);
   }
 
-  @PostConstruct
-  void run() {
-    this.findWalletById(1L)
-        .map(
-            ok -> {
-              log.info("{}", ok);
-              return ok;
-            })
-        .subscribe();
+  @Override
+  public Mono<Integer> transfer(
+      Long sourceWalletId,
+      Long sourceVersion,
+      Long destinationWalletId,
+      Long destinationVersion,
+      BigDecimal amount) {
+    return this.walletRepository.transfer(
+        sourceWalletId, sourceVersion, destinationWalletId, destinationVersion, amount);
   }
 }

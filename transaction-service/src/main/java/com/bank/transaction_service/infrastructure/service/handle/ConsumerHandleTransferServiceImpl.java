@@ -8,7 +8,6 @@ import com.bank.transaction_service.infrastructure.enums.TransactionMessageStatu
 import com.bank.transaction_service.infrastructure.enums.TransactionStatus;
 import com.bank.transaction_service.infrastructure.enums.TransactionType;
 import com.example.server.wallet.*;
-
 import java.math.BigDecimal;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -94,13 +93,14 @@ public class ConsumerHandleTransferServiceImpl implements ConsumerHandleTransfer
               log.info("hello ...{}", sourceWallet.getVersion());
               log.info("hello ...{}", destinationWallet.getVersion());
               BigDecimal availableBalance = new BigDecimal(sourceWallet.getAvailableBalance());
-              boolean isInsufficientFunds = availableBalance.compareTo(transactionMessage.getAmount()) < 0;
+              boolean isInsufficientFunds =
+                  availableBalance.compareTo(transactionMessage.getAmount()) < 0;
 
               boolean isSameCurrency =
                   sourceWallet.getCurrency().equals(destinationWallet.getCurrency());
 
               if (isInsufficientFunds) {
-                  log.info("insufficient funds and message transaction will send to fail queue");
+                log.info("insufficient funds and message transaction will send to fail queue");
 
                 transactionMessage.changeStatus(TransactionMessageStatus.INSUFFICIENT_FUNDS);
                 return this.producerFailTransactionService.sendFailTransactionMessage(
@@ -148,22 +148,33 @@ public class ConsumerHandleTransferServiceImpl implements ConsumerHandleTransfer
             });
   }
 
-  private Mono<Boolean> updateBalance(WalletResponse sourceWallet ,  WalletResponse destinationWallet, BigDecimal amount ){
-      UpdateBalanceRequest addBalanceRequest = UpdateBalanceRequest.newBuilder().setId(destinationWallet.getId()).setAmount(String.valueOf(amount)).setVersion(destinationWallet.getVersion()).build();
-      UpdateBalanceRequest subBalanceRequest = UpdateBalanceRequest.newBuilder().setId(sourceWallet.getId()).setAmount(String.valueOf(amount)).setVersion(sourceWallet.getVersion()).build();
+  private Mono<Boolean> updateBalance(
+      WalletResponse sourceWallet, WalletResponse destinationWallet, BigDecimal amount) {
+    UpdateBalanceRequest addBalanceRequest =
+        UpdateBalanceRequest.newBuilder()
+            .setId(destinationWallet.getId())
+            .setAmount(String.valueOf(amount))
+            .setVersion(destinationWallet.getVersion())
+            .build();
+    UpdateBalanceRequest subBalanceRequest =
+        UpdateBalanceRequest.newBuilder()
+            .setId(sourceWallet.getId())
+            .setAmount(String.valueOf(amount))
+            .setVersion(sourceWallet.getVersion())
+            .build();
 
-      Mono<UpdateBalanceResponse> addBalanceResponseMono = this.walletGrpcClientService.addBalanceWallet(addBalanceRequest);
-      Mono<UpdateBalanceResponse> subBalanceResponseMono = this.walletGrpcClientService.subBalanceWallet(subBalanceRequest);
+    Mono<UpdateBalanceResponse> addBalanceResponseMono =
+        this.walletGrpcClientService.addBalanceWallet(addBalanceRequest);
+    Mono<UpdateBalanceResponse> subBalanceResponseMono =
+        this.walletGrpcClientService.subBalanceWallet(subBalanceRequest);
 
-      return Mono.zip(addBalanceResponseMono,subBalanceResponseMono)
-              .flatMap(addBalanceAndSubBalanceResponse ->{
-                  UpdateBalanceResponse addBalanceResponse = addBalanceAndSubBalanceResponse.getT1();
-                  UpdateBalanceResponse subBalanceResponse = addBalanceAndSubBalanceResponse.getT2();
-//                  boolean isValidUpdate
-                  return null;
-              });
+    return Mono.zip(addBalanceResponseMono, subBalanceResponseMono)
+        .flatMap(
+            addBalanceAndSubBalanceResponse -> {
+              UpdateBalanceResponse addBalanceResponse = addBalanceAndSubBalanceResponse.getT1();
+              UpdateBalanceResponse subBalanceResponse = addBalanceAndSubBalanceResponse.getT2();
+              //                  boolean isValidUpdate
+              return null;
+            });
   }
-
-
-
 }

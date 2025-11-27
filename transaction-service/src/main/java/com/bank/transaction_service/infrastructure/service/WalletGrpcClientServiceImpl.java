@@ -2,8 +2,6 @@ package com.bank.transaction_service.infrastructure.service;
 
 import com.bank.transaction_service.application.service.WalletGrpcClientService;
 import com.example.server.wallet.*;
-
-import java.math.BigDecimal;
 import java.util.Objects;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
@@ -45,9 +43,4 @@ public class WalletGrpcClientServiceImpl implements WalletGrpcClientService {
             });
     //  add handle exception
   }
-
-
-
-
-
 }

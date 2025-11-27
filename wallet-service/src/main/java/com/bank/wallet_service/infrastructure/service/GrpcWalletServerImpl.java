@@ -6,12 +6,10 @@ import com.bank.wallet_service.application.service.WalletService;
 import com.bank.wallet_service.infrastructure.enums.ErrorCode;
 import com.example.server.wallet.*;
 import io.grpc.stub.StreamObserver;
-import java.math.BigDecimal;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 @Slf4j

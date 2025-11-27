@@ -2,6 +2,8 @@ package com.bank.wallet_service.infrastructure.facade;
 
 import com.bank.wallet_service.api.facade.WalletFacade;
 import com.bank.wallet_service.api.request.CreateWalletRequest;
+import com.bank.wallet_service.api.request.TransferRequest;
+import com.bank.wallet_service.api.request.TransferResponse;
 import com.bank.wallet_service.api.response.BaseResponse;
 import com.bank.wallet_service.api.response.WalletResponse;
 import com.bank.wallet_service.application.exception.EntityNotFoundException;
@@ -77,5 +79,23 @@ public class WalletFacadeImpl implements WalletFacade {
                                 .build())
                     .toList())
         .map(walletResponses -> BaseResponse.build(walletResponses, true));
+  }
+
+  @Override
+  @Transactional
+  public Mono<BaseResponse<TransferResponse>> transfer(TransferRequest request) {
+    return this.walletService
+        .transfer(
+            request.getSourceWalletId(),
+            request.getSourceVersion(),
+            request.getDestinationWalletId(),
+            request.getDestinationVersion(),
+            request.getAmount())
+        .thenReturn(BaseResponse.build(TransferResponse.builder().isSuccess(true).build(), true))
+        .onErrorResume(
+            exception ->
+                Mono.just(
+                    BaseResponse.build(
+                        TransferResponse.builder().isSuccess(false).build(), false)));
   }
 }

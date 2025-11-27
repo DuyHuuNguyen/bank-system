@@ -18,4 +18,11 @@ public interface WalletService {
   Mono<Integer> subBalanceWallet(Long id, BigDecimal amount, Long version);
 
   Mono<Integer> addBalanceWallet(Long id, BigDecimal amount, Long version);
+
+  Mono<Integer> transfer(
+      Long sourceWalletId,
+      Long sourceVersion,
+      Long destinationWalletId,
+      Long destinationVersion,
+      BigDecimal amount);
 }

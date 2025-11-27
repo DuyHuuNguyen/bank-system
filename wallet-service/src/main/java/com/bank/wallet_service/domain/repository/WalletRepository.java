@@ -78,4 +78,11 @@ public interface WalletRepository extends R2dbcRepository<Wallet, Long> {
     where id =:id and  version =:version
     """)
     Mono<Integer> addBalanceWallet(Long id, BigDecimal amount,Long version);
+
+
+    @Modifying
+    @Query("""
+    CALL transfer(:sourceWalletId, :destinationWalletId,:amount, :sourceVersion ,:destinationVersion);
+    """)
+    Mono<Integer> transfer( Long sourceWalletId, Long sourceVersion, Long destinationWalletId, Long destinationVersion, BigDecimal amount);
 }

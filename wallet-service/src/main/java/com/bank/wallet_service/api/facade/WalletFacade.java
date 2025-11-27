@@ -1,6 +1,8 @@
 package com.bank.wallet_service.api.facade;
 
 import com.bank.wallet_service.api.request.CreateWalletRequest;
+import com.bank.wallet_service.api.request.TransferRequest;
+import com.bank.wallet_service.api.request.TransferResponse;
 import com.bank.wallet_service.api.response.BaseResponse;
 import com.bank.wallet_service.api.response.WalletResponse;
 import java.util.List;
@@ -10,4 +12,6 @@ public interface WalletFacade {
   Mono<BaseResponse<Void>> createWallet(CreateWalletRequest request);
 
   Mono<BaseResponse<List<WalletResponse>>> findMyWallets();
+
+  Mono<BaseResponse<TransferResponse>> transfer(TransferRequest request);
 }
