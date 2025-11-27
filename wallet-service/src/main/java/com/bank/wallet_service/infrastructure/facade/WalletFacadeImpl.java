@@ -83,7 +83,7 @@ public class WalletFacadeImpl implements WalletFacade {
 
   @Override
   @Transactional
-  public Mono<BaseResponse<TransferResponse>> transfer(TransferRequest request) {
+  public Mono<TransferResponse> transfer(TransferRequest request) {
     return this.walletService
         .transfer(
             request.getSourceWalletId(),
@@ -91,11 +91,7 @@ public class WalletFacadeImpl implements WalletFacade {
             request.getDestinationWalletId(),
             request.getDestinationVersion(),
             request.getAmount())
-        .thenReturn(BaseResponse.build(TransferResponse.builder().isSuccess(true).build(), true))
-        .onErrorResume(
-            exception ->
-                Mono.just(
-                    BaseResponse.build(
-                        TransferResponse.builder().isSuccess(false).build(), false)));
+        .thenReturn(TransferResponse.builder().isSuccess(true).build())
+        .onErrorResume(exception -> Mono.just(TransferResponse.builder().isSuccess(false).build()));
   }
 }

@@ -23,34 +23,11 @@ import reactor.core.publisher.Mono;
 public class ConsumerHandleTransferServiceImpl implements ConsumerHandleTransferService {
   private final WalletGrpcClientService walletGrpcClientService;
   private final ProducerFailTransactionService producerFailTransactionService;
+  private final ProducerSuccessTransactionService producerSuccessTransactionService;
   private final TransactionService transactionService;
   private final TransactionMethodService transactionMethodService;
   private final MethodService methodService;
-
-  //    @RabbitListener(queues = "${james-config-rabbitmq.start-transaction.queue.transfer-queue}")
-  public void hehe(TransactionMessage transactionMessage) {
-    log.info(transactionMessage.toString());
-    //        return Mono.empty();
-  }
-  //
-  //    @PostConstruct
-  //    void run(){
-  //        WalletOwnerRequest fromWalletOwnerRequest =
-  // WalletOwnerRequest.newBuilder().setWalletId(1L)
-  //                .setUserId(3L).build();
-  //        WalletRequest toWalletRequest = WalletRequest.newBuilder().setWalletId(1L).build();
-  //        System.out.println("KKKKKKKKKKKKKKKKKKKKKKKKKKKk");
-  //            this.walletGrpcClientService.findWalletOwnerByRequest(fromWalletOwnerRequest)
-  //                .switchIfEmpty(Mono.error(new RuntimeException("miss exception for.. :)))")))
-  //                    .map(ok ->{
-  //                        log.info("ok {}",ok);
-  //                        return ok;
-  //                    })
-  //                .subscribe();
-  ////        Mono<WalletResponse> toWalletResponseMono =
-  // this.walletGrpcClientService.findWalletByRequest(toWalletRequest)
-  ////                .switchIfEmpty(Mono.error(new RuntimeException("miss exception for.. :)))")));
-  //    }
+  private final WalletService walletService;
 
   @Override
   @Transactional
@@ -67,18 +44,13 @@ public class ConsumerHandleTransferServiceImpl implements ConsumerHandleTransfer
         WalletRequest.newBuilder().setWalletId(transactionMessage.getDestinationWalletId()).build();
 
     Mono<WalletResponse> fromWalletReponseMono =
-        this.walletGrpcClientService
-            .findWalletOwnerByRequest(fromWalletOwnerRequest)
-            .switchIfEmpty(Mono.error(new RuntimeException("miss exception for.. :)))")));
+        this.walletGrpcClientService.findWalletOwnerByRequest(fromWalletOwnerRequest);
     Mono<WalletResponse> toWalletResponseMono =
-        this.walletGrpcClientService
-            .findWalletByRequest(toWalletRequest)
-            .switchIfEmpty(Mono.error(new RuntimeException("miss exception for.. :)))")));
-    log.info("hello ... ");
+        this.walletGrpcClientService.findWalletByRequest(toWalletRequest);
+
     return Mono.zip(fromWalletReponseMono, toWalletResponseMono)
         .flatMap(
             sourceAndDestinationWallet -> {
-              log.info("hello ...1");
               WalletResponse sourceWallet = sourceAndDestinationWallet.getT1();
               WalletResponse destinationWallet = sourceAndDestinationWallet.getT2();
 
@@ -87,11 +59,10 @@ public class ConsumerHandleTransferServiceImpl implements ConsumerHandleTransfer
 
               if (isNotFoundSourceWallet || isNotFoundDestinationWallet) {
                 log.info("Wallet not found and Message transaction will send to fail queue");
-                return Mono.empty().then();
+                return this.producerFailTransactionService
+                    .sendFailTransactionMessage(transactionMessage)
+                    .doOnSuccess(ok -> log.info("Fail transfer process"));
               }
-
-              log.info("hello ...{}", sourceWallet.getVersion());
-              log.info("hello ...{}", destinationWallet.getVersion());
               BigDecimal availableBalance = new BigDecimal(sourceWallet.getAvailableBalance());
               boolean isInsufficientFunds =
                   availableBalance.compareTo(transactionMessage.getAmount()) < 0;
@@ -106,6 +77,7 @@ public class ConsumerHandleTransferServiceImpl implements ConsumerHandleTransfer
                 return this.producerFailTransactionService.sendFailTransactionMessage(
                     transactionMessage);
               }
+
               if (!isSameCurrency) {
                 log.info("Not fund api transfer not same currency");
                 return Mono.empty().then();
@@ -123,58 +95,54 @@ public class ConsumerHandleTransferServiceImpl implements ConsumerHandleTransfer
                       .description(transactionMessage.getDescription())
                       .status(TransactionStatus.SUCCESSFUL)
                       .build();
-              log.info("ok ?????  {} ", transaction.toString());
+              log.info("{}", transaction.toString());
 
-              return this.transactionService
-                  .save(transaction)
-                  .switchIfEmpty(Mono.error(new Exception("code di em")))
+              return this.walletService
+                  .transfer(
+                      sourceWallet.getId(),
+                      sourceWallet.getVersion(),
+                      destinationWallet.getId(),
+                      destinationWallet.getVersion(),
+                      transactionMessage.getAmount())
                   .flatMap(
-                      transactionStored -> {
-                        return this.methodService
-                            .findById(transactionMessage.getMethodId())
+                      isDoneTransfer -> {
+                        log.info("!!!! importance ???? Is done transfer {}", isDoneTransfer);
+                        if (!isDoneTransfer) {
+                          transactionMessage.changeStatus(
+                              TransactionMessageStatus.INSUFFICIENT_FUNDS);
+                          return this.producerFailTransactionService
+                              .sendFailTransactionMessage(transactionMessage)
+                              .doOnSuccess(ok -> log.info("Fail transfer process"))
+                              .then();
+                        }
+                        log.info("-> go to store transaction and method");
+                        return this.transactionService
+                            .save(transaction)
                             .flatMap(
-                                method -> {
-                                  TransactionMethod transactionMethod =
-                                      TransactionMethod.builder()
-                                          .methodId(method.getId())
-                                          .transactionId(transactionStored.getId())
-                                          .build();
-                                  return this.transactionMethodService
-                                      .save(transactionMethod)
-                                      .doOnSuccess(ok -> log.info("send request sub money"))
-                                      .then();
+                                transactionStored -> {
+                                  return this.methodService
+                                      .findById(transactionMessage.getMethodId())
+                                      .flatMap(
+                                          method -> {
+                                            TransactionMethod transactionMethod =
+                                                TransactionMethod.builder()
+                                                    .methodId(method.getId())
+                                                    .transactionId(transactionStored.getId())
+                                                    .build();
+
+                                            return this.transactionMethodService
+                                                .save(transactionMethod)
+                                                .flatMap(
+                                                    transactionMethodStored ->
+                                                        this.producerSuccessTransactionService
+                                                            .sendSuccessTransactionMessage(
+                                                                transactionMessage))
+                                                .doOnSuccess(
+                                                    ok -> log.info("Done transfer process"))
+                                                .then();
+                                          });
                                 });
                       });
-            });
-  }
-
-  private Mono<Boolean> updateBalance(
-      WalletResponse sourceWallet, WalletResponse destinationWallet, BigDecimal amount) {
-    UpdateBalanceRequest addBalanceRequest =
-        UpdateBalanceRequest.newBuilder()
-            .setId(destinationWallet.getId())
-            .setAmount(String.valueOf(amount))
-            .setVersion(destinationWallet.getVersion())
-            .build();
-    UpdateBalanceRequest subBalanceRequest =
-        UpdateBalanceRequest.newBuilder()
-            .setId(sourceWallet.getId())
-            .setAmount(String.valueOf(amount))
-            .setVersion(sourceWallet.getVersion())
-            .build();
-
-    Mono<UpdateBalanceResponse> addBalanceResponseMono =
-        this.walletGrpcClientService.addBalanceWallet(addBalanceRequest);
-    Mono<UpdateBalanceResponse> subBalanceResponseMono =
-        this.walletGrpcClientService.subBalanceWallet(subBalanceRequest);
-
-    return Mono.zip(addBalanceResponseMono, subBalanceResponseMono)
-        .flatMap(
-            addBalanceAndSubBalanceResponse -> {
-              UpdateBalanceResponse addBalanceResponse = addBalanceAndSubBalanceResponse.getT1();
-              UpdateBalanceResponse subBalanceResponse = addBalanceAndSubBalanceResponse.getT2();
-              //                  boolean isValidUpdate
-              return null;
             });
   }
 }

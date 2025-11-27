@@ -12,6 +12,6 @@ public class ProducerFailTransactionServiceImpl implements ProducerFailTransacti
   @Override
   public Mono<Void> sendFailTransactionMessage(TransactionMessage transactionMessage) {
     log.info("fail:)))");
-    return null;
+    return Mono.empty();
   }
 }

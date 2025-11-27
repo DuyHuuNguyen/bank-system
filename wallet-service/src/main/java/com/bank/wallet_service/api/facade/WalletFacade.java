@@ -13,5 +13,5 @@ public interface WalletFacade {
 
   Mono<BaseResponse<List<WalletResponse>>> findMyWallets();
 
-  Mono<BaseResponse<TransferResponse>> transfer(TransferRequest request);
+  Mono<TransferResponse> transfer(TransferRequest request);
 }

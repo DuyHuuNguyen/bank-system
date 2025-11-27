@@ -18,6 +18,8 @@ spring:
     listener:
       simple:
         acknowledge-mode: auto
+#        retry:
+#          enabled: true
     host: localhost
     password: guest
     username: guest

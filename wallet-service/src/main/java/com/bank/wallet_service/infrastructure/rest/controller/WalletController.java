@@ -42,7 +42,7 @@ public class WalletController {
 
   @Hidden
   @PostMapping(value = "/internal/transfer", headers = "secret-api-key=transfer-23130075")
-  public Mono<BaseResponse<TransferResponse>> transfer(@RequestBody TransferRequest request) {
+  public Mono<TransferResponse> transfer(@RequestBody TransferRequest request) {
     return this.walletFacade.transfer(request);
   }
 }
