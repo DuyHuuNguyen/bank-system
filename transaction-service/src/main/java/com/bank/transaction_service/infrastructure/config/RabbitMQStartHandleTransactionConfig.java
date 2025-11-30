@@ -1,6 +1,8 @@
 package com.bank.transaction_service.infrastructure.config;
 
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -68,5 +70,10 @@ public class RabbitMQStartHandleTransactionConfig {
     return BindingBuilder.bind(this.withdrawQueue())
         .to(this.paymentExchange())
         .with(this.routingForWithdraw);
+  }
+
+  @Bean
+  public MessageConverter jsonMessageConverter() {
+    return new Jackson2JsonMessageConverter();
   }
 }

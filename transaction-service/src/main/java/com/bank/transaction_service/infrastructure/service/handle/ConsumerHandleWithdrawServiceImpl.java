@@ -81,6 +81,7 @@ public class ConsumerHandleWithdrawServiceImpl implements ConsumerHandleWithdraw
                         }
                         return this.transactionService
                             .save(transaction)
+                                .doOnError(error -> log.error("Can't save transaction {}", transaction))
                             .flatMap(
                                 transactionStored -> {
                                   return this.methodService
@@ -99,6 +100,7 @@ public class ConsumerHandleWithdrawServiceImpl implements ConsumerHandleWithdraw
 
                                             return this.transactionMethodService
                                                 .save(transactionMethod)
+                                                    .doOnError(error -> log.error("Can't save transaction-method {}", transactionMethod))
                                                 .flatMap(
                                                     transactionMethodStored ->
                                                         this.producerSuccessTransactionService
