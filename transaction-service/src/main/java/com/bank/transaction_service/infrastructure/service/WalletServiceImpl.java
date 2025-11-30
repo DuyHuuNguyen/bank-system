@@ -1,6 +1,8 @@
 package com.bank.transaction_service.infrastructure.service;
 
+import com.bank.transaction_service.api.request.DepositRequest;
 import com.bank.transaction_service.api.request.TransferRequest;
+import com.bank.transaction_service.api.response.DepositResponse;
 import com.bank.transaction_service.api.response.TransferResponse;
 import com.bank.transaction_service.application.service.WalletService;
 import java.math.BigDecimal;
@@ -25,8 +27,25 @@ public class WalletServiceImpl implements WalletService {
   }
 
   @Override
-  public Mono<Long> addBalanceWallet(Long id, BigDecimal amount, Long version) {
-    return null;
+  public Mono<Boolean> addBalanceWallet(Long id, BigDecimal amount, Long version) {
+    return WebClient.create("http://localhost:8083")
+        .method(HttpMethod.POST)
+        .uri("/api/v1/wallets/internal/deposit")
+        .header("secret-api-key", "transfer-23130075")
+        .bodyValue(DepositRequest.builder().id(id).amount(amount).version(version).build())
+        .accept(MediaType.APPLICATION_JSON)
+        .retrieve()
+        .bodyToMono(DepositResponse.class)
+        .map(DepositResponse::getIsSuccess)
+        .doOnSuccess(ok -> log.debug("deposit completed success={}", ok))
+        .doOnError(
+            e ->
+                log.warn(
+                    "transfer failed source={} dest={} amount={} -> {}",
+                    id,
+                    id,
+                    amount,
+                    e.toString()));
   }
 
   @Override

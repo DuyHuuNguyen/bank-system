@@ -1,6 +1,7 @@
 package com.bank.transaction_service.api.request;
 
 import com.bank.transaction_service.infrastructure.enums.PaymentRouting;
+import com.bank.transaction_service.infrastructure.enums.TransactionMethodEnum;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,5 +21,5 @@ public class CreateTransactionRequest {
   private Long toWalletId;
   private String description;
   private BigDecimal amount;
-  private Long methodId;
+  private TransactionMethodEnum transactionMethodEnum;
 }

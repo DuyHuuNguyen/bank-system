@@ -21,4 +21,9 @@ public class MethodServiceImpl implements MethodService {
   public Mono<Method> save(Method method) {
     return this.methodRepository.save(method);
   }
+
+  @Override
+  public Mono<Method> findByMethodName(String methodName) {
+    return this.methodRepository.findMethodByMethodName(methodName);
+  }
 }

@@ -32,7 +32,8 @@ public class SecurityConfig {
     "/swagger-ui/**",
     "/v3/api-docs/**",
     "/actuator/**",
-    "/api/v1/wallets/internal/transfer"
+    "/api/v1/wallets/internal/transfer",
+    "/api/v1/wallets/internal/deposit"
   };
 
   @Bean

@@ -6,4 +6,5 @@ import lombok.Getter;
 public enum TransactionMessageStatus {
   INSUFFICIENT_FUNDS,
   SUCCESSFUL,
+  ERROR_DEPOSIT,
 }

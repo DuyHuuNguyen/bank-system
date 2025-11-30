@@ -2,9 +2,11 @@ package com.bank.wallet_service.infrastructure.facade;
 
 import com.bank.wallet_service.api.facade.WalletFacade;
 import com.bank.wallet_service.api.request.CreateWalletRequest;
+import com.bank.wallet_service.api.request.DepositRequest;
 import com.bank.wallet_service.api.request.TransferRequest;
-import com.bank.wallet_service.api.request.TransferResponse;
 import com.bank.wallet_service.api.response.BaseResponse;
+import com.bank.wallet_service.api.response.DepositResponse;
+import com.bank.wallet_service.api.response.TransferResponse;
 import com.bank.wallet_service.api.response.WalletResponse;
 import com.bank.wallet_service.application.exception.EntityNotFoundException;
 import com.bank.wallet_service.application.service.AuthGrpcClientService;
@@ -15,6 +17,7 @@ import com.bank.wallet_service.infrastructure.enums.ErrorCode;
 import com.bank.wallet_service.infrastructure.security.SecurityUserDetails;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
@@ -22,12 +25,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class WalletFacadeImpl implements WalletFacade {
   private final WalletService walletService;
   private final CurrencyService currencyService;
   private final AuthGrpcClientService authGrpcClientService;
+
+  private final int ONE_RECORD_UPDATED = 1;
 
   @Override
   @Transactional
@@ -93,5 +99,21 @@ public class WalletFacadeImpl implements WalletFacade {
             request.getAmount())
         .thenReturn(TransferResponse.builder().isSuccess(true).build())
         .onErrorResume(exception -> Mono.just(TransferResponse.builder().isSuccess(false).build()));
+  }
+
+  @Override
+  @Transactional
+  public Mono<DepositResponse> deposit(DepositRequest request) {
+    return this.walletService
+        .addBalanceWallet(request.getId(), request.getAmount(), request.getVersion())
+        .flatMap(
+            rowUpdated -> {
+              log.info("deposit {}", rowUpdated);
+              if (rowUpdated == ONE_RECORD_UPDATED) {
+                return Mono.just(DepositResponse.builder().isSuccess(true).build());
+              }
+
+              return Mono.just(DepositResponse.builder().isSuccess(false).build());
+            });
   }
 }

@@ -48,7 +48,7 @@ public class TransactionFacadeImpl implements TransactionFacade {
                                 .description(request.getDescription())
                                 .amount(request.getAmount())
                                 .createdAt(Instant.now().toEpochMilli())
-                                .methodId(request.getMethodId())
+                                .transactionMethodEnum(request.getTransactionMethodEnum())
                                 .build();
                         log.info("transactionMessage {}", principal);
                         log.info(

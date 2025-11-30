@@ -1,4 +1,4 @@
-package com.bank.wallet_service.api.request;
+package com.bank.transaction_service.api.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Getter
-public class TransferResponse {
+public class DepositResponse {
   private Boolean isSuccess;
 }

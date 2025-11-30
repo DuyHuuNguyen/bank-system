@@ -7,4 +7,6 @@ public interface MethodService {
   Mono<Method> findById(Long id);
 
   Mono<Method> save(Method method);
+
+  Mono<Method> findByMethodName(String methodName);
 }

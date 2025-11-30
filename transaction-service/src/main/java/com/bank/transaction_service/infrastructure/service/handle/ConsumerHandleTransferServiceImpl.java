@@ -121,7 +121,8 @@ public class ConsumerHandleTransferServiceImpl implements ConsumerHandleTransfer
                             .flatMap(
                                 transactionStored -> {
                                   return this.methodService
-                                      .findById(transactionMessage.getMethodId())
+                                      .findByMethodName(
+                                          transactionMessage.getTransactionMethodEnum().getMethod())
                                       .flatMap(
                                           method -> {
                                             TransactionMethod transactionMethod =
