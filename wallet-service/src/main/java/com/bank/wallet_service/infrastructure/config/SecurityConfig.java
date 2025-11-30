@@ -33,7 +33,8 @@ public class SecurityConfig {
     "/v3/api-docs/**",
     "/actuator/**",
     "/api/v1/wallets/internal/transfer",
-    "/api/v1/wallets/internal/deposit"
+    "/api/v1/wallets/internal/deposit",
+    "/api/v1/wallets/internal/withdraw"
   };
 
   @Bean

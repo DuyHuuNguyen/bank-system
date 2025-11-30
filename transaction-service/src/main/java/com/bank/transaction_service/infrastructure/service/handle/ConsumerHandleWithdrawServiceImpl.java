@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -27,6 +28,7 @@ public class ConsumerHandleWithdrawServiceImpl implements ConsumerHandleWithdraw
   private final WalletService walletService;
 
   @Override
+  @RabbitListener(queues = "${james-config-rabbitmq.start-transaction.queue.withdraw-queue}")
   public Mono<Void> consumeDepositMessage(TransactionMessage transactionMessage) {
     log.info(transactionMessage.toString());
     boolean isWithDrawMessage =
@@ -58,7 +60,7 @@ public class ConsumerHandleWithdrawServiceImpl implements ConsumerHandleWithdraw
                       .currency(walletResponse.getCurrency())
                       .transactionBalance(transactionMessage.getAmount())
                       .referenceCode(UUID.randomUUID().toString())
-                      .type(TransactionType.DEPOSIT)
+                      .type(TransactionType.WITHDRAW)
                       .createdAt(transactionMessage.getCreatedAt())
                       .description(transactionMessage.getDescription())
                       .status(TransactionStatus.SUCCESSFUL)
