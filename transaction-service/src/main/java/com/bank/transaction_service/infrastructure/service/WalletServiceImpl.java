@@ -2,11 +2,12 @@ package com.bank.transaction_service.infrastructure.service;
 
 import com.bank.transaction_service.api.request.DepositRequest;
 import com.bank.transaction_service.api.request.TransferRequest;
+import com.bank.transaction_service.api.request.WithDrawRequest;
 import com.bank.transaction_service.api.response.DepositResponse;
 import com.bank.transaction_service.api.response.TransferResponse;
+import com.bank.transaction_service.api.response.WithDrawResponse;
 import com.bank.transaction_service.application.service.WalletService;
 import java.math.BigDecimal;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -16,14 +17,29 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
+// @RequiredArgsConstructor
 public class WalletServiceImpl implements WalletService {
 
-  private final WebClient webClient;
-
   @Override
-  public Mono<Long> subBalanceWallet(Long id, BigDecimal amount, Long version) {
-    return null;
+  public Mono<Boolean> subBalanceWallet(Long id, BigDecimal amount, Long version) {
+    return WebClient.create("http://localhost:8083")
+        .method(HttpMethod.POST)
+        .uri("/api/v1/wallets/internal/withdraw")
+        .header("secret-api-key", "transfer-23130075")
+        .bodyValue(WithDrawRequest.builder().id(id).amount(amount).version(version).build())
+        .accept(MediaType.APPLICATION_JSON)
+        .retrieve()
+        .bodyToMono(WithDrawResponse.class)
+        .map(WithDrawResponse::getIsSuccess)
+        .doOnSuccess(ok -> log.debug("deposit completed success={}", ok))
+        .doOnError(
+            e ->
+                log.warn(
+                    "transfer failed source={} dest={} amount={} -> {}",
+                    id,
+                    id,
+                    amount,
+                    e.toString()));
   }
 
   @Override

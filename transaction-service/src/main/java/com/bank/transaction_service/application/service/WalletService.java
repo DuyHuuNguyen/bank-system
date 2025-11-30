@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import reactor.core.publisher.Mono;
 
 public interface WalletService {
-  Mono<Long> subBalanceWallet(Long id, BigDecimal amount, Long version);
+  Mono<Boolean> subBalanceWallet(Long id, BigDecimal amount, Long version);
 
   Mono<Boolean> addBalanceWallet(Long id, BigDecimal amount, Long version);
 

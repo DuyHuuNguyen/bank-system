@@ -4,10 +4,8 @@ import com.bank.wallet_service.api.facade.WalletFacade;
 import com.bank.wallet_service.api.request.CreateWalletRequest;
 import com.bank.wallet_service.api.request.DepositRequest;
 import com.bank.wallet_service.api.request.TransferRequest;
-import com.bank.wallet_service.api.response.BaseResponse;
-import com.bank.wallet_service.api.response.DepositResponse;
-import com.bank.wallet_service.api.response.TransferResponse;
-import com.bank.wallet_service.api.response.WalletResponse;
+import com.bank.wallet_service.api.request.WithDrawRequest;
+import com.bank.wallet_service.api.response.*;
 import com.bank.wallet_service.application.exception.EntityNotFoundException;
 import com.bank.wallet_service.application.service.AuthGrpcClientService;
 import com.bank.wallet_service.application.service.CurrencyService;
@@ -114,6 +112,22 @@ public class WalletFacadeImpl implements WalletFacade {
               }
 
               return Mono.just(DepositResponse.builder().isSuccess(false).build());
+            });
+  }
+
+  @Override
+  @Transactional
+  public Mono<WithDrawResponse> withDraw(WithDrawRequest request) {
+    return this.walletService
+        .subBalanceWallet(request.getId(), request.getAmount(), request.getVersion())
+        .flatMap(
+            rowUpdated -> {
+              log.info("withDraw {}", rowUpdated);
+              if (rowUpdated == ONE_RECORD_UPDATED) {
+                return Mono.just(WithDrawResponse.builder().isSuccess(true).build());
+              }
+
+              return Mono.just(WithDrawResponse.builder().isSuccess(false).build());
             });
   }
 }

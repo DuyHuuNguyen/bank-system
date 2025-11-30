@@ -4,10 +4,8 @@ import com.bank.wallet_service.api.facade.WalletFacade;
 import com.bank.wallet_service.api.request.CreateWalletRequest;
 import com.bank.wallet_service.api.request.DepositRequest;
 import com.bank.wallet_service.api.request.TransferRequest;
-import com.bank.wallet_service.api.response.BaseResponse;
-import com.bank.wallet_service.api.response.DepositResponse;
-import com.bank.wallet_service.api.response.TransferResponse;
-import com.bank.wallet_service.api.response.WalletResponse;
+import com.bank.wallet_service.api.request.WithDrawRequest;
+import com.bank.wallet_service.api.response.*;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -52,5 +50,11 @@ public class WalletController {
   @PostMapping(value = "/internal/deposit", headers = "secret-api-key=transfer-23130075")
   public Mono<DepositResponse> deposit(@RequestBody DepositRequest request) {
     return this.walletFacade.deposit(request);
+  }
+
+  @Hidden
+  @PostMapping(value = "/internal/withdraw", headers = "secret-api-key=transfer-23130075")
+  public Mono<WithDrawResponse> withDraw(@RequestBody WithDrawRequest request) {
+    return this.walletFacade.withDraw(request);
   }
 }
