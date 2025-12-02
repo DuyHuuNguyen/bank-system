@@ -12,4 +12,7 @@ public interface TransactionFacade {
 
   Mono<BaseResponse<PaginationResponse<TransactionResponse>>> findByFilter(
       TransactionCriteria criteria);
+
+  Mono<BaseResponse<PaginationResponse<TransactionResponse>>> findMyTransactionByFilter(
+      TransactionCriteria criteria);
 }

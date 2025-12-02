@@ -6,11 +6,16 @@ import com.bank.transaction_service.api.request.TransactionCriteria;
 import com.bank.transaction_service.api.response.BaseResponse;
 import com.bank.transaction_service.api.response.PaginationResponse;
 import com.bank.transaction_service.api.response.TransactionResponse;
+import com.bank.transaction_service.application.exception.EntityNotFoundException;
+import com.bank.transaction_service.application.exception.IdempotencyException;
 import com.bank.transaction_service.application.message.TransactionMessage;
 import com.bank.transaction_service.application.service.IdempotencyService;
 import com.bank.transaction_service.application.service.ProducerHandleTransactionService;
 import com.bank.transaction_service.application.service.TransactionService;
+import com.bank.transaction_service.application.service.WalletGrpcClientService;
+import com.bank.transaction_service.infrastructure.enums.ErrorCode;
 import com.bank.transaction_service.infrastructure.security.SecurityUserDetails;
+import com.example.server.wallet.WalletOwnerRequest;
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +32,7 @@ public class TransactionFacadeImpl implements TransactionFacade {
   private final ProducerHandleTransactionService producerHandleTransactionService;
   private final IdempotencyService idempotencyService;
   private final TransactionService transactionService;
+  private final WalletGrpcClientService walletGrpcClientService;
 
   @Override
   public Mono<BaseResponse<Void>> handleTransaction(CreateTransactionRequest request) {
@@ -37,7 +43,7 @@ public class TransactionFacadeImpl implements TransactionFacade {
             isUnIdempotency -> {
               log.info("check idempotency key {}", isUnIdempotency);
               if (!isUnIdempotency)
-                return Mono.error(new RuntimeException("Idempotency check failed"));
+                return Mono.error(new IdempotencyException(ErrorCode.DUPLICATED_TRANSACTION));
               return ReactiveSecurityContextHolder.getContext()
                   .map(SecurityContext::getAuthentication)
                   .map(Authentication::getPrincipal)
@@ -104,5 +110,67 @@ public class TransactionFacadeImpl implements TransactionFacade {
                         .pageSize(criteria.getPageSize())
                         .build(),
                     true));
+  }
+
+  @Override
+  public Mono<BaseResponse<PaginationResponse<TransactionResponse>>> findMyTransactionByFilter(
+      TransactionCriteria criteria) {
+
+    return ReactiveSecurityContextHolder.getContext()
+        .map(SecurityContext::getAuthentication)
+        .map(Authentication::getPrincipal)
+        .cast(SecurityUserDetails.class)
+        .flatMap(
+            securityUserDetails -> {
+              WalletOwnerRequest walletOwnerRequest =
+                  WalletOwnerRequest.newBuilder()
+                      .setWalletId(criteria.getSourceWalletId())
+                      .setUserId(securityUserDetails.getUserId())
+                      .build();
+              return this.walletGrpcClientService
+                  .findWalletOwnerByRequest(walletOwnerRequest)
+                  .flatMap(
+                      walletResponse -> {
+                        boolean isValidSourceWalletId = walletResponse.getId() != 0;
+                        if (!isValidSourceWalletId)
+                          return Mono.error(
+                              new EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND));
+                        criteria.addOffset();
+                        return this.transactionService
+                            .findAll(criteria)
+                            .collectList()
+                            .map(
+                                transactionHistoryDTOS ->
+                                    transactionHistoryDTOS.stream()
+                                        .map(
+                                            transactionHistoryDTO ->
+                                                TransactionResponse.builder()
+                                                    .id(transactionHistoryDTO.getId())
+                                                    .balance(transactionHistoryDTO.getBalance())
+                                                    .sourceWalletId(
+                                                        transactionHistoryDTO.getSourceWalletId())
+                                                    .destinationWalletId(
+                                                        transactionHistoryDTO
+                                                            .getDestinationWalletId())
+                                                    .description(
+                                                        transactionHistoryDTO.getDescription())
+                                                    .createdAt(transactionHistoryDTO.getCreatedAt())
+                                                    .methodName(
+                                                        transactionHistoryDTO.getMethodName())
+                                                    .status(transactionHistoryDTO.getStatus())
+                                                    .type(transactionHistoryDTO.getType())
+                                                    .build())
+                                        .toList())
+                            .map(
+                                transactionResponses ->
+                                    BaseResponse.build(
+                                        PaginationResponse.<TransactionResponse>builder()
+                                            .data(transactionResponses)
+                                            .currentPage(criteria.getCurrentPage())
+                                            .pageSize(criteria.getPageSize())
+                                            .build(),
+                                        true));
+                      });
+            });
   }
 }

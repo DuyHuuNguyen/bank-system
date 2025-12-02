@@ -31,7 +31,7 @@ public class TransactionController {
     return this.transactionFacade.handleTransaction(createTransactionRequest);
   }
 
-  @GetMapping
+  @GetMapping("/managements")
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Auths APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
@@ -39,5 +39,15 @@ public class TransactionController {
   public Mono<BaseResponse<PaginationResponse<TransactionResponse>>> findByFilter(
       @NotNull TransactionCriteria criteria) {
     return this.transactionFacade.findByFilter(criteria);
+  }
+
+  @GetMapping
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auths APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public Mono<BaseResponse<PaginationResponse<TransactionResponse>>> findMyTransactionByFilter(
+      @NotNull TransactionCriteria criteria) {
+    return this.transactionFacade.findMyTransactionByFilter(criteria);
   }
 }
