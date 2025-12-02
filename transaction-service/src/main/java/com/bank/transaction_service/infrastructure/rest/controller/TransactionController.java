@@ -44,6 +44,16 @@ public class TransactionController {
     return this.transactionFacade.findByFilter(criteria);
   }
 
+  @GetMapping("/managements/transaction-detail/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"TRANSACTION APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public Mono<BaseResponse<TransactionDetailResponse>> findDetailTransaction(
+      @PathVariable Long id) {
+    return this.transactionFacade.findTransactionDetailById(id);
+  }
+
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"TRANSACTION APIs"})
@@ -62,6 +72,6 @@ public class TransactionController {
   public Mono<BaseResponse<TransactionDetailResponse>> findDetailTransaction(
       @PathVariable Long id, @Valid @NotNull TransactionDetailRequest request) {
     request.withId(id);
-    return this.transactionFacade.findTransactionDetailById(request);
+    return this.transactionFacade.findTransactionDetail(request);
   }
 }

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ErrorCode {
   WALLET_NOT_FOUND("Wallet not found"),
-  DUPLICATED_TRANSACTION("Duplicated transaction");
+  DUPLICATED_TRANSACTION("Duplicated transaction"),
+  TRANSACTION_NOT_FOUND("Transaction not found");
   private final String message;
 }

@@ -18,6 +18,8 @@ public interface TransactionFacade {
   Mono<BaseResponse<PaginationResponse<TransactionResponse>>> findMyTransactionByFilter(
       TransactionCriteria criteria);
 
-  Mono<BaseResponse<TransactionDetailResponse>> findTransactionDetailById(
+  Mono<BaseResponse<TransactionDetailResponse>> findTransactionDetail(
       TransactionDetailRequest request);
+
+  Mono<BaseResponse<TransactionDetailResponse>> findTransactionDetailById(Long id);
 }

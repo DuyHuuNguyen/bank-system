@@ -183,7 +183,7 @@ public class TransactionFacadeImpl implements TransactionFacade {
   }
 
   @Override
-  public Mono<BaseResponse<TransactionDetailResponse>> findTransactionDetailById(
+  public Mono<BaseResponse<TransactionDetailResponse>> findTransactionDetail(
       TransactionDetailRequest request) {
 
     return ReactiveSecurityContextHolder.getContext()
@@ -236,9 +236,6 @@ public class TransactionFacadeImpl implements TransactionFacade {
                                   TransactionHistoryDTO transactionHistoryDTO =
                                       sourceWalletAndBeneficiaryWalletProfileAndTransactionHistoryMono
                                           .getT3();
-                                  log.info(" {} ", sourceWalletProfile);
-                                  log.info(" {} ", beneficiaryWalletProfile);
-                                  log.info(" {} ", transactionHistoryDTO);
 
                                   TransactionDetailResponse transactionDetailResponse =
                                       TransactionDetailResponse.builder()
@@ -266,6 +263,61 @@ public class TransactionFacadeImpl implements TransactionFacade {
                                   return Mono.just(
                                       BaseResponse.build(transactionDetailResponse, true));
                                 });
+                      });
+            });
+  }
+
+  @Override
+  public Mono<BaseResponse<TransactionDetailResponse>> findTransactionDetailById(Long id) {
+    return this.transactionService
+        .findTransactionHistoryById(id)
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.TRANSACTION_NOT_FOUND)))
+        .flatMap(
+            transactionHistoryDTO -> {
+              WalletProfileRequest sourceWalletProfileRequest =
+                  WalletProfileRequest.newBuilder()
+                      .setWalletId(transactionHistoryDTO.getSourceWalletId())
+                      .build();
+              Mono<WalletProfileResponse> sourceWalletProfileMono =
+                  this.walletGrpcClientService.findWalletProfileByRequest(
+                      sourceWalletProfileRequest);
+              WalletProfileRequest beneficiaryWalletProfileRequest =
+                  WalletProfileRequest.newBuilder()
+                      .setWalletId(transactionHistoryDTO.getDestinationWalletId())
+                      .build();
+              Mono<WalletProfileResponse> beneficiaryWalletProfileMono =
+                  this.walletGrpcClientService.findWalletProfileByRequest(
+                      beneficiaryWalletProfileRequest);
+              return Mono.zip(sourceWalletProfileMono, beneficiaryWalletProfileMono)
+                  .flatMap(
+                      sourceWalletAndBeneficiaryWalletProfile -> {
+                        WalletProfileResponse sourceWalletProfile =
+                            sourceWalletAndBeneficiaryWalletProfile.getT1();
+                        WalletProfileResponse beneficiaryWalletProfile =
+                            sourceWalletAndBeneficiaryWalletProfile.getT2();
+                        TransactionDetailResponse transactionDetailResponse =
+                            TransactionDetailResponse.builder()
+                                .id(transactionHistoryDTO.getId())
+                                .balance(transactionHistoryDTO.getTransactionBalance())
+                                .currency(transactionHistoryDTO.getCurrency())
+                                .status(transactionHistoryDTO.getStatus())
+                                .type(transactionHistoryDTO.getType())
+                                .referenceCode(transactionHistoryDTO.getReferenceCode())
+                                .sourceWallet(
+                                    WalletDTO.builder()
+                                        .id(sourceWalletProfile.getId())
+                                        .userId(sourceWalletProfile.getUserId())
+                                        .fullName(sourceWalletProfile.getFullName())
+                                        .build())
+                                .beneficiaryWallet(
+                                    WalletDTO.builder()
+                                        .id(beneficiaryWalletProfile.getId())
+                                        .userId(beneficiaryWalletProfile.getUserId())
+                                        .fullName(beneficiaryWalletProfile.getFullName())
+                                        .build())
+                                .description(transactionHistoryDTO.getDescription())
+                                .build();
+                        return Mono.just(BaseResponse.build(transactionDetailResponse, true));
                       });
             });
   }
