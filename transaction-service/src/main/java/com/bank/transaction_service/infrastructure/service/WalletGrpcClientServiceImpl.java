@@ -19,13 +19,10 @@ public class WalletGrpcClientServiceImpl implements WalletGrpcClientService {
         .flatMap(
             signal -> {
               if (signal.isOnError()) {
-                // Trả về 1 event khi có lỗi
                 return Mono.just(WalletResponse.newBuilder().build());
               }
-              // Trả về data gốc
               return Mono.just(Objects.requireNonNull(signal.get()));
             });
-    // add handle exception
   }
 
   @Override
@@ -35,12 +32,23 @@ public class WalletGrpcClientServiceImpl implements WalletGrpcClientService {
         .flatMap(
             signal -> {
               if (signal.isOnError()) {
-                // Trả về 1 event khi có lỗi
                 return Mono.just(WalletResponse.newBuilder().build());
               }
-              // Trả về data gốc
               return Mono.just(Objects.requireNonNull(signal.get()));
             });
-    //  add handle exception
+  }
+
+  @Override
+  public Mono<WalletProfileResponse> findWalletProfileByRequest(WalletProfileRequest request) {
+    return Mono.fromCallable(
+            () -> this.walletServiceBlockingStub.findWalletProfileByRequest(request))
+        .materialize()
+        .flatMap(
+            signal -> {
+              if (signal.isOnError()) {
+                return Mono.just(WalletProfileResponse.newBuilder().build());
+              }
+              return Mono.just(Objects.requireNonNull(signal.get()));
+            });
   }
 }

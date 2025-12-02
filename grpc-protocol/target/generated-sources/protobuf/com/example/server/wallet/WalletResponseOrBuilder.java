@@ -46,18 +46,6 @@ public interface WalletResponseOrBuilder extends
       getAvailableBalanceBytes();
 
   /**
-   * <code>string fullName = 5;</code>
-   * @return The fullName.
-   */
-  java.lang.String getFullName();
-  /**
-   * <code>string fullName = 5;</code>
-   * @return The bytes for fullName.
-   */
-  com.google.protobuf.ByteString
-      getFullNameBytes();
-
-  /**
    * <code>int64 version = 6;</code>
    * @return The version.
    */

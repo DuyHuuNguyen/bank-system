@@ -30,12 +30,6 @@ public class TransactionServiceImpl implements TransactionService {
   }
 
   @Override
-  public Flux<TransactionHistoryDTO> findAll(String conditions, Integer pageSize, Integer pageNumber) {
-    int offset = (pageNumber - 1) * pageSize;
-    return this.transactionRepository.findAll(conditions,pageSize,offset);
-  }
-
-  @Override
   public Flux<TransactionHistoryDTO> findAll(TransactionCriteria criteria) {
     StringBuilder sql = new StringBuilder("""
         select t.id, t.transaction_balance
@@ -105,7 +99,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
      return spec.map((row, meta) ->TransactionHistoryDTO.builder()
             .id(row.get("id", Long.class))
-            .balance(row.get("transaction_balance",String.class))
+            .transactionBalance(row.get("transaction_balance",String.class))
             .sourceWalletId(row.get("source_wallet_id",Long.class))
             .destinationWalletId(row.get("beneficiary_wallet_id",Long.class))
             .description(row.get("description",String.class))
@@ -114,5 +108,10 @@ public class TransactionServiceImpl implements TransactionService {
              .status(row.get("transaction_status",String.class))
              .type(row.get("transaction_type",String.class))
             .build()).all();
+  }
+
+  @Override
+  public Mono<TransactionHistoryDTO> findTransactionHistoryById(Long id) {
+    return this.transactionRepository.findTransactionHistoryById(id);
   }
 }

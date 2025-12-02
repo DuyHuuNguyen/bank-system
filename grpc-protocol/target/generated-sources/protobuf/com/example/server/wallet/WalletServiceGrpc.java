@@ -74,6 +74,37 @@ public final class WalletServiceGrpc {
     return getFindWalletOwnerByRequestMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.example.server.wallet.WalletProfileRequest,
+      com.example.server.wallet.WalletProfileResponse> getFindWalletProfileByRequestMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "findWalletProfileByRequest",
+      requestType = com.example.server.wallet.WalletProfileRequest.class,
+      responseType = com.example.server.wallet.WalletProfileResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.example.server.wallet.WalletProfileRequest,
+      com.example.server.wallet.WalletProfileResponse> getFindWalletProfileByRequestMethod() {
+    io.grpc.MethodDescriptor<com.example.server.wallet.WalletProfileRequest, com.example.server.wallet.WalletProfileResponse> getFindWalletProfileByRequestMethod;
+    if ((getFindWalletProfileByRequestMethod = WalletServiceGrpc.getFindWalletProfileByRequestMethod) == null) {
+      synchronized (WalletServiceGrpc.class) {
+        if ((getFindWalletProfileByRequestMethod = WalletServiceGrpc.getFindWalletProfileByRequestMethod) == null) {
+          WalletServiceGrpc.getFindWalletProfileByRequestMethod = getFindWalletProfileByRequestMethod =
+              io.grpc.MethodDescriptor.<com.example.server.wallet.WalletProfileRequest, com.example.server.wallet.WalletProfileResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "findWalletProfileByRequest"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.example.server.wallet.WalletProfileRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.example.server.wallet.WalletProfileResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new WalletServiceMethodDescriptorSupplier("findWalletProfileByRequest"))
+              .build();
+        }
+      }
+    }
+    return getFindWalletProfileByRequestMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -150,6 +181,13 @@ public final class WalletServiceGrpc {
         io.grpc.stub.StreamObserver<com.example.server.wallet.WalletResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getFindWalletOwnerByRequestMethod(), responseObserver);
     }
+
+    /**
+     */
+    default void findWalletProfileByRequest(com.example.server.wallet.WalletProfileRequest request,
+        io.grpc.stub.StreamObserver<com.example.server.wallet.WalletProfileResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getFindWalletProfileByRequestMethod(), responseObserver);
+    }
   }
 
   /**
@@ -194,6 +232,14 @@ public final class WalletServiceGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getFindWalletOwnerByRequestMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void findWalletProfileByRequest(com.example.server.wallet.WalletProfileRequest request,
+        io.grpc.stub.StreamObserver<com.example.server.wallet.WalletProfileResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getFindWalletProfileByRequestMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -225,6 +271,13 @@ public final class WalletServiceGrpc {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getFindWalletOwnerByRequestMethod(), getCallOptions(), request);
     }
+
+    /**
+     */
+    public com.example.server.wallet.WalletProfileResponse findWalletProfileByRequest(com.example.server.wallet.WalletProfileRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getFindWalletProfileByRequestMethod(), getCallOptions(), request);
+    }
   }
 
   /**
@@ -255,6 +308,13 @@ public final class WalletServiceGrpc {
     public com.example.server.wallet.WalletResponse findWalletOwnerByRequest(com.example.server.wallet.WalletOwnerRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getFindWalletOwnerByRequestMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.example.server.wallet.WalletProfileResponse findWalletProfileByRequest(com.example.server.wallet.WalletProfileRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getFindWalletProfileByRequestMethod(), getCallOptions(), request);
     }
   }
 
@@ -289,10 +349,19 @@ public final class WalletServiceGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getFindWalletOwnerByRequestMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.example.server.wallet.WalletProfileResponse> findWalletProfileByRequest(
+        com.example.server.wallet.WalletProfileRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getFindWalletProfileByRequestMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_FIND_WALLET_BY_REQUEST = 0;
   private static final int METHODID_FIND_WALLET_OWNER_BY_REQUEST = 1;
+  private static final int METHODID_FIND_WALLET_PROFILE_BY_REQUEST = 2;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -318,6 +387,10 @@ public final class WalletServiceGrpc {
         case METHODID_FIND_WALLET_OWNER_BY_REQUEST:
           serviceImpl.findWalletOwnerByRequest((com.example.server.wallet.WalletOwnerRequest) request,
               (io.grpc.stub.StreamObserver<com.example.server.wallet.WalletResponse>) responseObserver);
+          break;
+        case METHODID_FIND_WALLET_PROFILE_BY_REQUEST:
+          serviceImpl.findWalletProfileByRequest((com.example.server.wallet.WalletProfileRequest) request,
+              (io.grpc.stub.StreamObserver<com.example.server.wallet.WalletProfileResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -351,6 +424,13 @@ public final class WalletServiceGrpc {
               com.example.server.wallet.WalletOwnerRequest,
               com.example.server.wallet.WalletResponse>(
                 service, METHODID_FIND_WALLET_OWNER_BY_REQUEST)))
+        .addMethod(
+          getFindWalletProfileByRequestMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              com.example.server.wallet.WalletProfileRequest,
+              com.example.server.wallet.WalletProfileResponse>(
+                service, METHODID_FIND_WALLET_PROFILE_BY_REQUEST)))
         .build();
   }
 
@@ -401,6 +481,7 @@ public final class WalletServiceGrpc {
               .setSchemaDescriptor(new WalletServiceFileDescriptorSupplier())
               .addMethod(getFindWalletByRequestMethod())
               .addMethod(getFindWalletOwnerByRequestMethod())
+              .addMethod(getFindWalletProfileByRequestMethod())
               .build();
         }
       }

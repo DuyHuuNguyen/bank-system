@@ -34,6 +34,9 @@ grpc:
     parse-token:
       address: 'static://localhost:9090'
       negotiationType: plaintext
+    user-service:
+      address: 'static://localhost:9092'
+      negotiationType: plaintext
 #logging:
 #  config: classpath:log4j2-spring.xml
 ---

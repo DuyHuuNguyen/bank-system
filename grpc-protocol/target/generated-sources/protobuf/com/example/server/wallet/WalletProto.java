@@ -40,6 +40,16 @@ public final class WalletProto {
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_com_example_wallet_WalletRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_example_wallet_WalletProfileRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_example_wallet_WalletProfileRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_example_wallet_WalletProfileResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_com_example_wallet_WalletProfileResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -49,19 +59,25 @@ public final class WalletProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\014wallet.proto\022\022com.example.wallet\"{\n\016Wa" +
+      "\n\014wallet.proto\022\022com.example.wallet\"i\n\016Wa" +
       "lletResponse\022\n\n\002id\030\001 \001(\003\022\020\n\010currency\030\002 \001" +
       "(\t\022\016\n\006userId\030\003 \001(\003\022\030\n\020availableBalance\030\004" +
-      " \001(\t\022\020\n\010fullName\030\005 \001(\t\022\017\n\007version\030\006 \001(\003\"" +
-      "6\n\022WalletOwnerRequest\022\020\n\010walletId\030\001 \001(\003\022" +
-      "\016\n\006userId\030\002 \001(\003\"!\n\rWalletRequest\022\020\n\010wall" +
-      "etId\030\001 \001(\0032\325\001\n\rWalletService\022\\\n\023findWall" +
-      "etByRequest\022!.com.example.wallet.WalletR" +
-      "equest\032\".com.example.wallet.WalletRespon" +
-      "se\022f\n\030findWalletOwnerByRequest\022&.com.exa" +
-      "mple.wallet.WalletOwnerRequest\032\".com.exa" +
-      "mple.wallet.WalletResponseB*\n\031com.exampl" +
-      "e.server.walletB\013WalletProtoP\001b\006proto3"
+      " \001(\t\022\017\n\007version\030\006 \001(\003\"6\n\022WalletOwnerRequ" +
+      "est\022\020\n\010walletId\030\001 \001(\003\022\016\n\006userId\030\002 \001(\003\"!\n" +
+      "\rWalletRequest\022\020\n\010walletId\030\001 \001(\003\"(\n\024Wall" +
+      "etProfileRequest\022\020\n\010walletId\030\001 \001(\003\"E\n\025Wa" +
+      "lletProfileResponse\022\n\n\002id\030\001 \001(\003\022\016\n\006userI" +
+      "d\030\002 \001(\003\022\020\n\010fullName\030\003 \001(\t2\310\002\n\rWalletServ" +
+      "ice\022\\\n\023findWalletByRequest\022!.com.example" +
+      ".wallet.WalletRequest\032\".com.example.wall" +
+      "et.WalletResponse\022f\n\030findWalletOwnerByRe" +
+      "quest\022&.com.example.wallet.WalletOwnerRe" +
+      "quest\032\".com.example.wallet.WalletRespons" +
+      "e\022q\n\032findWalletProfileByRequest\022(.com.ex" +
+      "ample.wallet.WalletProfileRequest\032).com." +
+      "example.wallet.WalletProfileResponseB*\n\031" +
+      "com.example.server.walletB\013WalletProtoP\001" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -72,7 +88,7 @@ public final class WalletProto {
     internal_static_com_example_wallet_WalletResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_example_wallet_WalletResponse_descriptor,
-        new java.lang.String[] { "Id", "Currency", "UserId", "AvailableBalance", "FullName", "Version", });
+        new java.lang.String[] { "Id", "Currency", "UserId", "AvailableBalance", "Version", });
     internal_static_com_example_wallet_WalletOwnerRequest_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_com_example_wallet_WalletOwnerRequest_fieldAccessorTable = new
@@ -85,6 +101,18 @@ public final class WalletProto {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_com_example_wallet_WalletRequest_descriptor,
         new java.lang.String[] { "WalletId", });
+    internal_static_com_example_wallet_WalletProfileRequest_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_com_example_wallet_WalletProfileRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_com_example_wallet_WalletProfileRequest_descriptor,
+        new java.lang.String[] { "WalletId", });
+    internal_static_com_example_wallet_WalletProfileResponse_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_com_example_wallet_WalletProfileResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_com_example_wallet_WalletProfileResponse_descriptor,
+        new java.lang.String[] { "Id", "UserId", "FullName", });
     descriptor.resolveAllFeaturesImmutable();
   }
 

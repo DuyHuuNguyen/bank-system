@@ -2,6 +2,7 @@ package com.bank.wallet_service.infrastructure.service;
 
 import com.bank.wallet_service.application.dto.WalletCurrencyDTO;
 import com.bank.wallet_service.application.exception.EntityNotFoundException;
+import com.bank.wallet_service.application.service.UserGrpcClientService;
 import com.bank.wallet_service.application.service.WalletService;
 import com.bank.wallet_service.infrastructure.enums.ErrorCode;
 import com.example.server.wallet.*;
@@ -17,6 +18,45 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class GrpcWalletServerImpl extends WalletServiceGrpc.WalletServiceImplBase {
   private final WalletService walletService;
+  private final UserGrpcClientService userGrpcClientService;
+
+  @Override
+  public void findWalletProfileByRequest(
+      WalletProfileRequest request, StreamObserver<WalletProfileResponse> responseObserver) {
+    this.walletService
+        .findById(request.getWalletId())
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND)))
+        .flatMap(
+            wallet -> {
+              return this.userGrpcClientService
+                  .findUserNameById(wallet.getUserId())
+                  .doOnError(error -> log.info("Error {}", error))
+                  .switchIfEmpty(
+                      Mono.error(new EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND)))
+                  .map(
+                      userNameResponse ->
+                          WalletProfileResponse.newBuilder()
+                              .setId(wallet.getId())
+                              .setUserId(wallet.getUserId())
+                              .setFullName(userNameResponse.getFullName())
+                              .build());
+            })
+        .onErrorResume(
+            err -> {
+              log.warn("Error while finding wallet");
+              return Mono.just(
+                  WalletProfileResponse.newBuilder()
+                      .setId(-1L)
+                      .setUserId(-1L)
+                      .setFullName("")
+                      .build());
+            })
+        .subscribe(
+            response -> {
+              responseObserver.onNext(response);
+              responseObserver.onCompleted();
+            });
+  }
 
   @Override
   public void findWalletOwnerByRequest(
@@ -28,14 +68,13 @@ public class GrpcWalletServerImpl extends WalletServiceGrpc.WalletServiceImplBas
         .doOnNext(ok -> log.info("resp {} ", ok))
         .onErrorResume(
             err -> {
-              log.error("Error while finding wallet", err);
+              log.warn("Error while finding wallet");
               return Mono.just(
                   WalletResponse.newBuilder()
                       .setId(-1)
                       .setUserId(-1)
                       .setAvailableBalance("")
                       .setCurrency("")
-                      .setFullName("Not found")
                       .setVersion(-1)
                       .build());
             })
@@ -57,14 +96,13 @@ public class GrpcWalletServerImpl extends WalletServiceGrpc.WalletServiceImplBas
         .doOnNext(ok -> log.info("resp {} ", ok))
         .onErrorResume(
             err -> {
-              log.error("Error while finding wallet", err);
+              log.warn("Error while finding wallet");
               return Mono.just(
                   WalletResponse.newBuilder()
                       .setId(-1)
                       .setUserId(-1)
                       .setAvailableBalance("")
                       .setCurrency("")
-                      .setFullName("Not found")
                       .setVersion(-1)
                       .build());
             })
@@ -83,7 +121,6 @@ public class GrpcWalletServerImpl extends WalletServiceGrpc.WalletServiceImplBas
             .setAvailableBalance(
                 Optional.ofNullable(walletCurrencyDTO.getAvailableBalance().toString()).orElse(""))
             .setCurrency(Optional.ofNullable(walletCurrencyDTO.getCurrencyName()).orElse(""))
-            .setFullName("James dev java")
             .setVersion(Optional.ofNullable(walletCurrencyDTO.getVersion()).orElse(-1L))
             .build());
   }

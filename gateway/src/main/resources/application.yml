@@ -13,7 +13,7 @@ springdoc:
   api-docs:
     enabled: true
   swagger-ui:
-    disable-swagger-default-url: true
+    disable-swagger-default-url: false
     urls:
       - name: auth-service
         url: /auth-service/v3/api-docs

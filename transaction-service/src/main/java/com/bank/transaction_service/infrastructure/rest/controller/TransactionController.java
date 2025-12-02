@@ -3,11 +3,14 @@ package com.bank.transaction_service.infrastructure.rest.controller;
 import com.bank.transaction_service.api.facade.TransactionFacade;
 import com.bank.transaction_service.api.request.CreateTransactionRequest;
 import com.bank.transaction_service.api.request.TransactionCriteria;
+import com.bank.transaction_service.api.request.TransactionDetailRequest;
 import com.bank.transaction_service.api.response.BaseResponse;
 import com.bank.transaction_service.api.response.PaginationResponse;
+import com.bank.transaction_service.api.response.TransactionDetailResponse;
 import com.bank.transaction_service.api.response.TransactionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +26,7 @@ public class TransactionController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.OK)
-  @Operation(tags = {"Auths APIs"})
+  @Operation(tags = {"TRANSACTION APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("isAuthenticated()")
   public Mono<BaseResponse<Void>> createTransaction(
@@ -33,7 +36,7 @@ public class TransactionController {
 
   @GetMapping("/managements")
   @ResponseStatus(HttpStatus.OK)
-  @Operation(tags = {"Auths APIs"})
+  @Operation(tags = {"TRANSACTION APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public Mono<BaseResponse<PaginationResponse<TransactionResponse>>> findByFilter(
@@ -43,11 +46,22 @@ public class TransactionController {
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  @Operation(tags = {"Auths APIs"})
+  @Operation(tags = {"TRANSACTION APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("isAuthenticated()")
   public Mono<BaseResponse<PaginationResponse<TransactionResponse>>> findMyTransactionByFilter(
-      @NotNull TransactionCriteria criteria) {
+      @Valid @NotNull TransactionCriteria criteria) {
     return this.transactionFacade.findMyTransactionByFilter(criteria);
+  }
+
+  @GetMapping("/transaction-detail/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"TRANSACTION APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public Mono<BaseResponse<TransactionDetailResponse>> findDetailTransaction(
+      @PathVariable Long id, @Valid @NotNull TransactionDetailRequest request) {
+    request.withId(id);
+    return this.transactionFacade.findTransactionDetailById(request);
   }
 }

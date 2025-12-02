@@ -9,7 +9,7 @@ import lombok.*;
 @Getter
 public class TransactionHistoryDTO {
   private Long id;
-  private String balance;
+  private String transactionBalance;
   private Long sourceWalletId;
   private Long destinationWalletId;
   private String description;
@@ -17,4 +17,6 @@ public class TransactionHistoryDTO {
   private String methodName;
   private String status;
   private String type;
+  private String referenceCode;
+  private String currency;
 }

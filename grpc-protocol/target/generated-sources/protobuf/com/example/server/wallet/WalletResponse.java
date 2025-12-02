@@ -29,7 +29,6 @@ private static final long serialVersionUID = 0L;
   private WalletResponse() {
     currency_ = "";
     availableBalance_ = "";
-    fullName_ = "";
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -145,45 +144,6 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int FULLNAME_FIELD_NUMBER = 5;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object fullName_ = "";
-  /**
-   * <code>string fullName = 5;</code>
-   * @return The fullName.
-   */
-  @java.lang.Override
-  public java.lang.String getFullName() {
-    java.lang.Object ref = fullName_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      fullName_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string fullName = 5;</code>
-   * @return The bytes for fullName.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getFullNameBytes() {
-    java.lang.Object ref = fullName_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      fullName_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
   public static final int VERSION_FIELD_NUMBER = 6;
   private long version_ = 0L;
   /**
@@ -221,9 +181,6 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessage.isStringEmpty(availableBalance_)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 4, availableBalance_);
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fullName_)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 5, fullName_);
-    }
     if (version_ != 0L) {
       output.writeInt64(6, version_);
     }
@@ -249,9 +206,6 @@ private static final long serialVersionUID = 0L;
     }
     if (!com.google.protobuf.GeneratedMessage.isStringEmpty(availableBalance_)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(4, availableBalance_);
-    }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fullName_)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(5, fullName_);
     }
     if (version_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
@@ -280,8 +234,6 @@ private static final long serialVersionUID = 0L;
         != other.getUserId()) return false;
     if (!getAvailableBalance()
         .equals(other.getAvailableBalance())) return false;
-    if (!getFullName()
-        .equals(other.getFullName())) return false;
     if (getVersion()
         != other.getVersion()) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
@@ -305,8 +257,6 @@ private static final long serialVersionUID = 0L;
         getUserId());
     hash = (37 * hash) + AVAILABLEBALANCE_FIELD_NUMBER;
     hash = (53 * hash) + getAvailableBalance().hashCode();
-    hash = (37 * hash) + FULLNAME_FIELD_NUMBER;
-    hash = (53 * hash) + getFullName().hashCode();
     hash = (37 * hash) + VERSION_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
         getVersion());
@@ -445,7 +395,6 @@ private static final long serialVersionUID = 0L;
       currency_ = "";
       userId_ = 0L;
       availableBalance_ = "";
-      fullName_ = "";
       version_ = 0L;
       return this;
     }
@@ -493,9 +442,6 @@ private static final long serialVersionUID = 0L;
         result.availableBalance_ = availableBalance_;
       }
       if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.fullName_ = fullName_;
-      }
-      if (((from_bitField0_ & 0x00000020) != 0)) {
         result.version_ = version_;
       }
     }
@@ -526,11 +472,6 @@ private static final long serialVersionUID = 0L;
       if (!other.getAvailableBalance().isEmpty()) {
         availableBalance_ = other.availableBalance_;
         bitField0_ |= 0x00000008;
-        onChanged();
-      }
-      if (!other.getFullName().isEmpty()) {
-        fullName_ = other.fullName_;
-        bitField0_ |= 0x00000010;
         onChanged();
       }
       if (other.getVersion() != 0L) {
@@ -582,14 +523,9 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 34
-            case 42: {
-              fullName_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000010;
-              break;
-            } // case 42
             case 48: {
               version_ = input.readInt64();
-              bitField0_ |= 0x00000020;
+              bitField0_ |= 0x00000010;
               break;
             } // case 48
             default: {
@@ -817,78 +753,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object fullName_ = "";
-    /**
-     * <code>string fullName = 5;</code>
-     * @return The fullName.
-     */
-    public java.lang.String getFullName() {
-      java.lang.Object ref = fullName_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        fullName_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string fullName = 5;</code>
-     * @return The bytes for fullName.
-     */
-    public com.google.protobuf.ByteString
-        getFullNameBytes() {
-      java.lang.Object ref = fullName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        fullName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string fullName = 5;</code>
-     * @param value The fullName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setFullName(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      fullName_ = value;
-      bitField0_ |= 0x00000010;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string fullName = 5;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearFullName() {
-      fullName_ = getDefaultInstance().getFullName();
-      bitField0_ = (bitField0_ & ~0x00000010);
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string fullName = 5;</code>
-     * @param value The bytes for fullName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setFullNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      fullName_ = value;
-      bitField0_ |= 0x00000010;
-      onChanged();
-      return this;
-    }
-
     private long version_ ;
     /**
      * <code>int64 version = 6;</code>
@@ -906,7 +770,7 @@ private static final long serialVersionUID = 0L;
     public Builder setVersion(long value) {
 
       version_ = value;
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -915,7 +779,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearVersion() {
-      bitField0_ = (bitField0_ & ~0x00000020);
+      bitField0_ = (bitField0_ & ~0x00000010);
       version_ = 0L;
       onChanged();
       return this;

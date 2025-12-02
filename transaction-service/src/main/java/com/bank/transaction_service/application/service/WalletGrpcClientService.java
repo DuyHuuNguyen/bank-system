@@ -8,4 +8,6 @@ public interface WalletGrpcClientService {
   Mono<WalletResponse> findWalletByRequest(WalletRequest request);
 
   Mono<WalletResponse> findWalletOwnerByRequest(WalletOwnerRequest walletOwnerRequest);
+
+  Mono<WalletProfileResponse> findWalletProfileByRequest(WalletProfileRequest request);
 }

@@ -58,4 +58,9 @@ public class WalletServiceImpl implements WalletService {
     return this.walletRepository.transfer(
         sourceWalletId, sourceVersion, destinationWalletId, destinationVersion, amount);
   }
+
+  @Override
+  public Mono<Wallet> findById(Long id) {
+    return this.walletRepository.findById(id);
+  }
 }

@@ -25,4 +25,6 @@ public interface WalletService {
       Long destinationWalletId,
       Long destinationVersion,
       BigDecimal amount);
+
+  Mono<Wallet> findById(Long id);
 }
