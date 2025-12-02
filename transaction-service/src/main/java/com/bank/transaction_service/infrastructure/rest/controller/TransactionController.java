@@ -2,9 +2,13 @@ package com.bank.transaction_service.infrastructure.rest.controller;
 
 import com.bank.transaction_service.api.facade.TransactionFacade;
 import com.bank.transaction_service.api.request.CreateTransactionRequest;
+import com.bank.transaction_service.api.request.TransactionCriteria;
 import com.bank.transaction_service.api.response.BaseResponse;
+import com.bank.transaction_service.api.response.PaginationResponse;
+import com.bank.transaction_service.api.response.TransactionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,5 +29,15 @@ public class TransactionController {
   public Mono<BaseResponse<Void>> createTransaction(
       @RequestBody CreateTransactionRequest createTransactionRequest) {
     return this.transactionFacade.handleTransaction(createTransactionRequest);
+  }
+
+  @GetMapping
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auths APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public Mono<BaseResponse<PaginationResponse<TransactionResponse>>> findByFilter(
+      @NotNull TransactionCriteria criteria) {
+    return this.transactionFacade.findByFilter(criteria);
   }
 }

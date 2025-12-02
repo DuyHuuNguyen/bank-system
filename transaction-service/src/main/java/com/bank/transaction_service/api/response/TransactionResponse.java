@@ -1,13 +1,15 @@
-package com.bank.transaction_service.application.dto;
+package com.bank.transaction_service.api.response;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-@Builder
 @Getter
-public class TransactionHistoryDTO {
+@Builder
+public class TransactionResponse {
   private Long id;
   private String balance;
   private Long sourceWalletId;

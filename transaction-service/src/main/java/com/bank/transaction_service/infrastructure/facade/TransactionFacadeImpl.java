@@ -2,10 +2,14 @@ package com.bank.transaction_service.infrastructure.facade;
 
 import com.bank.transaction_service.api.facade.TransactionFacade;
 import com.bank.transaction_service.api.request.CreateTransactionRequest;
+import com.bank.transaction_service.api.request.TransactionCriteria;
 import com.bank.transaction_service.api.response.BaseResponse;
+import com.bank.transaction_service.api.response.PaginationResponse;
+import com.bank.transaction_service.api.response.TransactionResponse;
 import com.bank.transaction_service.application.message.TransactionMessage;
 import com.bank.transaction_service.application.service.IdempotencyService;
 import com.bank.transaction_service.application.service.ProducerHandleTransactionService;
+import com.bank.transaction_service.application.service.TransactionService;
 import com.bank.transaction_service.infrastructure.security.SecurityUserDetails;
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +26,7 @@ import reactor.core.publisher.Mono;
 public class TransactionFacadeImpl implements TransactionFacade {
   private final ProducerHandleTransactionService producerHandleTransactionService;
   private final IdempotencyService idempotencyService;
+  private final TransactionService transactionService;
 
   @Override
   public Mono<BaseResponse<Void>> handleTransaction(CreateTransactionRequest request) {
@@ -31,8 +36,8 @@ public class TransactionFacadeImpl implements TransactionFacade {
         .flatMap(
             isUnIdempotency -> {
               log.info("check idempotency key {}", isUnIdempotency);
-              //              if (!isUnIdempotency)
-              //                return Mono.error(new RuntimeException("Idempotency check failed"));
+              if (!isUnIdempotency)
+                return Mono.error(new RuntimeException("Idempotency check failed"));
               return ReactiveSecurityContextHolder.getContext()
                   .map(SecurityContext::getAuthentication)
                   .map(Authentication::getPrincipal)
@@ -56,7 +61,6 @@ public class TransactionFacadeImpl implements TransactionFacade {
                             principal.getAuthorities(),
                             principal.getUserId());
                         log.info("{}", transactionMessage);
-                        //                        return Mono.just(BaseResponse.ok());
                         return this.producerHandleTransactionService
                             .sendMessageHandleTransaction(transactionMessage)
                             .doOnError(error -> log.info("Bug roi"))
@@ -64,5 +68,41 @@ public class TransactionFacadeImpl implements TransactionFacade {
                             .thenReturn(BaseResponse.ok());
                       });
             });
+  }
+
+  @Override
+  public Mono<BaseResponse<PaginationResponse<TransactionResponse>>> findByFilter(
+      TransactionCriteria criteria) {
+
+    criteria.addOffset();
+    return this.transactionService
+        .findAll(criteria)
+        .collectList()
+        .map(
+            transactionHistoryDTOS ->
+                transactionHistoryDTOS.stream()
+                    .map(
+                        transactionHistoryDTO ->
+                            TransactionResponse.builder()
+                                .id(transactionHistoryDTO.getId())
+                                .balance(transactionHistoryDTO.getBalance())
+                                .sourceWalletId(transactionHistoryDTO.getSourceWalletId())
+                                .destinationWalletId(transactionHistoryDTO.getDestinationWalletId())
+                                .description(transactionHistoryDTO.getDescription())
+                                .createdAt(transactionHistoryDTO.getCreatedAt())
+                                .methodName(transactionHistoryDTO.getMethodName())
+                                .status(transactionHistoryDTO.getStatus())
+                                .type(transactionHistoryDTO.getType())
+                                .build())
+                    .toList())
+        .map(
+            transactionResponses ->
+                BaseResponse.build(
+                    PaginationResponse.<TransactionResponse>builder()
+                        .data(transactionResponses)
+                        .currentPage(criteria.getCurrentPage())
+                        .pageSize(criteria.getPageSize())
+                        .build(),
+                    true));
   }
 }

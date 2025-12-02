@@ -7,7 +7,10 @@ public enum TransactionType {
   WITHDRAW,
   TRANSFER;
 
-  public static TransactionType findByName(PaymentRouting paymentRouting){
-   return Arrays.stream(values()).filter(transactionType -> transactionType.toString().equals(paymentRouting.toString())).findFirst().orElse(TransactionType.TRANSFER);
+  public static TransactionType findByName(PaymentRouting paymentRouting) {
+    return Arrays.stream(values())
+        .filter(transactionType -> transactionType.toString().equals(paymentRouting.toString()))
+        .findFirst()
+        .orElse(TransactionType.TRANSFER);
   }
 }

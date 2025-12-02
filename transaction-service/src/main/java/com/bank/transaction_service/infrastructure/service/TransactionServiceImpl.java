@@ -4,22 +4,16 @@ import com.bank.transaction_service.application.dto.TransactionHistoryDTO;
 import com.bank.transaction_service.application.service.TransactionService;
 import com.bank.transaction_service.domain.entity.Transaction;
 import com.bank.transaction_service.domain.repository.TransactionRepository;
-import com.bank.transaction_service.infrastructure.enums.TransactionMethodEnum;
-import com.bank.transaction_service.infrastructure.enums.TransactionStatus;
-import com.bank.transaction_service.infrastructure.util.TransactionCriteria;
-import jakarta.annotation.PostConstruct;
+import com.bank.transaction_service.api.request.TransactionCriteria;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -27,7 +21,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
   private final TransactionRepository transactionRepository;
-  private final R2dbcEntityTemplate r2dbcEntityTemplate;
   private final DatabaseClient databaseClient;
 
   @Override
@@ -99,11 +92,10 @@ public class TransactionServiceImpl implements TransactionService {
       sql.append(" AND EXTRACT(YEAR FROM to_timestamp(t.created_at / 1000)) = :year");
       sql.append(" AND EXTRACT(MONTH FROM to_timestamp(t.created_at / 1000)) = :month");
 
-      params.put("year",criteria.getTransactionCreatedAt().getYear());
-      params.put("month",criteria.getTransactionCreatedAt().getMonth());
+      params.put("year",criteria.getTransactionCreatedAroundMonthAt().getYear());
+      params.put("month",criteria.getTransactionCreatedAroundMonthAt().getMonth());
     }
 
-    // ===== Pagination =====
     sql.append(" LIMIT :pageSize OFFSET :offset");
     params.put("pageSize", criteria.getPageSize());
     params.put("offset", criteria.getOffset());

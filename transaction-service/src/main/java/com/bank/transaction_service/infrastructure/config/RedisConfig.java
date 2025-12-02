@@ -26,13 +26,13 @@ public class RedisConfig {
   }
 
   @Bean(name = "CacheTransactions")
-  public  ReactiveRedisTemplate<String, TransactionHistoryDTO> CacheTransactionsWithReactiveRedisTemplate(
-          ReactiveRedisConnectionFactory factory) {
+  public ReactiveRedisTemplate<String, TransactionHistoryDTO>
+      CacheTransactionsWithReactiveRedisTemplate(ReactiveRedisConnectionFactory factory) {
     Jackson2JsonRedisSerializer<TransactionHistoryDTO> serializer =
-            new Jackson2JsonRedisSerializer<>(TransactionHistoryDTO.class);
+        new Jackson2JsonRedisSerializer<>(TransactionHistoryDTO.class);
 
-    RedisSerializationContext.RedisSerializationContextBuilder<String, TransactionHistoryDTO> builder =
-            RedisSerializationContext.newSerializationContext(serializer);
+    RedisSerializationContext.RedisSerializationContextBuilder<String, TransactionHistoryDTO>
+        builder = RedisSerializationContext.newSerializationContext(serializer);
 
     RedisSerializationContext<String, TransactionHistoryDTO> context = builder.build();
 
