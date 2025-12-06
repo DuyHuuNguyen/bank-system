@@ -88,8 +88,7 @@ public class TransactionController {
   @Operation(tags = {"TRANSACTION APIs"})
   @SecurityRequirement(name = "Bearer Authentication")
   @PreAuthorize("isAuthenticated()")
-  public Mono<BaseResponse<Void>> changeOpt(
-          @RequestBody @Valid ChangeOtpRequest changeOtpRequest) {
+  public Mono<BaseResponse<Void>> changeOpt(@RequestBody @Valid ChangeOtpRequest changeOtpRequest) {
     return this.transactionFacade.changeOtp(changeOtpRequest);
   }
 }

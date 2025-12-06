@@ -5,6 +5,7 @@ import com.bank.transaction_service.domain.entity.Method;
 import com.bank.transaction_service.domain.repository.MethodRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -25,5 +26,10 @@ public class MethodServiceImpl implements MethodService {
   @Override
   public Mono<Method> findByMethodName(String methodName) {
     return this.methodRepository.findMethodByMethodName(methodName);
+  }
+
+  @Override
+  public Flux<Method> findAll(Integer pageSize, Integer offset) {
+    return this.methodRepository.findAllByPageSizeAndOffset(pageSize, offset);
   }
 }

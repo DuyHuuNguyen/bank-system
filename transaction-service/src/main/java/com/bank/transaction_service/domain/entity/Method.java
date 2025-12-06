@@ -15,4 +15,8 @@ import org.springframework.data.relational.core.mapping.Table;
 public class Method extends BaseEntity {
   @Column("method_name")
   private String methodName;
+
+  public void changMethodName(String name) {
+    this.methodName = methodName;
+  }
 }
