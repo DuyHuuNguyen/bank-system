@@ -40,4 +40,8 @@ public class Account extends BaseEntity {
   public void changePersonalId(String personalId) {
     this.personalId = personalId;
   }
+
+  public void changeOtp(String otp) {
+    this.otp = otp;
+  }
 }

@@ -1,9 +1,7 @@
 package com.bank.transaction_service.infrastructure.rest.controller;
 
 import com.bank.transaction_service.api.facade.TransactionFacade;
-import com.bank.transaction_service.api.request.CreateTransactionRequest;
-import com.bank.transaction_service.api.request.TransactionCriteria;
-import com.bank.transaction_service.api.request.TransactionDetailRequest;
+import com.bank.transaction_service.api.request.*;
 import com.bank.transaction_service.api.response.BaseResponse;
 import com.bank.transaction_service.api.response.PaginationResponse;
 import com.bank.transaction_service.api.response.TransactionDetailResponse;
@@ -73,5 +71,25 @@ public class TransactionController {
       @PathVariable Long id, @Valid @NotNull TransactionDetailRequest request) {
     request.withId(id);
     return this.transactionFacade.findTransactionDetail(request);
+  }
+
+  @PostMapping("/verify-opt")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"TRANSACTION APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public Mono<BaseResponse<Void>> verifyTransactionOpt(
+      @RequestBody @Valid VerifyTransactionOtpRequest request) {
+    return this.transactionFacade.verifyTransactionOtp(request);
+  }
+
+  @PatchMapping("/opt")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"TRANSACTION APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public Mono<BaseResponse<Void>> changeOpt(
+          @RequestBody @Valid ChangeOtpRequest changeOtpRequest) {
+    return this.transactionFacade.changeOtp(changeOtpRequest);
   }
 }

@@ -1,9 +1,7 @@
 package com.bank.transaction_service.infrastructure.facade;
 
 import com.bank.transaction_service.api.facade.TransactionFacade;
-import com.bank.transaction_service.api.request.CreateTransactionRequest;
-import com.bank.transaction_service.api.request.TransactionCriteria;
-import com.bank.transaction_service.api.request.TransactionDetailRequest;
+import com.bank.transaction_service.api.request.*;
 import com.bank.transaction_service.api.response.BaseResponse;
 import com.bank.transaction_service.api.response.PaginationResponse;
 import com.bank.transaction_service.api.response.TransactionDetailResponse;
@@ -12,11 +10,11 @@ import com.bank.transaction_service.application.dto.TransactionHistoryDTO;
 import com.bank.transaction_service.application.dto.WalletDTO;
 import com.bank.transaction_service.application.exception.EntityNotFoundException;
 import com.bank.transaction_service.application.exception.IdempotencyException;
+import com.bank.transaction_service.application.exception.OtpDontMatchingException;
+import com.bank.transaction_service.application.exception.PersonalIdNotMatchException;
+import com.bank.transaction_service.application.message.ChangeOtpMessage;
 import com.bank.transaction_service.application.message.TransactionMessage;
-import com.bank.transaction_service.application.service.IdempotencyService;
-import com.bank.transaction_service.application.service.ProducerHandleTransactionService;
-import com.bank.transaction_service.application.service.TransactionService;
-import com.bank.transaction_service.application.service.WalletGrpcClientService;
+import com.bank.transaction_service.application.service.*;
 import com.bank.transaction_service.infrastructure.enums.ErrorCode;
 import com.bank.transaction_service.infrastructure.security.SecurityUserDetails;
 import com.example.server.wallet.WalletOwnerRequest;
@@ -39,6 +37,7 @@ public class TransactionFacadeImpl implements TransactionFacade {
   private final IdempotencyService idempotencyService;
   private final TransactionService transactionService;
   private final WalletGrpcClientService walletGrpcClientService;
+  private final ProducerChangeOtpService producerChangeOtpService;
 
   @Override
   public Mono<BaseResponse<Void>> handleTransaction(CreateTransactionRequest request) {
@@ -319,6 +318,52 @@ public class TransactionFacadeImpl implements TransactionFacade {
                                 .build();
                         return Mono.just(BaseResponse.build(transactionDetailResponse, true));
                       });
+            });
+  }
+
+  @Override
+  public Mono<BaseResponse<Void>> verifyTransactionOtp(VerifyTransactionOtpRequest request) {
+    return ReactiveSecurityContextHolder.getContext()
+        .map(SecurityContext::getAuthentication)
+        .map(Authentication::getPrincipal)
+        .cast(SecurityUserDetails.class)
+        .flatMap(
+            securityUserDetails -> {
+              boolean isValidOtp = securityUserDetails.getOtp().equals(request.getOtp());
+              if (!isValidOtp) return Mono.just(BaseResponse.fail());
+              return Mono.just(BaseResponse.ok());
+            });
+  }
+
+  @Override
+  public Mono<BaseResponse<Void>> changeOtp(ChangeOtpRequest request) {
+    return ReactiveSecurityContextHolder.getContext()
+        .map(SecurityContext::getAuthentication)
+        .map(Authentication::getPrincipal)
+        .cast(SecurityUserDetails.class)
+        .flatMap(
+            securityUserDetails -> {
+              boolean isMatchingOtp = securityUserDetails.getOtp().equals(request.getOldOtp());
+              boolean isValidPersonalId =
+                  securityUserDetails.getPersonalId().equals(request.getPersonalId());
+              if (!isMatchingOtp)
+                return Mono.error(new OtpDontMatchingException(ErrorCode.OTP_NOT_MATCH));
+              if (!isValidPersonalId)
+                return Mono.error(new PersonalIdNotMatchException(ErrorCode.PERSONAL_ID_NOT_MATCH));
+              ChangeOtpMessage changeOtpMessage =
+                  ChangeOtpMessage.builder()
+                      .newOtp(request.getNewOtp())
+                      .personalId(request.getPersonalId())
+                      .build();
+              return this.producerChangeOtpService
+                  .sendChangeOtpMessage(changeOtpMessage)
+                  .onErrorResume(
+                      error -> {
+                        log.error("Can't update otp");
+                        return Mono.error(
+                            new EntityNotFoundException(ErrorCode.CAN_NOT_UPDATE_OTP));
+                      })
+                  .thenReturn(BaseResponse.ok());
             });
   }
 }

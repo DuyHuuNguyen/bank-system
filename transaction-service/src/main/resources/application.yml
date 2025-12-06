@@ -55,6 +55,10 @@ james-config-rabbitmq:
     routing:
       key-fail: transaction.fail
 
+  change-otp:
+    exchange: 23130075-change-otp-exchange
+    routing: 23130075-change-otp-routing-key
+
 
   retry-transaction:
     queue:

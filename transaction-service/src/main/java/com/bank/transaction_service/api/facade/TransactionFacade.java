@@ -1,8 +1,6 @@
 package com.bank.transaction_service.api.facade;
 
-import com.bank.transaction_service.api.request.CreateTransactionRequest;
-import com.bank.transaction_service.api.request.TransactionCriteria;
-import com.bank.transaction_service.api.request.TransactionDetailRequest;
+import com.bank.transaction_service.api.request.*;
 import com.bank.transaction_service.api.response.BaseResponse;
 import com.bank.transaction_service.api.response.PaginationResponse;
 import com.bank.transaction_service.api.response.TransactionDetailResponse;
@@ -22,4 +20,8 @@ public interface TransactionFacade {
       TransactionDetailRequest request);
 
   Mono<BaseResponse<TransactionDetailResponse>> findTransactionDetailById(Long id);
+
+  Mono<BaseResponse<Void>> verifyTransactionOtp(VerifyTransactionOtpRequest request);
+
+  Mono<BaseResponse<Void>> changeOtp(ChangeOtpRequest request);
 }

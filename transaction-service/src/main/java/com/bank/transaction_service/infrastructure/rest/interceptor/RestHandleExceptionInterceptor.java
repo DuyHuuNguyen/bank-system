@@ -2,6 +2,8 @@ package com.bank.transaction_service.infrastructure.rest.interceptor;
 
 import com.bank.transaction_service.application.exception.EntityNotFoundException;
 import com.bank.transaction_service.application.exception.IdempotencyException;
+import com.bank.transaction_service.application.exception.OtpDontMatchingException;
+import com.bank.transaction_service.application.exception.PersonalIdNotMatchException;
 import java.net.URI;
 import java.util.function.Consumer;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,28 @@ public class RestHandleExceptionInterceptor {
         problem -> {
           problem.setType(URI.create("http://example.com/problems/"));
           problem.setTitle(entityNotFoundException.getMessage());
+        });
+  }
+
+  @ExceptionHandler(OtpDontMatchingException.class)
+  public ProblemDetail handleException(OtpDontMatchingException otpDontMatchingException) {
+    return build(
+        HttpStatus.NOT_FOUND,
+        otpDontMatchingException,
+        problem -> {
+          problem.setType(URI.create("http://example.com/problems/"));
+          problem.setTitle(otpDontMatchingException.getMessage());
+        });
+  }
+
+  @ExceptionHandler(PersonalIdNotMatchException.class)
+  public ProblemDetail handleException(PersonalIdNotMatchException personalIdNotMatchException) {
+    return build(
+        HttpStatus.NOT_FOUND,
+        personalIdNotMatchException,
+        problem -> {
+          problem.setType(URI.create("http://example.com/problems/"));
+          problem.setTitle(personalIdNotMatchException.getMessage());
         });
   }
 
