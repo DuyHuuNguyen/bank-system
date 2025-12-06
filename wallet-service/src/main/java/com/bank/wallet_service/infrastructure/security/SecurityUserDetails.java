@@ -31,6 +31,7 @@ public class SecurityUserDetails implements UserDetails {
     return SecurityUserDetails.builder()
         .accountId(authResponse.getAccountId())
         .password("")
+        .userId(authResponse.getUserId())
         .email(authResponse.getEmail())
         .phone(authResponse.getPhone())
         .otp(authResponse.getOtp())

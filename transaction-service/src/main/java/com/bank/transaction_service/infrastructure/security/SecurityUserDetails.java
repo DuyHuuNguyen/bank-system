@@ -4,13 +4,15 @@ import com.example.server.grpc.AuthResponse;
 import java.util.Collection;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@ToString
 @Builder
 public class SecurityUserDetails implements UserDetails {
-
+  @Getter private Long userId;
   @Getter private Long accountId;
 
   private String password;
@@ -30,6 +32,7 @@ public class SecurityUserDetails implements UserDetails {
   public static SecurityUserDetails build(AuthResponse authResponse) {
     return SecurityUserDetails.builder()
         .accountId(authResponse.getAccountId())
+        .userId(authResponse.getUserId())
         .password("")
         .email(authResponse.getEmail())
         .phone(authResponse.getPhone())

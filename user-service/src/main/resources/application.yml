@@ -38,9 +38,9 @@ rabbitmqs:
     create-account: 23130075-create-account-routing-key
     routing-key-default-wallet: 23130075-default-wallet
 ---
-
-
-
+grpc:
+  server:
+    port: 9092
 ---
 grpc:
   client:

@@ -32,12 +32,15 @@ rabbitmq:
   queue:
     update-info-account: 23130075-queue
     create-account: 23130075-create-account-queue
+    change-otp: 23130075-change-otp-queue
   exchange:
     update-info-account: 23130075-direct-exchange
     create-account: 23130075-create-account-exchange
+    change-otp: 23130075-change-otp-exchange
   routing-key:
     update-info-account: 23130075-routing-key
     create-account: 23130075-create-account-routing-key
+    change-otp: 23130075-change-otp-routing-key
 
 ---
 jwt:

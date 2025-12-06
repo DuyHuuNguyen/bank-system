@@ -4,6 +4,7 @@ import com.bank.transaction_service.application.service.AuthGrpcClientService;
 import com.example.server.grpc.AccessTokenRequest;
 import com.example.server.grpc.AuthResponse;
 import com.example.server.grpc.AuthTokenServiceGrpc;
+import java.util.Objects;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -25,7 +26,7 @@ public class AuthGrpcClientServiceImpl implements AuthGrpcClientService {
                 return Mono.just(AuthResponse.newBuilder().setIsEnabled(false).build());
               }
               // Trả về data gốc
-              return Mono.just(signal.get());
+              return Mono.just(Objects.requireNonNull(signal.get()));
             });
   }
 }

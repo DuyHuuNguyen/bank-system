@@ -3,6 +3,8 @@
 --jGDjpmlhjoYjWV5g3i2PepWIGhA_out=D:\xxx-system\grpc-protocol\target\generated-sources\protobuf
 --jGDjpmlhjoYjWV5g3i2PepWIGhA_opt=@generated=omit
 D:\xxx-system\grpc-protocol\src\main\proto\auth.proto
+D:\xxx-system\grpc-protocol\src\main\proto\user.proto
+D:\xxx-system\grpc-protocol\src\main\proto\wallet.proto
 --proto_path=D:\xxx-system\grpc-protocol\src\main\proto
 --proto_path=D:\xxx-system\grpc-protocol\target\protobuf-maven-plugin\generate\default-cli\archives\protobuf-java-4.30.2-JmdCG_LkSOJ80xjMRgB8ykUjx7Q
 --proto_path=D:\xxx-system\grpc-protocol\target\protobuf-maven-plugin\generate\default-cli\archives\proto-google-common-protos-2.54.1-ipEG5foGpyKZZWu7z5Zbntt7dpM

@@ -65,4 +65,30 @@ public class RabbitMQConfig {
   public MessageConverter jsonMessageConverter() {
     return new Jackson2JsonMessageConverter();
   }
+
+  @Value("${rabbitmq.queue.change-otp}")
+  private String changeOtpQueue;
+
+  @Value("${rabbitmq.exchange.change-otp}")
+  private String changeOtpExchange;
+
+  @Value("${rabbitmq.routing-key.change-otp}")
+  private String changeOtpRoutingKey;
+
+  @Bean
+  public Queue changeOtpQueue() {
+    return QueueBuilder.durable(this.changeOtpQueue).build();
+  }
+
+  @Bean
+  public DirectExchange changeOtpExchange() {
+    return new DirectExchange(this.changeOtpExchange);
+  }
+
+  @Bean
+  public Binding changeOtpBinding() {
+    return BindingBuilder.bind(this.changeOtpQueue())
+        .to(this.changeOtpExchange())
+        .with(this.changeOtpRoutingKey);
+  }
 }

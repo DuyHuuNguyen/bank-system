@@ -18,6 +18,66 @@ spring:
     listener:
       simple:
         acknowledge-mode: auto
+#        retry:
+#          enabled: true
     host: localhost
     password: guest
     username: guest
+---
+james-config-rabbitmq:
+
+  start-transaction:
+    queue:
+      transfer-queue: transfer-queue
+      deposit-queue: deposit-queue
+      withdraw-queue: withdraw-queue
+    exchange:
+      exchange: start-handle-topic-exchange
+    routing:
+      transfer-queue: transfer
+      deposit-queue: deposit
+      withdraw-queue: withdraw
+
+  done-transaction:
+    queue:
+      queue-success: success-transaction-queue
+    exchange:
+      exchange-success: success-transaction-exchange
+    routing:
+      key-success: transaction.success
+
+
+  fail-transaction:
+    queue:
+      queue-fail: fail-transaction-queue
+    exchange:
+      exchange-fail: fail-transaction-exchange
+    routing:
+      key-fail: transaction.fail
+
+  change-otp:
+    exchange: 23130075-change-otp-exchange
+    routing: 23130075-change-otp-routing-key
+
+
+  retry-transaction:
+    queue:
+      retry-transfer-queue: retry-transfer-queue
+      retry-deposit-queue: retry-deposit-queue
+      retry-withdraw-queue: retry-withdraw-queue
+    exchange:
+      exchange-retry: try-transaction-exchange
+    routing:
+      retry-transfer-queue: transfer.try
+      retry-deposit-queue: deposit.try
+      retry-withdraw-queue: withdraw.try
+---
+grpc:
+  client:
+    parse-token:
+      address: 'static://localhost:9090'
+      negotiationType: plaintext
+    wallet-service:
+      address: 'static://localhost:9091'
+      negotiationType: plaintext
+

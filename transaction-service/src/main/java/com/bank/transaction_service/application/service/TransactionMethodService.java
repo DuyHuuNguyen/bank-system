@@ -1,3 +1,10 @@
 package com.bank.transaction_service.application.service;
 
-public interface TransactionMethodService {}
+import com.bank.transaction_service.domain.entity.TransactionMethod;
+import reactor.core.publisher.Mono;
+
+public interface TransactionMethodService {
+  Mono<TransactionMethod> findById(Long id);
+
+  Mono<TransactionMethod> save(TransactionMethod transactionMethod);
+}

@@ -28,7 +28,13 @@ public class SecurityConfig {
   private final AuthGrpcClientService authGrpcClientService;
 
   private static final String[] WHITE_LISTS = {
-    "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/**"
+    "/swagger-ui.html",
+    "/swagger-ui/**",
+    "/v3/api-docs/**",
+    "/actuator/**",
+    "/api/v1/wallets/internal/transfer",
+    "/api/v1/wallets/internal/deposit",
+    "/api/v1/wallets/internal/withdraw"
   };
 
   @Bean

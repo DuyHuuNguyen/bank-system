@@ -1,0 +1,18 @@
+syntax = "proto3";
+package com.example.user;
+
+option java_multiple_files = true;
+option java_package = "com.example.server.user";
+option java_outer_classname = "UserProto";
+
+message UserNameResponse{
+  string fullName =1;
+}
+
+message  UserNameRequest{
+  int64 id=1;
+}
+
+service UserService {
+  rpc findNameByRequest(UserNameRequest) returns (UserNameResponse);
+}

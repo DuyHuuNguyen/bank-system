@@ -2,8 +2,11 @@ package com.bank.wallet_service.infrastructure.rest.controller;
 
 import com.bank.wallet_service.api.facade.WalletFacade;
 import com.bank.wallet_service.api.request.CreateWalletRequest;
-import com.bank.wallet_service.api.response.BaseResponse;
-import com.bank.wallet_service.api.response.WalletResponse;
+import com.bank.wallet_service.api.request.DepositRequest;
+import com.bank.wallet_service.api.request.TransferRequest;
+import com.bank.wallet_service.api.request.WithDrawRequest;
+import com.bank.wallet_service.api.response.*;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.util.List;
@@ -35,5 +38,23 @@ public class WalletController {
   @PreAuthorize("isAuthenticated()")
   public Mono<BaseResponse<List<WalletResponse>>> findMyWallets() {
     return this.walletFacade.findMyWallets();
+  }
+
+  @Hidden
+  @PostMapping(value = "/internal/transfer", headers = "secret-api-key=transfer-23130075")
+  public Mono<TransferResponse> transfer(@RequestBody TransferRequest request) {
+    return this.walletFacade.transfer(request);
+  }
+
+  @Hidden
+  @PostMapping(value = "/internal/deposit", headers = "secret-api-key=transfer-23130075")
+  public Mono<DepositResponse> deposit(@RequestBody DepositRequest request) {
+    return this.walletFacade.deposit(request);
+  }
+
+  @Hidden
+  @PostMapping(value = "/internal/withdraw", headers = "secret-api-key=transfer-23130075")
+  public Mono<WithDrawResponse> withDraw(@RequestBody WithDrawRequest request) {
+    return this.walletFacade.withDraw(request);
   }
 }

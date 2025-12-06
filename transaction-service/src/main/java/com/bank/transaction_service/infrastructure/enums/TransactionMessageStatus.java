@@ -1,0 +1,10 @@
+package com.bank.transaction_service.infrastructure.enums;
+
+import lombok.Getter;
+
+@Getter
+public enum TransactionMessageStatus {
+  INSUFFICIENT_FUNDS,
+  SUCCESSFUL,
+  ERROR_DEPOSIT,
+}
