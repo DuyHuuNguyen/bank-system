@@ -12,6 +12,8 @@ public enum ErrorCode {
   OTP_NOT_MATCH("Otp don't match"),
   PERSONAL_ID_NOT_MATCH("Personal Id not match"),
   CAN_NOT_UPDATE_OTP("Can't update opt"),
-  METHOD_NOT_FOUND("Method not found");
+  METHOD_NOT_FOUND("Method not found"),
+  CACHE_NOT_FOUND("Cache not found"),
+  ;
   private final String message;
 }

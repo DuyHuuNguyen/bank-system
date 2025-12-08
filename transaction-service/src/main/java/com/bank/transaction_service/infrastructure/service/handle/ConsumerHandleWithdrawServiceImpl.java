@@ -89,6 +89,9 @@ public class ConsumerHandleWithdrawServiceImpl implements ConsumerHandleWithdraw
                                           transactionMessage.getTransactionMethodEnum().getMethod())
                                       .flatMap(
                                           method -> {
+                                            transactionMessage.addTransactionId(
+                                                transactionStored.getId());
+                                              transactionMessage.changeStatus(TransactionMessageStatus.SUCCESSFUL);
                                             com.bank.transaction_service.domain.entity
                                                     .TransactionMethod
                                                 transactionMethod =

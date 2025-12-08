@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Builder
-public class TransactionResponse {
+public class TransactionResponse implements Comparable<TransactionResponse> {
   private Long id;
   private String balance;
   private Long sourceWalletId;
@@ -19,4 +19,9 @@ public class TransactionResponse {
   private String methodName;
   private String status;
   private String type;
+
+  @Override
+  public int compareTo(TransactionResponse o) {
+    return (int) (o.createdAt - this.createdAt);
+  }
 }

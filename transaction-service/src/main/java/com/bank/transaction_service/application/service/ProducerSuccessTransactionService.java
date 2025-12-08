@@ -4,5 +4,5 @@ import com.bank.transaction_service.application.message.TransactionMessage;
 import reactor.core.publisher.Mono;
 
 public interface ProducerSuccessTransactionService {
-  Mono<Void> sendSuccessTransactionMessage(TransactionMessage transactionMessage);
+  Mono<Boolean> sendSuccessTransactionMessage(TransactionMessage transactionMessage);
 }

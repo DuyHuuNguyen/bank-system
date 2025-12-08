@@ -15,6 +15,7 @@ public class TransactionCriteria extends BaseCriteria {
   @NotNull private Long sourceWalletId;
   private Long beneficiaryWalletId;
   private String methodName;
+  //  @Builder.Default
   private LocalDate transactionCreatedAt;
   private LocalDate transactionCreatedAroundMonthAt;
   private TransactionType type;

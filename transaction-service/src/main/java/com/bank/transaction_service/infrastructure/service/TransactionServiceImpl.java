@@ -1,6 +1,7 @@
 package com.bank.transaction_service.infrastructure.service;
 
 import com.bank.transaction_service.application.dto.TransactionHistoryDTO;
+import com.bank.transaction_service.application.service.CacheTransactionHistoryService;
 import com.bank.transaction_service.application.service.TransactionService;
 import com.bank.transaction_service.domain.entity.Transaction;
 import com.bank.transaction_service.domain.repository.TransactionRepository;
@@ -22,6 +23,7 @@ import java.util.Map;
 public class TransactionServiceImpl implements TransactionService {
   private final TransactionRepository transactionRepository;
   private final DatabaseClient databaseClient;
+  private final CacheTransactionHistoryService cacheTransactionHistoryService;
 
   @Override
   public Mono<Transaction> save(Transaction transaction) {
@@ -107,7 +109,8 @@ public class TransactionServiceImpl implements TransactionService {
             .methodName(row.get("method_name", String.class))
              .status(row.get("transaction_status",String.class))
              .type(row.get("transaction_type",String.class))
-            .build()).all();
+            .build())
+             .all();
   }
 
   @Override

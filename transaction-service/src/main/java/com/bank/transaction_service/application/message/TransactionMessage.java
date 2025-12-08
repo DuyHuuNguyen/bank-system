@@ -12,6 +12,7 @@ import lombok.*;
 @ToString
 @Getter
 public class TransactionMessage {
+  private Long transactionId;
   private PaymentRouting paymentRouting;
   private Long ownerTransactionId;
   private Long sourceWalletId;
@@ -32,5 +33,9 @@ public class TransactionMessage {
 
   public void addTransactionMethodEnum(TransactionMethodEnum transactionMethodEnum) {
     this.transactionMethodEnum = transactionMethodEnum;
+  }
+
+  public void addTransactionId(Long id) {
+    this.transactionId = id;
   }
 }

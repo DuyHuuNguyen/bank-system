@@ -125,6 +125,9 @@ public class ConsumerHandleTransferServiceImpl implements ConsumerHandleTransfer
                                           transactionMessage.getTransactionMethodEnum().getMethod())
                                       .flatMap(
                                           method -> {
+                                            transactionMessage.addTransactionId(
+                                                transactionStored.getId());
+                                            transactionMessage.changeStatus(TransactionMessageStatus.SUCCESSFUL);
                                             TransactionMethod transactionMethod =
                                                 TransactionMethod.builder()
                                                     .methodId(method.getId())

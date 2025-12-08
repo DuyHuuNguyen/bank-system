@@ -63,7 +63,7 @@ public class RabbitMQResultTransactionConfig {
 
   @Bean
   public Binding transactionSuccessBinding() {
-    return BindingBuilder.bind(this.transactionSuccessExchange())
+    return BindingBuilder.bind(this.transactionSuccessQueue())
         .to(this.transactionSuccessExchange())
         .with(SUCCESS_KEY);
   }

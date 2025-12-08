@@ -16,6 +16,7 @@ import com.bank.transaction_service.application.message.ChangeOtpMessage;
 import com.bank.transaction_service.application.message.TransactionMessage;
 import com.bank.transaction_service.application.service.*;
 import com.bank.transaction_service.infrastructure.enums.ErrorCode;
+import com.bank.transaction_service.infrastructure.enums.TransactionHistoryTemplate;
 import com.bank.transaction_service.infrastructure.security.SecurityUserDetails;
 import com.example.server.wallet.WalletOwnerRequest;
 import com.example.server.wallet.WalletProfileRequest;
@@ -38,6 +39,7 @@ public class TransactionFacadeImpl implements TransactionFacade {
   private final TransactionService transactionService;
   private final WalletGrpcClientService walletGrpcClientService;
   private final ProducerChangeOtpService producerChangeOtpService;
+  private final CacheTransactionHistoryService cacheTransactionHistoryService;
 
   @Override
   public Mono<BaseResponse<Void>> handleTransaction(CreateTransactionRequest request) {
@@ -47,7 +49,7 @@ public class TransactionFacadeImpl implements TransactionFacade {
         .flatMap(
             isUnIdempotency -> {
               log.info("check idempotency key {}", isUnIdempotency);
-              if (!isUnIdempotency)
+              if (isUnIdempotency)
                 return Mono.error(new IdempotencyException(ErrorCode.DUPLICATED_TRANSACTION));
               return ReactiveSecurityContextHolder.getContext()
                   .map(SecurityContext::getAuthentication)
@@ -132,51 +134,162 @@ public class TransactionFacadeImpl implements TransactionFacade {
                       .setWalletId(criteria.getSourceWalletId())
                       .setUserId(securityUserDetails.getUserId())
                       .build();
-              return this.walletGrpcClientService
-                  .findWalletOwnerByRequest(walletOwnerRequest)
+              boolean isOnlyPaginationWithCreatedAt =
+                  criteria.getTransactionCreatedAt() != null
+                      && criteria.getTransactionCreatedAroundMonthAt() == null;
+              if (isOnlyPaginationWithCreatedAt) {
+                String transactionHistoryKey =
+                    String.format(
+                        TransactionHistoryTemplate.TRANSACTION_HISTORY_TEMPLATE_KEY.getContent(),
+                        criteria.getSourceWalletId(),
+                        criteria.getTransactionCreatedAt());
+                log.info("key : {}", transactionHistoryKey);
+                return this.cacheTransactionHistoryService
+                    .hasKey(transactionHistoryKey)
+                    //                          .doOnSuccess(ok-> log.info("Data at redis"))
+                    .flatMap(
+                        isHasTransactions -> {
+                          log.info("boolean cache data {}", isHasTransactions);
+                          if (isHasTransactions) {
+                            log.info("Data at redis");
+                            return this.cacheTransactionHistoryService
+                                .findByKey(transactionHistoryKey)
+                                .map(
+                                    cacheTransactionHistoriesDTO ->
+                                        BaseResponse.build(
+                                            PaginationResponse.<TransactionResponse>builder()
+                                                .data(
+                                                    cacheTransactionHistoriesDTO
+                                                        .getTransactionResponses().stream()
+                                                        .toList())
+                                                .currentPage(criteria.getCurrentPage())
+                                                .pageSize(criteria.getPageSize())
+                                                .build(),
+                                            true));
+                          } else {
+                            log.info("chuaw cache data");
+                            return this.buildTransactionResponse(
+                                criteria, walletOwnerRequest, securityUserDetails);
+                          }
+                        });
+              }
+              return this.buildTransactionResponse(
+                  criteria, walletOwnerRequest, securityUserDetails);
+              //              return this.walletGrpcClientService
+              //                  .findWalletOwnerByRequest(walletOwnerRequest)
+              //                  .flatMap(
+              //                      walletResponse -> {
+              //                        boolean isValidSourceWalletId = walletResponse.getId() != 0;
+              //                        if (!isValidSourceWalletId)
+              //                          return Mono.error(
+              //                              new
+              // EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND));
+              //                        criteria.addOffset();
+              //                        return this.transactionService
+              //                            .findAll(criteria)
+              //                            .collectList()
+              //                            .map(
+              //                                transactionHistoryDTOS ->
+              //                                    transactionHistoryDTOS.stream()
+              //                                        .map(
+              //                                            transactionHistoryDTO ->
+              //                                                TransactionResponse.builder()
+              //
+              // .id(transactionHistoryDTO.getId())
+              //                                                    .balance(
+              //                                                        transactionHistoryDTO
+              //
+              // .getTransactionBalance())
+              //                                                    .sourceWalletId(
+              //
+              // transactionHistoryDTO.getSourceWalletId())
+              //                                                    .destinationWalletId(
+              //                                                        transactionHistoryDTO
+              //
+              // .getDestinationWalletId())
+              //                                                    .description(
+              //
+              // transactionHistoryDTO.getDescription())
+              //
+              // .createdAt(transactionHistoryDTO.getCreatedAt())
+              //                                                    .methodName(
+              //
+              // transactionHistoryDTO.getMethodName())
+              //
+              // .status(transactionHistoryDTO.getStatus())
+              //
+              // .type(transactionHistoryDTO.getType())
+              //                                                    .build())
+              //                                        .toList())
+              //                            .flatMap(
+              //                                transactionResponses -> {
+              //                                   return
+              // this.cacheTransactionHistoryService.cacheTransaction(securityUserDetails.getUserId(), transactionResponses,criteria.getTransactionCreatedAt())
+              //
+              // .thenReturn(BaseResponse.build(PaginationResponse.<TransactionResponse>builder()
+              //                                                    .data(transactionResponses)
+              //
+              // .currentPage(criteria.getCurrentPage())
+              //
+              // .pageSize(criteria.getPageSize())
+              //                                                    .build(),
+              //                                            true));
+              //                                });
+              //                      });
+            });
+  }
+
+  private Mono<BaseResponse<PaginationResponse<TransactionResponse>>> buildTransactionResponse(
+      TransactionCriteria criteria,
+      WalletOwnerRequest walletOwnerRequest,
+      SecurityUserDetails securityUserDetails) {
+    return this.walletGrpcClientService
+        .findWalletOwnerByRequest(walletOwnerRequest)
+        .flatMap(
+            walletResponse -> {
+              boolean isValidSourceWalletId = walletResponse.getId() != 0;
+              if (!isValidSourceWalletId)
+                return Mono.error(new EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND));
+              criteria.addOffset();
+              return this.transactionService
+                  .findAll(criteria)
+                  .collectList()
+                  .map(
+                      transactionHistoryDTOS ->
+                          transactionHistoryDTOS.stream()
+                              .map(
+                                  transactionHistoryDTO ->
+                                      TransactionResponse.builder()
+                                          .id(transactionHistoryDTO.getId())
+                                          .balance(transactionHistoryDTO.getTransactionBalance())
+                                          .sourceWalletId(transactionHistoryDTO.getSourceWalletId())
+                                          .destinationWalletId(
+                                              transactionHistoryDTO.getDestinationWalletId())
+                                          .description(transactionHistoryDTO.getDescription())
+                                          .createdAt(transactionHistoryDTO.getCreatedAt())
+                                          .methodName(transactionHistoryDTO.getMethodName())
+                                          .status(transactionHistoryDTO.getStatus())
+                                          .type(transactionHistoryDTO.getType())
+                                          .build())
+                              .toList())
                   .flatMap(
-                      walletResponse -> {
-                        boolean isValidSourceWalletId = walletResponse.getId() != 0;
-                        if (!isValidSourceWalletId)
-                          return Mono.error(
-                              new EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND));
-                        criteria.addOffset();
-                        return this.transactionService
-                            .findAll(criteria)
-                            .collectList()
-                            .map(
-                                transactionHistoryDTOS ->
-                                    transactionHistoryDTOS.stream()
-                                        .map(
-                                            transactionHistoryDTO ->
-                                                TransactionResponse.builder()
-                                                    .id(transactionHistoryDTO.getId())
-                                                    .balance(
-                                                        transactionHistoryDTO
-                                                            .getTransactionBalance())
-                                                    .sourceWalletId(
-                                                        transactionHistoryDTO.getSourceWalletId())
-                                                    .destinationWalletId(
-                                                        transactionHistoryDTO
-                                                            .getDestinationWalletId())
-                                                    .description(
-                                                        transactionHistoryDTO.getDescription())
-                                                    .createdAt(transactionHistoryDTO.getCreatedAt())
-                                                    .methodName(
-                                                        transactionHistoryDTO.getMethodName())
-                                                    .status(transactionHistoryDTO.getStatus())
-                                                    .type(transactionHistoryDTO.getType())
-                                                    .build())
-                                        .toList())
-                            .map(
-                                transactionResponses ->
+                      transactionResponses -> {
+                        return this.cacheTransactionHistoryService
+                            .cacheTransaction(
+                                criteria.getSourceWalletId(),
+                                transactionResponses,
+                                criteria.getTransactionCreatedAt())
+                            .doOnError(error -> log.info(" error {} ", error))
+                            .doOnSuccess(v -> log.info(" ok cache done "))
+                            .then(
+                                Mono.just(
                                     BaseResponse.build(
                                         PaginationResponse.<TransactionResponse>builder()
                                             .data(transactionResponses)
                                             .currentPage(criteria.getCurrentPage())
                                             .pageSize(criteria.getPageSize())
                                             .build(),
-                                        true));
+                                        true)));
                       });
             });
   }

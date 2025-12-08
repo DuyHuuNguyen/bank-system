@@ -7,7 +7,7 @@ import lombok.*;
 @ToString
 @Builder
 @Getter
-public class TransactionHistoryDTO {
+public class TransactionHistoryDTO implements Comparable<TransactionHistoryDTO> {
   private Long id;
   private String transactionBalance;
   private Long sourceWalletId;
@@ -19,4 +19,9 @@ public class TransactionHistoryDTO {
   private String type;
   private String referenceCode;
   private String currency;
+
+  @Override
+  public int compareTo(TransactionHistoryDTO o) {
+    return (int) (this.createdAt - o.createdAt);
+  }
 }

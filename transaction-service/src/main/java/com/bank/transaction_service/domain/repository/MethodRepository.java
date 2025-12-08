@@ -16,6 +16,8 @@ public interface MethodRepository extends R2dbcRepository<Method, Long> {
   """)
   Mono<Method> findMethodByMethodName(String methodName);
 
+  Mono<Method> findByMethodName(String methodName);
+
   @Query("""
     SELECT m
     FROM methods m
