@@ -1,5 +1,6 @@
 package com.bank.transaction_service.infrastructure.config;
 
+import com.bank.transaction_service.application.dto.CacheTransactionHistoriesDTO;
 import com.bank.transaction_service.application.dto.TransactionHistoryDTO;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,6 +36,20 @@ public class RedisConfig {
         builder = RedisSerializationContext.newSerializationContext(serializer);
 
     RedisSerializationContext<String, TransactionHistoryDTO> context = builder.build();
+
+    return new ReactiveRedisTemplate<>(factory, context);
+  }
+
+  @Bean(name = "cacheList")
+  public ReactiveRedisTemplate<String, CacheTransactionHistoriesDTO>
+      cacheTransactionsWithReactiveRedisTemplate(ReactiveRedisConnectionFactory factory) {
+    Jackson2JsonRedisSerializer<CacheTransactionHistoriesDTO> serializer =
+        new Jackson2JsonRedisSerializer<>(CacheTransactionHistoriesDTO.class);
+
+    RedisSerializationContext.RedisSerializationContextBuilder<String, CacheTransactionHistoriesDTO>
+        builder = RedisSerializationContext.newSerializationContext(serializer);
+
+    RedisSerializationContext<String, CacheTransactionHistoriesDTO> context = builder.build();
 
     return new ReactiveRedisTemplate<>(factory, context);
   }
