@@ -14,5 +14,8 @@ public interface CacheTransactionHistoryService {
   Mono<Boolean> hasKey(String key);
 
   Mono<Boolean> cacheTransaction(
-      Long userId, List<TransactionResponse> transactionResponses, LocalDate created);
+      Long walletId, List<TransactionResponse> transactionResponses, LocalDate created);
+
+  Mono<Boolean> cacheTransaction(
+      Long walletId, TransactionResponse transactionResponse, LocalDate created);
 }

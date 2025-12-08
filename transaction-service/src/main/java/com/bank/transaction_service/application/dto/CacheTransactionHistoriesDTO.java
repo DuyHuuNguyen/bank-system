@@ -12,7 +12,11 @@ import lombok.*;
 public class CacheTransactionHistoriesDTO {
   @Builder.Default private TreeSet<TransactionResponse> transactionResponses = new TreeSet<>();
 
-  public void addTransactionResponses(List<TransactionResponse> transactionResponse) {
-    transactionResponses.addAll(transactionResponse);
+  public void addTransactionResponses(List<TransactionResponse> transactionResponses) {
+    this.transactionResponses.addAll(transactionResponses);
+  }
+
+  public void addTransactionResponse(TransactionResponse transactionResponse) {
+    this.transactionResponses.add(transactionResponse);
   }
 }

@@ -2,7 +2,9 @@ package com.bank.transaction_service.infrastructure.service;
 
 import com.bank.transaction_service.api.response.TransactionResponse;
 import com.bank.transaction_service.application.dto.CacheTransactionHistoriesDTO;
+import com.bank.transaction_service.application.exception.EntityNotFoundException;
 import com.bank.transaction_service.application.service.CacheTransactionHistoryService;
+import com.bank.transaction_service.infrastructure.enums.ErrorCode;
 import com.bank.transaction_service.infrastructure.enums.TransactionHistoryTemplate;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -36,16 +38,16 @@ public class CacheTransactionHistoryServiceImpl implements CacheTransactionHisto
   }
 
   public Mono<Boolean> cacheTransaction(
-      Long userId, List<TransactionResponse> transactionResponses, LocalDate created) {
+      Long walletId, List<TransactionResponse> transactionResponses, LocalDate created) {
 
     String transactionHistoryKey =
         String.format(
             TransactionHistoryTemplate.TRANSACTION_HISTORY_TEMPLATE_KEY.getContent(),
-            userId,
+            walletId,
             created);
     log.info("key {}", transactionHistoryKey);
     return this.findByKey(transactionHistoryKey)
-        .switchIfEmpty(Mono.error(new RuntimeException(" James exception  ")))
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.CACHE_NOT_FOUND)))
         .onErrorResume(
             cacheNotFound -> {
               log.info("CACHE NOT FOUND {}", cacheNotFound.getMessage());
@@ -53,8 +55,33 @@ public class CacheTransactionHistoryServiceImpl implements CacheTransactionHisto
             })
         .flatMap(
             cacheTransactionHistoriesDTO -> {
-              log.info(" Reached me");
               cacheTransactionHistoriesDTO.addTransactionResponses(transactionResponses);
+              return this.put(transactionHistoryKey, cacheTransactionHistoriesDTO)
+                  .doOnSuccess(ok -> log.info("Cached data"))
+                  .doOnError(error -> log.warn("Error cache data"));
+            });
+  }
+
+  @Override
+  public Mono<Boolean> cacheTransaction(
+      Long walletId, TransactionResponse transactionResponse, LocalDate created) {
+
+    String transactionHistoryKey =
+        String.format(
+            TransactionHistoryTemplate.TRANSACTION_HISTORY_TEMPLATE_KEY.getContent(),
+            walletId,
+            created);
+    log.info("key {}", transactionHistoryKey);
+    return this.findByKey(transactionHistoryKey)
+        .switchIfEmpty(Mono.error(new EntityNotFoundException(ErrorCode.CACHE_NOT_FOUND)))
+        .onErrorResume(
+            cacheNotFound -> {
+              log.info("CACHE NOT FOUND {}", cacheNotFound.getMessage());
+              return Mono.just(CacheTransactionHistoriesDTO.builder().build());
+            })
+        .flatMap(
+            cacheTransactionHistoriesDTO -> {
+              cacheTransactionHistoriesDTO.addTransactionResponse(transactionResponse);
               return this.put(transactionHistoryKey, cacheTransactionHistoriesDTO)
                   .doOnSuccess(ok -> log.info("Cached data"))
                   .doOnError(error -> log.warn("Error cache data"));

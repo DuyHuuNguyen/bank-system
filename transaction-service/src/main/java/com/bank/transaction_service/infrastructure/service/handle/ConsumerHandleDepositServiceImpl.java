@@ -88,6 +88,8 @@ public class ConsumerHandleDepositServiceImpl implements ConsumerHandleDepositSe
                                           transactionMessage.getTransactionMethodEnum().getMethod())
                                       .flatMap(
                                           method -> {
+                                            transactionMessage.addTransactionId(
+                                                transactionStored.getId());
                                             com.bank.transaction_service.domain.entity
                                                     .TransactionMethod
                                                 transactionMethod =
