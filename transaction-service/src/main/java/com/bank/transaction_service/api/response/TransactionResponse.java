@@ -22,6 +22,6 @@ public class TransactionResponse implements Comparable<TransactionResponse> {
 
   @Override
   public int compareTo(TransactionResponse o) {
-    return (int) (this.createdAt - o.createdAt);
+    return (int) (o.createdAt - this.createdAt);
   }
 }
