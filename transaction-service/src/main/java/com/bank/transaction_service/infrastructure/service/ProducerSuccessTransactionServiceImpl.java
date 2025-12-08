@@ -23,7 +23,7 @@ public class ProducerSuccessTransactionServiceImpl implements ProducerSuccessTra
   private String successTransactionRoutingKey;
 
   @Override
-  public Mono<Void> sendSuccessTransactionMessage(TransactionMessage transactionMessage) {
+  public Mono<Boolean> sendSuccessTransactionMessage(TransactionMessage transactionMessage) {
     log.info("Send successful transaction Message");
     return Mono.fromRunnable(
         () ->

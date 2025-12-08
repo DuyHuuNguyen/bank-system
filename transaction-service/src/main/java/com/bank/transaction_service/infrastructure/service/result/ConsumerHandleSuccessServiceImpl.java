@@ -22,6 +22,7 @@ public class ConsumerHandleSuccessServiceImpl implements ConsumerHandleSuccessTr
   @Override
   @RabbitListener(queues = "${james-config-rabbitmq.done-transaction.queue.queue-success}")
   public Mono<Void> handleSuccessTransaction(TransactionMessage transactionMessage) {
+      log.info("Successful transaction -> : {}", transactionMessage);
     return Mono.just(transactionMessage)
         .flatMap(
             message -> {

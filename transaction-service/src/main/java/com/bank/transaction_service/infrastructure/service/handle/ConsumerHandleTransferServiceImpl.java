@@ -127,6 +127,7 @@ public class ConsumerHandleTransferServiceImpl implements ConsumerHandleTransfer
                                           method -> {
                                             transactionMessage.addTransactionId(
                                                 transactionStored.getId());
+                                            transactionMessage.changeStatus(TransactionMessageStatus.SUCCESSFUL);
                                             TransactionMethod transactionMethod =
                                                 TransactionMethod.builder()
                                                     .methodId(method.getId())
