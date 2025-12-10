@@ -6,6 +6,10 @@ import com.bank.transaction_service.application.service.TransactionService;
 import com.bank.transaction_service.domain.entity.Transaction;
 import com.bank.transaction_service.domain.repository.TransactionRepository;
 import com.bank.transaction_service.api.request.TransactionCriteria;
+import com.bank.transaction_service.infrastructure.enums.DateSqlTemplate;
+import com.bank.transaction_service.infrastructure.enums.TransactionStatus;
+import com.bank.transaction_service.infrastructure.enums.TransactionType;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.r2dbc.core.DatabaseClient;
@@ -14,6 +18,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -117,4 +122,11 @@ public class TransactionServiceImpl implements TransactionService {
   public Mono<TransactionHistoryDTO> findTransactionHistoryById(Long id) {
     return this.transactionRepository.findTransactionHistoryById(id);
   }
+
+  @Override
+  public Mono<Double> statisticTransactionBalance(TransactionStatus status, TransactionType type,Long walletId ,DateSqlTemplate dateSqlTemplate) {
+    log.info("{}",dateSqlTemplate.getContent());
+    return this.transactionRepository.statisticTransactionBalance(TransactionStatus.SUCCESSFUL,walletId,TransactionType.TRANSFER,"2025-12-01");
+  }
+
 }

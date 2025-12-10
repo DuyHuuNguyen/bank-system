@@ -1,10 +1,7 @@
 package com.bank.transaction_service.api.facade;
 
 import com.bank.transaction_service.api.request.*;
-import com.bank.transaction_service.api.response.BaseResponse;
-import com.bank.transaction_service.api.response.PaginationResponse;
-import com.bank.transaction_service.api.response.TransactionDetailResponse;
-import com.bank.transaction_service.api.response.TransactionResponse;
+import com.bank.transaction_service.api.response.*;
 import reactor.core.publisher.Mono;
 
 public interface TransactionFacade {
@@ -24,4 +21,7 @@ public interface TransactionFacade {
   Mono<BaseResponse<Void>> verifyTransactionOtp(VerifyTransactionOtpRequest request);
 
   Mono<BaseResponse<Void>> changeOtp(ChangeOtpRequest request);
+
+  Mono<BaseResponse<StatisticTransactionBalanceResponse>> statisticTransactionBalance(
+      StatisticTransactionBalanceRequest request);
 }
