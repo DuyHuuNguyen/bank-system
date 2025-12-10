@@ -2,10 +2,7 @@ package com.bank.transaction_service.infrastructure.rest.controller;
 
 import com.bank.transaction_service.api.facade.TransactionFacade;
 import com.bank.transaction_service.api.request.*;
-import com.bank.transaction_service.api.response.BaseResponse;
-import com.bank.transaction_service.api.response.PaginationResponse;
-import com.bank.transaction_service.api.response.TransactionDetailResponse;
-import com.bank.transaction_service.api.response.TransactionResponse;
+import com.bank.transaction_service.api.response.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -90,5 +87,15 @@ public class TransactionController {
   @PreAuthorize("isAuthenticated()")
   public Mono<BaseResponse<Void>> changeOpt(@RequestBody @Valid ChangeOtpRequest changeOtpRequest) {
     return this.transactionFacade.changeOtp(changeOtpRequest);
+  }
+
+  @GetMapping("/statistic-balance")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"TRANSACTION APIs"})
+  @SecurityRequirement(name = "Bearer Authentication")
+  @PreAuthorize("isAuthenticated()")
+  public Mono<BaseResponse<StatisticTransactionBalanceResponse>> statisticTransactionBalance(
+      @NotNull StatisticTransactionBalanceRequest request) {
+    return this.transactionFacade.statisticTransactionBalance(request);
   }
 }

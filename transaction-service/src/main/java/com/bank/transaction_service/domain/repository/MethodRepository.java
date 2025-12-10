@@ -1,11 +1,15 @@
 package com.bank.transaction_service.domain.repository;
 
 import com.bank.transaction_service.domain.entity.Method;
+import com.bank.transaction_service.infrastructure.enums.TransactionStatus;
+import com.bank.transaction_service.infrastructure.enums.TransactionType;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.math.BigDecimal;
 
 @Repository
 public interface MethodRepository extends R2dbcRepository<Method, Long> {

@@ -2,10 +2,7 @@ package com.bank.transaction_service.infrastructure.facade;
 
 import com.bank.transaction_service.api.facade.TransactionFacade;
 import com.bank.transaction_service.api.request.*;
-import com.bank.transaction_service.api.response.BaseResponse;
-import com.bank.transaction_service.api.response.PaginationResponse;
-import com.bank.transaction_service.api.response.TransactionDetailResponse;
-import com.bank.transaction_service.api.response.TransactionResponse;
+import com.bank.transaction_service.api.response.*;
 import com.bank.transaction_service.application.dto.TransactionHistoryDTO;
 import com.bank.transaction_service.application.dto.WalletDTO;
 import com.bank.transaction_service.application.exception.EntityNotFoundException;
@@ -15,6 +12,7 @@ import com.bank.transaction_service.application.exception.PersonalIdNotMatchExce
 import com.bank.transaction_service.application.message.ChangeOtpMessage;
 import com.bank.transaction_service.application.message.TransactionMessage;
 import com.bank.transaction_service.application.service.*;
+import com.bank.transaction_service.infrastructure.enums.DateSqlTemplate;
 import com.bank.transaction_service.infrastructure.enums.ErrorCode;
 import com.bank.transaction_service.infrastructure.enums.TransactionHistoryTemplate;
 import com.bank.transaction_service.infrastructure.security.SecurityUserDetails;
@@ -175,67 +173,6 @@ public class TransactionFacadeImpl implements TransactionFacade {
               }
               return this.buildTransactionResponse(
                   criteria, walletOwnerRequest, securityUserDetails);
-              //              return this.walletGrpcClientService
-              //                  .findWalletOwnerByRequest(walletOwnerRequest)
-              //                  .flatMap(
-              //                      walletResponse -> {
-              //                        boolean isValidSourceWalletId = walletResponse.getId() != 0;
-              //                        if (!isValidSourceWalletId)
-              //                          return Mono.error(
-              //                              new
-              // EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND));
-              //                        criteria.addOffset();
-              //                        return this.transactionService
-              //                            .findAll(criteria)
-              //                            .collectList()
-              //                            .map(
-              //                                transactionHistoryDTOS ->
-              //                                    transactionHistoryDTOS.stream()
-              //                                        .map(
-              //                                            transactionHistoryDTO ->
-              //                                                TransactionResponse.builder()
-              //
-              // .id(transactionHistoryDTO.getId())
-              //                                                    .balance(
-              //                                                        transactionHistoryDTO
-              //
-              // .getTransactionBalance())
-              //                                                    .sourceWalletId(
-              //
-              // transactionHistoryDTO.getSourceWalletId())
-              //                                                    .destinationWalletId(
-              //                                                        transactionHistoryDTO
-              //
-              // .getDestinationWalletId())
-              //                                                    .description(
-              //
-              // transactionHistoryDTO.getDescription())
-              //
-              // .createdAt(transactionHistoryDTO.getCreatedAt())
-              //                                                    .methodName(
-              //
-              // transactionHistoryDTO.getMethodName())
-              //
-              // .status(transactionHistoryDTO.getStatus())
-              //
-              // .type(transactionHistoryDTO.getType())
-              //                                                    .build())
-              //                                        .toList())
-              //                            .flatMap(
-              //                                transactionResponses -> {
-              //                                   return
-              // this.cacheTransactionHistoryService.cacheTransaction(securityUserDetails.getUserId(), transactionResponses,criteria.getTransactionCreatedAt())
-              //
-              // .thenReturn(BaseResponse.build(PaginationResponse.<TransactionResponse>builder()
-              //                                                    .data(transactionResponses)
-              //
-              // .currentPage(criteria.getCurrentPage())
-              //
-              // .pageSize(criteria.getPageSize())
-              //                                                    .build(),
-              //                                            true));
-              //                                });
-              //                      });
             });
   }
 
@@ -477,6 +414,50 @@ public class TransactionFacadeImpl implements TransactionFacade {
                             new EntityNotFoundException(ErrorCode.CAN_NOT_UPDATE_OTP));
                       })
                   .thenReturn(BaseResponse.ok());
+            });
+  }
+
+  @Override
+  public Mono<BaseResponse<StatisticTransactionBalanceResponse>> statisticTransactionBalance(
+      StatisticTransactionBalanceRequest request) {
+    return ReactiveSecurityContextHolder.getContext()
+        .map(SecurityContext::getAuthentication)
+        .map(Authentication::getPrincipal)
+        .cast(SecurityUserDetails.class)
+        .flatMap(
+            securityUserDetails -> {
+              log.info("request {}", request);
+              WalletOwnerRequest walletOwnerRequest =
+                  WalletOwnerRequest.newBuilder()
+                      .setUserId(securityUserDetails.getUserId())
+                      .setWalletId(request.getWalletId())
+                      .build();
+              return this.walletGrpcClientService
+                  .findWalletOwnerByRequest(walletOwnerRequest)
+                  .switchIfEmpty(
+                      Mono.error(new EntityNotFoundException(ErrorCode.WALLET_NOT_FOUND)))
+                  .flatMap(
+                      walletResponse -> {
+                        DateSqlTemplate dateSqlTemplate =
+                            DateSqlTemplate.getDateSqlTemplate(
+                                request.getYear(), request.getMonth());
+                        return this.transactionService
+                            .statisticTransactionBalance(
+                                request.getTransactionStatus(),
+                                request.getTransactionType(),
+                                walletResponse.getId(),
+                                dateSqlTemplate)
+                            .switchIfEmpty(
+                                Mono.error(
+                                    new EntityNotFoundException(ErrorCode.TRANSACTION_NOT_FOUND)))
+                            .map(
+                                balances ->
+                                    BaseResponse.build(
+                                        StatisticTransactionBalanceResponse.builder()
+                                            .balance(balances)
+                                            .build(),
+                                        true));
+                      });
             });
   }
 }

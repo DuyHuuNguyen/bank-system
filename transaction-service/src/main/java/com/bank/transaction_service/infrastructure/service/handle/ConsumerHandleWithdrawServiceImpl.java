@@ -91,7 +91,8 @@ public class ConsumerHandleWithdrawServiceImpl implements ConsumerHandleWithdraw
                                           method -> {
                                             transactionMessage.addTransactionId(
                                                 transactionStored.getId());
-                                              transactionMessage.changeStatus(TransactionMessageStatus.SUCCESSFUL);
+                                            transactionMessage.changeStatus(
+                                                TransactionMessageStatus.SUCCESSFUL);
                                             com.bank.transaction_service.domain.entity
                                                     .TransactionMethod
                                                 transactionMethod =
